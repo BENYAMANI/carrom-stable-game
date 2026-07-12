@@ -69,7 +69,7 @@
     <header>
       <p class="eyebrow">لعبة كيرم مستقرة — ملف واحد فقط</p>
       <h1>كيرم محمد عبدالله الجابري</h1>
-      <p>اسحب من المضرب نحو الهدف ثم اتركه. يبدأ عداد 7 ثوانٍ فور الضربة، وبعده تتوقف القطع ويُجهّز الدور التالي. يستمر نفس اللاعب إذا أدخل قطعة صحيحة.</p>
+      <p>تم تطوير الفيزياء لتعمل بخطوات زمنية ثابتة ودقيقة، مع احتساب السرعة والزخم والاحتكاك وزوايا الاصطدام ودوران الحبوب بصورة أكثر واقعية.</p>
     </header>
 
     <section id="menu" class="menu panel">
@@ -143,9 +143,21 @@
   const WALL_MAX = BOARD_SIZE - 54;
   const BASELINE_NEAR = 145;
   const BASELINE_FAR = BOARD_SIZE - 145;
-  const FRICTION = 0.9925;
-  const STOP_SPEED = 0.07;
   const SHOT_SECONDS = 7;
+  const FIXED_DT = 1 / 120;
+  const MAX_FRAME_DT = 0.05;
+  const MAX_SUB_STEPS = 10;
+  const LINEAR_DAMPING = 0.28;
+  const ROLLING_DECELERATION = 34;
+  const ANGULAR_DAMPING = 1.65;
+  const PIECE_RESTITUTION = 0.91;
+  const WALL_RESTITUTION = 0.8;
+  const COLLISION_FRICTION = 0.16;
+  const WALL_FRICTION = 0.12;
+  const SLEEP_SPEED = 4;
+  const SLEEP_ANGULAR_SPEED = 0.35;
+  const POSITION_SLOP = 0.15;
+  const POSITION_CORRECTION = 0.82;
 
   const menuEl = document.getElementById("menu");
   const gameEl = document.getElementById("game");
@@ -188,23 +200,36 @@
   let aiTimer = null;
   let audioContext = null;
   let lastCollisionSound = 0;
+  let lastFrameTime = performance.now();
+  let physicsAccumulator = 0;
 
   function clamp(value, min, max) { return Math.max(min, Math.min(max, value)); }
   function distance(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
 
+  function createDisc(id, kind, x, y, r) {
+    const mass = kind === "striker" ? 1.35 : kind === "queen" ? 1.05 : 1;
+    return {
+      id, kind, x, y, r, mass,
+      vx: 0, vy: 0,
+      angle: Math.random() * Math.PI * 2,
+      omega: 0,
+      active: true,
+    };
+  }
+
   function initialPieces() {
     const next = [];
     let id = 0;
-    next.push({ id: "queen", kind: "queen", x: 450, y: 450, vx: 0, vy: 0, r: PIECE_RADIUS, active: true });
+    next.push(createDisc("queen", "queen", 450, 450, PIECE_RADIUS));
     for (let i = 0; i < 6; i++) {
       const angle = Math.PI * 2 * i / 6;
-      next.push({ id: `p-${id++}`, kind: i % 2 === 0 ? "black" : "white", x: 450 + Math.cos(angle) * 34, y: 450 + Math.sin(angle) * 34, vx: 0, vy: 0, r: PIECE_RADIUS, active: true });
+      next.push(createDisc(`p-${id++}`, i % 2 === 0 ? "black" : "white", 450 + Math.cos(angle) * 34, 450 + Math.sin(angle) * 34, PIECE_RADIUS));
     }
     for (let i = 0; i < 12; i++) {
       const angle = Math.PI * 2 * i / 12;
-      next.push({ id: `p-${id++}`, kind: i % 2 === 0 ? "white" : "black", x: 450 + Math.cos(angle) * 66, y: 450 + Math.sin(angle) * 66, vx: 0, vy: 0, r: PIECE_RADIUS, active: true });
+      next.push(createDisc(`p-${id++}`, i % 2 === 0 ? "white" : "black", 450 + Math.cos(angle) * 66, 450 + Math.sin(angle) * 66, PIECE_RADIUS));
     }
-    next.push({ id: "striker", kind: "striker", x: 450, y: BASELINE_FAR, vx: 0, vy: 0, r: STRIKER_RADIUS, active: true });
+    next.push(createDisc("striker", "striker", 450, BASELINE_FAR, STRIKER_RADIUS));
     return next;
   }
 
@@ -229,7 +254,7 @@
     const striker = getStriker();
     if (!striker) return;
     const p = baselinePosition(index, playerCount, offset);
-    striker.x = p.x; striker.y = p.y; striker.vx = 0; striker.vy = 0; striker.active = true;
+    striker.x = p.x; striker.y = p.y; striker.vx = 0; striker.vy = 0; striker.omega = 0; striker.active = true;
   }
 
   function ensureAudio() {
@@ -322,7 +347,7 @@
   function beginShot(vx, vy) {
     if (phase !== "ready") return;
     const striker = getStriker(); if (!striker || !striker.active) return;
-    striker.vx = vx; striker.vy = vy;
+    striker.vx = vx; striker.vy = vy; striker.omega = 0;
     shotScored = false; strikerFoul = false; phase = "moving"; aiming = false; aimPoint = null;
     strikerPositionEl.disabled = true;
     sound("strike", clamp(Math.hypot(vx, vy) / 30, .5, 1.2));
@@ -349,7 +374,7 @@
     if (phase !== "moving") return;
     if (countdownTimer) clearInterval(countdownTimer);
     countdownTimer = null; shotTimer = null;
-    discs.forEach(d => { d.vx = 0; d.vy = 0; });
+    discs.forEach(d => { d.vx = 0; d.vy = 0; d.omega = 0; });
 
     let nextPlayer = currentPlayer;
     if (playerCount > 1 && (!shotScored || strikerFoul)) nextPlayer = (currentPlayer + 1) % playerCount;
@@ -386,13 +411,13 @@
       const cos = Math.cos(error), sin = Math.sin(error);
       const nx = (dx / len) * cos - (dy / len) * sin;
       const ny = (dx / len) * sin + (dy / len) * cos;
-      const speed = difficulty === "easy" ? 18 : difficulty === "medium" ? 23 : 28;
+      const speed = difficulty === "easy" ? 780 : difficulty === "medium" ? 1080 : 1360;
       beginShot(nx * speed, ny * speed);
     }, 900);
   }
 
   function pocketDisc(disc) {
-    disc.active = false; disc.vx = 0; disc.vy = 0;
+    disc.active = false; disc.vx = 0; disc.vy = 0; disc.omega = 0;
     if (disc.kind === "striker") {
       strikerFoul = true;
       scores[currentPlayer] = Math.max(0, (scores[currentPlayer] || 0) - 1);
@@ -406,33 +431,197 @@
     renderHud(); updateRemaining();
   }
 
-  function updatePhysics() {
-    if (phase !== "moving") return;
-    for (const d of discs) {
-      if (!d.active) continue;
-      d.x += d.vx; d.y += d.vy; d.vx *= FRICTION; d.vy *= FRICTION;
-      if (Math.abs(d.vx) < STOP_SPEED) d.vx = 0;
-      if (Math.abs(d.vy) < STOP_SPEED) d.vy = 0;
-      const pocket = pocketCenters.find(p => distance(d, p) < POCKET_RADIUS);
-      if (pocket) { pocketDisc(d); continue; }
-      if (d.x - d.r < WALL_MIN) { d.x = WALL_MIN + d.r; d.vx = Math.abs(d.vx) * .82; sound("wall", Math.abs(d.vx) / 18); }
-      if (d.x + d.r > WALL_MAX) { d.x = WALL_MAX - d.r; d.vx = -Math.abs(d.vx) * .82; sound("wall", Math.abs(d.vx) / 18); }
-      if (d.y - d.r < WALL_MIN) { d.y = WALL_MIN + d.r; d.vy = Math.abs(d.vy) * .82; sound("wall", Math.abs(d.vy) / 18); }
-      if (d.y + d.r > WALL_MAX) { d.y = WALL_MAX - d.r; d.vy = -Math.abs(d.vy) * .82; sound("wall", Math.abs(d.vy) / 18); }
+  function inverseMass(disc) {
+    return disc.mass > 0 ? 1 / disc.mass : 0;
+  }
+
+  function inverseInertia(disc) {
+    const inertia = 0.5 * disc.mass * disc.r * disc.r;
+    return inertia > 0 ? 1 / inertia : 0;
+  }
+
+  function cross2D(ax, ay, bx, by) {
+    return ax * by - ay * bx;
+  }
+
+  function velocityAtPoint(disc, rx, ry) {
+    return {
+      x: disc.vx - disc.omega * ry,
+      y: disc.vy + disc.omega * rx,
+    };
+  }
+
+  function applyRollingResistance(disc, dt) {
+    const speed = Math.hypot(disc.vx, disc.vy);
+    if (speed > 0) {
+      const reduced = Math.max(0, speed - ROLLING_DECELERATION * dt);
+      const damping = Math.exp(-LINEAR_DAMPING * dt);
+      const scale = speed > 0 ? (reduced / speed) * damping : 0;
+      disc.vx *= scale;
+      disc.vy *= scale;
     }
-    for (let i = 0; i < discs.length; i++) {
-      const a = discs[i]; if (!a.active) continue;
-      for (let j = i + 1; j < discs.length; j++) {
-        const b = discs[j]; if (!b.active) continue;
-        const dx = b.x - a.x, dy = b.y - a.y, dist = Math.hypot(dx, dy), minDist = a.r + b.r;
-        if (dist <= 0 || dist >= minDist) continue;
-        const nx = dx / dist, ny = dy / dist, overlap = minDist - dist;
-        a.x -= nx * overlap * .5; a.y -= ny * overlap * .5; b.x += nx * overlap * .5; b.y += ny * overlap * .5;
-        const rel = (b.vx - a.vx) * nx + (b.vy - a.vy) * ny;
-        if (rel < 0) {
-          const impulse = -rel * .96;
-          a.vx -= impulse * nx; a.vy -= impulse * ny; b.vx += impulse * nx; b.vy += impulse * ny;
-          sound("collision", clamp(Math.abs(impulse) / 10, .25, 1.1));
+    disc.omega *= Math.exp(-ANGULAR_DAMPING * dt);
+
+    if (Math.hypot(disc.vx, disc.vy) < SLEEP_SPEED) {
+      disc.vx = 0;
+      disc.vy = 0;
+    }
+    if (Math.abs(disc.omega) < SLEEP_ANGULAR_SPEED) disc.omega = 0;
+  }
+
+  function resolveWallCollision(disc) {
+    let hit = false;
+    let normalX = 0;
+    let normalY = 0;
+
+    if (disc.x - disc.r < WALL_MIN) {
+      disc.x = WALL_MIN + disc.r;
+      normalX = 1;
+      hit = true;
+    } else if (disc.x + disc.r > WALL_MAX) {
+      disc.x = WALL_MAX - disc.r;
+      normalX = -1;
+      hit = true;
+    }
+
+    if (disc.y - disc.r < WALL_MIN) {
+      disc.y = WALL_MIN + disc.r;
+      normalY = 1;
+      hit = true;
+    } else if (disc.y + disc.r > WALL_MAX) {
+      disc.y = WALL_MAX - disc.r;
+      normalY = -1;
+      hit = true;
+    }
+
+    if (!hit) return;
+
+    const normalLength = Math.hypot(normalX, normalY) || 1;
+    normalX /= normalLength;
+    normalY /= normalLength;
+
+    const normalSpeed = disc.vx * normalX + disc.vy * normalY;
+    if (normalSpeed < 0) {
+      disc.vx -= (1 + WALL_RESTITUTION) * normalSpeed * normalX;
+      disc.vy -= (1 + WALL_RESTITUTION) * normalSpeed * normalY;
+
+      const tangentX = -normalY;
+      const tangentY = normalX;
+      const tangentSpeed = disc.vx * tangentX + disc.vy * tangentY;
+      const reducedTangent = tangentSpeed * (1 - WALL_FRICTION);
+      disc.vx += (reducedTangent - tangentSpeed) * tangentX;
+      disc.vy += (reducedTangent - tangentSpeed) * tangentY;
+      disc.omega += (tangentSpeed / Math.max(1, disc.r)) * 0.09;
+      sound("wall", clamp(Math.abs(normalSpeed) / 650, .22, 1.15));
+    }
+  }
+
+  function resolveDiscCollision(a, b) {
+    const dx = b.x - a.x;
+    const dy = b.y - a.y;
+    const dist = Math.hypot(dx, dy);
+    const minDist = a.r + b.r;
+    if (dist <= 0 || dist >= minDist) return;
+
+    const nx = dx / dist;
+    const ny = dy / dist;
+    const invMassA = inverseMass(a);
+    const invMassB = inverseMass(b);
+    const invMassSum = invMassA + invMassB;
+    if (invMassSum <= 0) return;
+
+    const penetration = minDist - dist;
+    const correctionMagnitude = Math.max(penetration - POSITION_SLOP, 0) * POSITION_CORRECTION / invMassSum;
+    a.x -= correctionMagnitude * invMassA * nx;
+    a.y -= correctionMagnitude * invMassA * ny;
+    b.x += correctionMagnitude * invMassB * nx;
+    b.y += correctionMagnitude * invMassB * ny;
+
+    const contactAX = nx * a.r;
+    const contactAY = ny * a.r;
+    const contactBX = -nx * b.r;
+    const contactBY = -ny * b.r;
+    const velocityA = velocityAtPoint(a, contactAX, contactAY);
+    const velocityB = velocityAtPoint(b, contactBX, contactBY);
+    let rvX = velocityB.x - velocityA.x;
+    let rvY = velocityB.y - velocityA.y;
+    const velocityAlongNormal = rvX * nx + rvY * ny;
+
+    if (velocityAlongNormal > 0) return;
+
+    const restitution = PIECE_RESTITUTION;
+    const normalImpulse = -(1 + restitution) * velocityAlongNormal / invMassSum;
+    const impulseX = normalImpulse * nx;
+    const impulseY = normalImpulse * ny;
+
+    a.vx -= impulseX * invMassA;
+    a.vy -= impulseY * invMassA;
+    b.vx += impulseX * invMassB;
+    b.vy += impulseY * invMassB;
+
+    const updatedVelocityA = velocityAtPoint(a, contactAX, contactAY);
+    const updatedVelocityB = velocityAtPoint(b, contactBX, contactBY);
+    rvX = updatedVelocityB.x - updatedVelocityA.x;
+    rvY = updatedVelocityB.y - updatedVelocityA.y;
+
+    const tangentRawX = rvX - (rvX * nx + rvY * ny) * nx;
+    const tangentRawY = rvY - (rvX * nx + rvY * ny) * ny;
+    const tangentLength = Math.hypot(tangentRawX, tangentRawY);
+
+    if (tangentLength > 0.0001) {
+      const tx = tangentRawX / tangentLength;
+      const ty = tangentRawY / tangentLength;
+      const raCrossT = cross2D(contactAX, contactAY, tx, ty);
+      const rbCrossT = cross2D(contactBX, contactBY, tx, ty);
+      const tangentDenominator = invMassSum +
+        raCrossT * raCrossT * inverseInertia(a) +
+        rbCrossT * rbCrossT * inverseInertia(b);
+
+      let tangentImpulse = -(rvX * tx + rvY * ty) / tangentDenominator;
+      const maxFrictionImpulse = Math.abs(normalImpulse) * COLLISION_FRICTION;
+      tangentImpulse = clamp(tangentImpulse, -maxFrictionImpulse, maxFrictionImpulse);
+
+      const frictionX = tangentImpulse * tx;
+      const frictionY = tangentImpulse * ty;
+      a.vx -= frictionX * invMassA;
+      a.vy -= frictionY * invMassA;
+      b.vx += frictionX * invMassB;
+      b.vy += frictionY * invMassB;
+      a.omega -= cross2D(contactAX, contactAY, frictionX, frictionY) * inverseInertia(a);
+      b.omega += cross2D(contactBX, contactBY, frictionX, frictionY) * inverseInertia(b);
+    }
+
+    sound("collision", clamp(Math.abs(normalImpulse) / 520, .2, 1.2));
+  }
+
+  function updatePhysics(dt) {
+    if (phase !== "moving") return;
+
+    for (const disc of discs) {
+      if (!disc.active) continue;
+
+      disc.x += disc.vx * dt;
+      disc.y += disc.vy * dt;
+      disc.angle += disc.omega * dt;
+      applyRollingResistance(disc, dt);
+
+      const pocket = pocketCenters.find(p => distance(disc, p) < POCKET_RADIUS - 2);
+      if (pocket) {
+        pocketDisc(disc);
+        continue;
+      }
+
+      resolveWallCollision(disc);
+    }
+
+    for (let iteration = 0; iteration < 2; iteration++) {
+      for (let i = 0; i < discs.length; i++) {
+        const a = discs[i];
+        if (!a.active) continue;
+        for (let j = i + 1; j < discs.length; j++) {
+          const b = discs[j];
+          if (!b.active) continue;
+          resolveDiscCollision(a, b);
         }
       }
     }
@@ -452,9 +641,17 @@
     ctx.beginPath(); ctx.arc(d.x,d.y,d.r,0,Math.PI*2); ctx.fillStyle=woodGradient(d); ctx.fill();
     ctx.shadowColor="transparent"; ctx.lineWidth=d.kind==="striker"?4.5:2.2;
     ctx.strokeStyle=d.kind==="white"?"rgba(119,83,44,.95)":"rgba(255,244,220,.38)"; ctx.stroke();
-    ctx.save(); ctx.beginPath(); ctx.arc(d.x,d.y,d.r*.82,0,Math.PI*2); ctx.clip();
+    ctx.save();
+    ctx.translate(d.x, d.y);
+    ctx.rotate(d.angle || 0);
+    ctx.beginPath(); ctx.arc(0,0,d.r*.82,0,Math.PI*2); ctx.clip();
     ctx.strokeStyle=d.kind==="black"?"rgba(255,255,255,.06)":"rgba(89,58,28,.09)"; ctx.lineWidth=1;
-    for(let i=-2;i<=2;i++){ctx.beginPath();ctx.moveTo(d.x-d.r,d.y+i*4);ctx.bezierCurveTo(d.x-d.r*.3,d.y+i*6-3,d.x+d.r*.3,d.y+i*2+3,d.x+d.r,d.y+i*5);ctx.stroke();}
+    for(let i=-2;i<=2;i++){
+      ctx.beginPath();
+      ctx.moveTo(-d.r,i*4);
+      ctx.bezierCurveTo(-d.r*.3,i*6-3,d.r*.3,i*2+3,d.r,i*5);
+      ctx.stroke();
+    }
     ctx.restore();
     ctx.beginPath();ctx.arc(d.x-d.r*.28,d.y-d.r*.28,d.r*.22,0,Math.PI*2);ctx.fillStyle="rgba(255,255,255,.3)";ctx.fill();
     if(d.kind==="striker"){
@@ -494,7 +691,7 @@
   canvas.addEventListener("pointerup", event => {
     if(!aiming)return;const striker=getStriker();const p=canvasPoint(event);aiming=false;aimPoint=null;if(!striker)return;
     const dx=p.x-striker.x,dy=p.y-striker.y,len=Math.hypot(dx,dy);if(len<35){setStatus("اسحب لمسافة أكبر.");return;}
-    const speed=clamp(len/9.5,11,34);beginShot(dx/len*speed,dy/len*speed);
+    const speed=clamp(len*3.35,480,1650);beginShot(dx/len*speed,dy/len*speed);
   });
   canvas.addEventListener("pointercancel",()=>{aiming=false;aimPoint=null;});
 
@@ -507,8 +704,21 @@
   toggleAimEl.addEventListener("click",()=>{aimVisible=!aimVisible;toggleAimEl.textContent=aimVisible?"إخفاء خط التصويب":"إظهار خط التصويب";});
   toggleSoundEl.addEventListener("click",()=>{soundEnabled=!soundEnabled;toggleSoundEl.textContent=soundEnabled?"كتم الصوت":"تشغيل الصوت";if(soundEnabled)sound("ui");});
 
-  function loop(){updatePhysics();drawBoard();requestAnimationFrame(loop);}
-  discs=initialPieces();drawBoard();loop();
+  function loop(now){
+    const frameDt = Math.min(Math.max((now - lastFrameTime) / 1000, 0), MAX_FRAME_DT);
+    lastFrameTime = now;
+    physicsAccumulator += frameDt;
+    let steps = 0;
+    while (physicsAccumulator >= FIXED_DT && steps < MAX_SUB_STEPS) {
+      updatePhysics(FIXED_DT);
+      physicsAccumulator -= FIXED_DT;
+      steps += 1;
+    }
+    if (steps === MAX_SUB_STEPS) physicsAccumulator = 0;
+    drawBoard();
+    requestAnimationFrame(loop);
+  }
+  discs=initialPieces();drawBoard();requestAnimationFrame(loop);
 })();
 </script>
 </body>
