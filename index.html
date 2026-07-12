@@ -69,6 +69,35 @@
     .achievement { padding: 13px; border-radius: 12px; background: #0f172a; border: 1px solid rgba(255,255,255,.08); color: #94a3b8; }
     .achievement.unlocked { border-color: rgba(251,191,36,.52); color: #f8fafc; background: rgba(120,83,16,.18); }
     .achievement strong { display: block; color: inherit; margin-bottom: 5px; }
+
+    .shop-toolbar { display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:space-between; margin:12px 0 16px; }
+    .shop-balance { padding:10px 14px; border-radius:999px; background:rgba(251,191,36,.12); border:1px solid rgba(251,191,36,.42); color:#fde68a; font-weight:900; }
+    .shop-categories { display:flex; flex-wrap:wrap; gap:7px; }
+    .shop-filter { border:1px solid #475569; background:#0f172a; color:#e2e8f0; border-radius:999px; padding:8px 12px; font-weight:800; }
+    .shop-filter.active { background:#fbbf24; color:#111827; border-color:#fbbf24; }
+    .shop-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(205px,1fr)); gap:12px; margin-top:14px; }
+    .shop-card { position:relative; overflow:hidden; padding:14px; border-radius:16px; background:linear-gradient(180deg,rgba(15,23,42,.98),rgba(7,13,24,.98)); border:1px solid rgba(255,255,255,.1); box-shadow:0 12px 28px rgba(0,0,0,.23); }
+    .shop-card.owned { border-color:rgba(94,234,212,.45); }
+    .shop-card.equipped { border-color:rgba(251,191,36,.8); box-shadow:0 0 0 1px rgba(251,191,36,.2),0 14px 34px rgba(0,0,0,.3); }
+    .shop-preview { display:grid; place-items:center; height:112px; border-radius:13px; background:radial-gradient(circle at 50% 38%,rgba(255,255,255,.08),rgba(255,255,255,.01) 46%,rgba(0,0,0,.2)); border:1px solid rgba(255,255,255,.06); }
+    .shop-preview canvas { width:104px; height:104px; border-radius:0; cursor:default; transform:none!important; }
+    .shop-card h3 { margin:11px 0 5px; font-size:16px; }
+    .shop-card p { min-height:42px; margin:0 0 10px; color:#94a3b8; font-size:12px; line-height:1.65; }
+    .shop-card-footer { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+    .shop-price { color:#fde68a; font-weight:900; white-space:nowrap; }
+    .shop-action { border:0; border-radius:10px; padding:9px 11px; font-weight:900; background:#2563eb; color:white; }
+    .shop-action.buy { background:#fbbf24; color:#111827; }
+    .shop-action.equipped { background:#14532d; color:#dcfce7; cursor:default; }
+    .shop-action:disabled { opacity:.45; cursor:not-allowed; }
+    .shop-tag { position:absolute; top:10px; left:10px; padding:5px 8px; border-radius:999px; background:rgba(15,23,42,.86); color:#cbd5e1; border:1px solid rgba(255,255,255,.1); font-size:10px; font-weight:900; }
+    .daily-reward { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 14px; border-radius:14px; background:linear-gradient(135deg,rgba(37,99,235,.16),rgba(94,234,212,.09)); border:1px solid rgba(96,165,250,.28); margin:10px 0; }
+    .daily-reward strong { color:#f8fafc; display:block; margin-bottom:3px; }
+    .daily-reward span { color:#94a3b8; font-size:12px; }
+    .shop-modal-card { width:min(1080px,96vw)!important; }
+    .current-striker { color:#5eead4; font-weight:900; }
+    .coin-pop { animation:coinPop .38s ease; }
+    @keyframes coinPop { 50% { transform:scale(1.12); color:#fff7bd; } }
+
     @media (max-width: 900px) {
       .game-wrap { grid-template-columns: 1fr; }
       .controls { position: static; }
@@ -80,7 +109,7 @@
     <header>
       <p class="eyebrow">لعبة كيرم مستقرة — ملف واحد فقط</p>
       <h1>كيرم محمد عبدالله الجابري</h1>
-      <p>فيزياء محسنة، خمسة مستويات للذكاء الاصطناعي، كاميرا تتبع ديناميكية، إعادة بطيئة للتسديدات المميزة، وتصنيف وإنجازات محفوظة على الجهاز.</p>
+      <p>فيزياء محسنة، ذكاء اصطناعي متقدم، زخارف متعددة، متجر يضم 25 مضربًا، وتصنيف وإنجازات محفوظة على الجهاز.</p>
     </header>
 
     <section id="menu" class="menu panel">
@@ -110,6 +139,7 @@
         <button class="btn" data-mode="training" data-count="1">وضع التدريب</button>
         <button id="onlineMode" class="btn">اللعب عبر الإنترنت</button>
         <button id="showAchievementsMenu" class="btn">التصنيف والإنجازات</button>
+        <button id="openShopMenu" class="btn">متجر المضارب</button>
       </div>
       <div class="profile-strip">
         <div class="profile-chip">الرتبة<strong id="menuRank">برونزي</strong></div>
@@ -148,6 +178,7 @@
             <button id="toggleSound" class="btn">كتم الصوت</button>
             <button id="replayShot" class="btn" disabled>إعادة بطيئة للتسديدة</button>
             <button id="showAchievements" class="btn">التصنيف والإنجازات</button>
+            <button id="openShopGame" class="btn">متجر المضارب</button>
             <button id="restart" class="btn">إعادة المباراة</button>
             <button id="back" class="btn">العودة للبداية</button>
           </div>
@@ -226,6 +257,7 @@
   const infoModalEl = document.getElementById("infoModal");
   const modalTitleEl = document.getElementById("modalTitle");
   const modalBodyEl = document.getElementById("modalBody");
+  const modalCardEl = infoModalEl ? infoModalEl.querySelector(".modal-card") : null;
 
   const pocketCenters = [
     { x: 55, y: 55 },
@@ -273,6 +305,11 @@
   let queenCoveredThisShot = false;
   let shotPeakSpeed = 0;
   let profile = loadProfile();
+  let activeShopCategory = "all";
+  let shopPausedTurn = false;
+  let shopPreviewTimer = null;
+  let strikerImpactUntil = 0;
+  let legendVictoryUntil = 0;
   let currentTheme = localStorage.getItem("carrom-board-theme") || "arabic";
   if (themeEl) themeEl.value = currentTheme;
 
@@ -280,9 +317,18 @@
   function distance(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
 
   function loadProfile() {
-    const fallback = { xp: 0, coins: 0, trophies: 0, shots: 0, pockets: 0, queens: 0, wins: 0, achievements: [] };
+    const fallback = {
+      xp: 0, coins: 0, trophies: 0, shots: 0, pockets: 0, queens: 0, wins: 0,
+      achievements: [], ownedStrikers: ["classic"], equippedStriker: "classic", lastDailyReward: ""
+    };
     try {
-      return { ...fallback, ...JSON.parse(localStorage.getItem("carrom-pro-profile") || "{}") };
+      const loaded = { ...fallback, ...JSON.parse(localStorage.getItem("carrom-pro-profile") || "{}") };
+      if (!Array.isArray(loaded.achievements)) loaded.achievements = [];
+      if (!Array.isArray(loaded.ownedStrikers)) loaded.ownedStrikers = ["classic"];
+      if (!loaded.ownedStrikers.includes("classic")) loaded.ownedStrikers.unshift("classic");
+      if (!loaded.ownedStrikers.includes(loaded.equippedStriker)) loaded.equippedStriker = "classic";
+      loaded.coins = Math.max(0, Number(loaded.coins) || 0);
+      return loaded;
     } catch (_) { return fallback; }
   }
 
@@ -314,7 +360,7 @@
       if (achievement.test(profile) && !profile.achievements.includes(achievement.id)) {
         profile.achievements.push(achievement.id);
         profile.xp += 40;
-        profile.coins += 25;
+        profile.coins += 50;
         unlocked = true;
       }
     }
@@ -338,6 +384,8 @@
   }
 
   function showModal(title, html) {
+    if (shopPreviewTimer) { clearInterval(shopPreviewTimer); shopPreviewTimer = null; }
+    if (modalCardEl) modalCardEl.classList.remove("shop-modal-card");
     modalTitleEl.textContent = title;
     modalBodyEl.innerHTML = html;
     infoModalEl.classList.remove("hidden");
@@ -514,7 +562,7 @@
     profile.queens += 1;
     profile.pockets += 1;
     profile.xp += 35;
-    profile.coins += 25;
+    profile.coins += 50;
     profile.trophies += 20;
     updateAchievements();
     saveProfile();
@@ -659,6 +707,7 @@
     timerEl.textContent = "جاهز";
     renderHud();
     updateRemaining();
+    if (maybeFinishMatch()) return;
 
     replayFrames = recordingFrames.slice();
     replayShotEl.disabled = replayFrames.length < 4;
@@ -800,7 +849,7 @@
     pocketedThisShot += 1;
     profile.pockets += 1;
     profile.xp += disc.kind === "white" ? 12 : 8;
-    profile.coins += disc.kind === "white" ? 5 : 3;
+    profile.coins += disc.kind === "white" ? 10 : 5;
     profile.trophies += disc.kind === "white" ? 5 : 3;
     updateAchievements();
     saveProfile();
@@ -970,6 +1019,7 @@
       b.omega += cross2D(contactBX, contactBY, frictionX, frictionY) * inverseInertia(b);
     }
 
+    if ((a.kind === "striker" || b.kind === "striker") && profile.equippedStriker === "legend") strikerImpactUntil = performance.now() + 520;
     sound("collision", clamp(Math.abs(normalImpulse) / 520, .2, 1.2));
   }
 
@@ -1408,7 +1458,431 @@
     ctx.restore();
   }
 
+
+  const STRIKER_SKINS = [
+    { id:"classic", name:"المضرب الكلاسيكي", price:0, category:"basic", description:"خشب مصقول مع دائرة بيضاء في المنتصف." },
+    { id:"crystal", name:"المضرب الكريستالي", price:450, category:"luxury", description:"شفاف يشبه الزجاج مع حواف لامعة." },
+    { id:"royal-gold", name:"المضرب الذهبي الملكي", price:400, category:"luxury", description:"ذهب مصقول مع نقوش ملكية دقيقة." },
+    { id:"silver", name:"المضرب الفضي", price:150, category:"basic", description:"معدن فضي مصقول بانعكاس هادئ." },
+    { id:"matte-black", name:"المضرب الأسود المطفي", price:180, category:"basic", description:"أسود فاخر مطفي مع حافة فضية." },
+    { id:"white-marble", name:"المضرب الرخامي الأبيض", price:300, category:"luxury", description:"رخام عاجي بعروق رمادية طبيعية." },
+    { id:"black-marble", name:"المضرب الرخامي الأسود", price:350, category:"luxury", description:"رخام أسود بعروق ذهبية رفيعة." },
+    { id:"carbon", name:"مضرب ألياف الكربون", price:320, category:"sport", description:"نسيج كربوني رياضي بتصميم حديث." },
+    { id:"luxury-wood", name:"مضرب الخشب الفاخر", price:220, category:"basic", description:"خشب جوز وماهوجني بحواف مصقولة." },
+    { id:"ruby", name:"مضرب الياقوت الأحمر", price:500, category:"gems", description:"أحمر شفاف بعمق يشبه حجر الياقوت." },
+    { id:"emerald", name:"مضرب الزمرد", price:500, category:"gems", description:"أخضر لامع بتدرجات حجر الزمرد." },
+    { id:"sapphire", name:"مضرب الياقوت الأزرق", price:500, category:"gems", description:"أزرق ملكي شفاف بلمعان خفيف." },
+    { id:"opal", name:"مضرب الأوبال", price:650, category:"gems", description:"ألوان لؤلؤية متغيرة حسب زاوية الضوء." },
+    { id:"dragon", name:"مضرب التنين", price:700, category:"heritage", description:"تنين بارز بخطوط حمراء وذهبية." },
+    { id:"phoenix", name:"مضرب العنقاء", price:700, category:"heritage", description:"جناحا عنقاء بتوهج ذهبي وناري." },
+    { id:"arabic", name:"المضرب العربي", price:420, category:"heritage", description:"زخارف عربية وإسلامية هندسية." },
+    { id:"pharaonic", name:"المضرب الفرعوني", price:430, category:"heritage", description:"ألوان ونقوش مستوحاة من مصر القديمة." },
+    { id:"japanese", name:"المضرب الياباني", price:420, category:"heritage", description:"أمواج يابانية وأزهار ساكورا." },
+    { id:"indian", name:"المضرب الهندي", price:420, category:"heritage", description:"ماندالا ملونة بتفاصيل دقيقة." },
+    { id:"galaxy", name:"المضرب المجري Galaxy", price:750, category:"effects", description:"نجوم ومجرات بتأثير عميق متحرك." },
+    { id:"fire", name:"المضرب الناري", price:800, category:"effects", description:"تأثير لهب متحرك حول المركز." },
+    { id:"ice", name:"المضرب الجليدي", price:800, category:"effects", description:"أزرق جليدي مع شقوق بلورية." },
+    { id:"electric", name:"المضرب الكهربائي", price:850, category:"effects", description:"خطوط برق متوهجة ومتغيرة." },
+    { id:"neon", name:"المضرب النيون", price:850, category:"effects", description:"ألوان نيون مناسبة للوضع الليلي." },
+    { id:"legend", name:"مضرب الأسطورة", price:1200, category:"legendary", description:"إطار ذهبي ومركز أسود وتأثير عند الإصابة والفوز." },
+  ];
+
+  const SHOP_CATEGORY_NAMES = {
+    all:"الكل", basic:"أساسية", luxury:"فاخرة", sport:"رياضية", gems:"أحجار كريمة",
+    heritage:"حضارية", effects:"مؤثرات", legendary:"أسطورية"
+  };
+
+  function skinById(id) {
+    return STRIKER_SKINS.find(item => item.id === id) || STRIKER_SKINS[0];
+  }
+
+  function localDateKey() {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+  }
+
+  function isDailyRewardAvailable() {
+    return profile.lastDailyReward !== localDateKey();
+  }
+
+  function drawPolygon(c, cx, cy, sides, radius, rotation = -Math.PI/2) {
+    c.beginPath();
+    for (let i=0; i<sides; i++) {
+      const a = rotation + i * Math.PI * 2 / sides;
+      const px = cx + Math.cos(a) * radius;
+      const py = cy + Math.sin(a) * radius;
+      if (i === 0) c.moveTo(px,py); else c.lineTo(px,py);
+    }
+    c.closePath();
+  }
+
+  function drawStarShape(c, cx, cy, outerR, innerR, points=8, rotation=-Math.PI/2) {
+    c.beginPath();
+    for (let i=0; i<points*2; i++) {
+      const r = i % 2 === 0 ? outerR : innerR;
+      const a = rotation + i * Math.PI / points;
+      const px = cx + Math.cos(a)*r;
+      const py = cy + Math.sin(a)*r;
+      if (i===0) c.moveTo(px,py); else c.lineTo(px,py);
+    }
+    c.closePath();
+  }
+
+  function renderStrikerSkin(c, x, y, r, skinId, preview=false) {
+    const skin = skinById(skinId);
+    const now = performance.now() / 1000;
+    const pulse = .5 + .5 * Math.sin(now * 5.2);
+    c.save();
+
+    let glow = null;
+    if (["fire","electric","neon","galaxy","legend","opal","ice"].includes(skin.id)) {
+      glow = skin.id === "fire" ? `rgba(255,86,20,${.18+.12*pulse})`
+        : skin.id === "electric" ? `rgba(71,180,255,${.18+.13*pulse})`
+        : skin.id === "neon" ? `hsla(${(now*90)%360},100%,65%,${.22+.12*pulse})`
+        : skin.id === "legend" ? `rgba(251,191,36,${(performance.now()<strikerImpactUntil||performance.now()<legendVictoryUntil)?.42:.16})`
+        : skin.id === "ice" ? `rgba(125,225,255,${.16+.08*pulse})`
+        : `rgba(155,110,255,${.15+.08*pulse})`;
+      c.shadowColor = glow;
+      c.shadowBlur = preview ? 18 : 14;
+    } else {
+      c.shadowColor = "rgba(0,0,0,.23)";
+      c.shadowBlur = preview ? 12 : 9;
+    }
+    c.shadowOffsetY = preview ? 4 : 5;
+
+    // Apparent thickness.
+    c.beginPath(); c.arc(x, y + r*.16, r*.98, 0, Math.PI*2);
+    c.fillStyle = skin.id === "crystal" ? "rgba(120,185,210,.22)" : "rgba(22,12,6,.34)";
+    c.fill();
+
+    const radial = (a,b,c2,d) => {
+      const g = c.createRadialGradient(x-r*.38,y-r*.42,1,x,y,r*1.05);
+      g.addColorStop(0,a); g.addColorStop(.36,b); g.addColorStop(.76,c2); g.addColorStop(1,d);
+      return g;
+    };
+
+    let base;
+    switch (skin.id) {
+      case "crystal": base = radial("rgba(255,255,255,.9)","rgba(191,235,255,.52)","rgba(91,169,205,.32)","rgba(38,94,122,.5)"); break;
+      case "royal-gold": base = radial("#fff3a6","#f6c84d","#b87912","#5f3405"); break;
+      case "silver": base = radial("#ffffff","#dce4ea","#8c98a2","#3e4850"); break;
+      case "matte-black": base = radial("#484848","#222","#101010","#050505"); break;
+      case "white-marble": base = radial("#fffdf8","#eee9de","#c9c5bf","#8d8c89"); break;
+      case "black-marble": base = radial("#454545","#1c1c1d","#0c0c0d","#030303"); break;
+      case "carbon": base = radial("#4b5258","#23282d","#101418","#050708"); break;
+      case "luxury-wood": base = radial("#dda56d","#9a572c","#5a2b17","#271008"); break;
+      case "ruby": base = radial("#ffb1bd","#d92f47","#7d071b","#36030c"); break;
+      case "emerald": base = radial("#c0ffe0","#29c982","#05734a","#013521"); break;
+      case "sapphire": base = radial("#c6ddff","#3f8de8","#164ea8","#071d55"); break;
+      case "opal": {
+        const h = (now*38)%360;
+        base = radial(`hsl(${h},90%,90%)`,`hsl(${(h+70)%360},78%,72%)`,`hsl(${(h+160)%360},67%,52%)`,`hsl(${(h+240)%360},55%,25%)`);
+        break;
+      }
+      case "dragon": base = radial("#ffb67c","#a93421","#481414","#170606"); break;
+      case "phoenix": base = radial("#fff1a3","#ff932f","#a82416","#3d0805"); break;
+      case "arabic": base = radial("#d8fff8","#2fa99d","#0d5b59","#052d31"); break;
+      case "pharaonic": base = radial("#ffe985","#d2a529","#1d6e8a","#082d43"); break;
+      case "japanese": base = radial("#fffdf5","#f4eee3","#b3c8d8","#4e718a"); break;
+      case "indian": base = radial("#ffe9ae","#ef7f57","#9c3f87","#40245e"); break;
+      case "galaxy": base = radial("#ae9cff","#463188","#15113e","#030516"); break;
+      case "fire": base = radial("#fff3a1","#ff8f1f","#c42314","#450505"); break;
+      case "ice": base = radial("#ffffff","#bceeff","#56bddd","#15516f"); break;
+      case "electric": base = radial("#e9fbff","#36baff","#134db9","#061750"); break;
+      case "neon": {
+        const h = (now*100)%360;
+        base = radial("#262626",`hsl(${h},100%,62%)`,"#111","#020202");
+        break;
+      }
+      case "legend": base = radial("#5d5d5d","#141414","#060606","#000"); break;
+      default: base = radial("#f8d88d","#c4883e","#824416","#3c1a08");
+    }
+
+    c.beginPath(); c.arc(x,y,r,0,Math.PI*2); c.fillStyle=base; c.fill();
+    c.shadowColor="transparent";
+
+    c.save();
+    c.beginPath(); c.arc(x,y,r*.86,0,Math.PI*2); c.clip();
+
+    if (skin.id === "carbon") {
+      c.strokeStyle="rgba(255,255,255,.1)"; c.lineWidth=2;
+      for (let i=-r*2; i<r*2; i+=8) {
+        c.beginPath(); c.moveTo(x-r,y+i); c.lineTo(x+r,y+i+r*2); c.stroke();
+        c.beginPath(); c.moveTo(x-r,y+i+r*2); c.lineTo(x+r,y+i); c.stroke();
+      }
+    } else if (["white-marble","black-marble"].includes(skin.id)) {
+      c.strokeStyle = skin.id === "black-marble" ? "rgba(224,179,62,.68)" : "rgba(90,105,120,.34)";
+      c.lineWidth = skin.id === "black-marble" ? 1.5 : 1.1;
+      for (let i=0;i<5;i++) {
+        c.beginPath();
+        c.moveTo(x-r, y-r*.65+i*r*.32);
+        c.bezierCurveTo(x-r*.25,y-r*.9+i*r*.2,x+r*.2,y+r*.15+i*r*.12,x+r,y-r*.5+i*r*.34);
+        c.stroke();
+      }
+    } else if (skin.id === "galaxy") {
+      for (let i=0;i<22;i++) {
+        const a=i*2.399+now*.08; const rr=r*(.1+((i*37)%90)/100*.78);
+        c.beginPath(); c.arc(x+Math.cos(a)*rr,y+Math.sin(a)*rr, i%5===0?1.7:.8,0,Math.PI*2);
+        c.fillStyle=i%4===0?"#ffd8ff":"#fff"; c.fill();
+      }
+      c.strokeStyle="rgba(170,118,255,.32)"; c.lineWidth=5;
+      c.beginPath(); c.ellipse(x,y,r*.72,r*.26,now*.16,0,Math.PI*2); c.stroke();
+    } else if (skin.id === "fire") {
+      for(let i=0;i<8;i++){
+        const a=i*Math.PI/4+now*.45; const inner=r*.12; const outer=r*(.58+.12*Math.sin(now*5+i));
+        c.beginPath(); c.moveTo(x+Math.cos(a-.22)*inner,y+Math.sin(a-.22)*inner);
+        c.quadraticCurveTo(x+Math.cos(a)*outer*.65,y+Math.sin(a)*outer*.65,x+Math.cos(a)*outer,y+Math.sin(a)*outer);
+        c.quadraticCurveTo(x+Math.cos(a+.22)*outer*.45,y+Math.sin(a+.22)*outer*.45,x+Math.cos(a+.22)*inner,y+Math.sin(a+.22)*inner);
+        c.fillStyle=i%2?"rgba(255,202,45,.62)":"rgba(255,71,17,.7)"; c.fill();
+      }
+    } else if (skin.id === "ice") {
+      c.strokeStyle="rgba(255,255,255,.72)"; c.lineWidth=1.2;
+      for(let i=0;i<9;i++){
+        const a=i*Math.PI*2/9; c.beginPath(); c.moveTo(x,y); c.lineTo(x+Math.cos(a)*r*.78,y+Math.sin(a)*r*.78); c.stroke();
+        const bx=x+Math.cos(a)*r*.46, by=y+Math.sin(a)*r*.46;
+        c.beginPath(); c.moveTo(bx,by); c.lineTo(bx+Math.cos(a+.75)*r*.18,by+Math.sin(a+.75)*r*.18); c.stroke();
+      }
+    } else if (skin.id === "electric") {
+      c.strokeStyle=`rgba(210,250,255,${.55+.3*pulse})`; c.lineWidth=2.2;
+      for(let i=0;i<5;i++){
+        const a=i*1.27+now*.8; const ex=x+Math.cos(a)*r*.78, ey=y+Math.sin(a)*r*.78;
+        c.beginPath(); c.moveTo(x,y); c.lineTo(x+Math.cos(a+.18)*r*.28,y+Math.sin(a+.18)*r*.28); c.lineTo(x+Math.cos(a-.12)*r*.5,y+Math.sin(a-.12)*r*.5); c.lineTo(ex,ey); c.stroke();
+      }
+    } else if (skin.id === "dragon") {
+      c.strokeStyle="#e9bd55"; c.lineWidth=2.3; c.lineCap="round";
+      c.beginPath(); c.moveTo(x-r*.55,y+r*.28); c.bezierCurveTo(x-r*.2,y-r*.62,x+r*.12,y+r*.48,x+r*.58,y-r*.28); c.stroke();
+      c.beginPath(); c.arc(x+r*.43,y-r*.3,r*.12,.2,Math.PI*1.8); c.stroke();
+      for(let i=0;i<5;i++){c.beginPath();c.moveTo(x-r*.28+i*r*.15,y-r*.2+i*r*.06);c.lineTo(x-r*.12+i*r*.15,y-r*.42+i*r*.06);c.stroke();}
+    } else if (skin.id === "phoenix") {
+      c.fillStyle="rgba(255,220,83,.72)";
+      for(const side of [-1,1]){
+        c.beginPath(); c.moveTo(x,y+r*.3); c.quadraticCurveTo(x+side*r*.72,y-r*.2,x+side*r*.55,y-r*.62); c.quadraticCurveTo(x+side*r*.2,y-r*.25,x,y); c.fill();
+      }
+      c.beginPath(); c.moveTo(x,y-r*.45); c.lineTo(x+r*.12,y+r*.2); c.lineTo(x,y+r*.48); c.lineTo(x-r*.12,y+r*.2); c.closePath(); c.fill();
+    } else if (skin.id === "arabic") {
+      c.strokeStyle="rgba(244,210,96,.9)"; c.lineWidth=1.5;
+      drawStarShape(c,x,y,r*.58,r*.3,8,Math.PI/8); c.stroke();
+      c.beginPath(); c.arc(x,y,r*.69,0,Math.PI*2); c.stroke();
+      c.beginPath(); c.arc(x,y,r*.23,0,Math.PI*2); c.stroke();
+    } else if (skin.id === "pharaonic") {
+      c.strokeStyle="#f4d45d"; c.fillStyle="rgba(244,212,93,.22)"; c.lineWidth=1.8;
+      c.beginPath(); c.moveTo(x,y-r*.58); c.lineTo(x+r*.54,y+r*.5); c.lineTo(x-r*.54,y+r*.5); c.closePath(); c.fill(); c.stroke();
+      c.beginPath(); c.ellipse(x,y,r*.38,r*.18,0,0,Math.PI*2); c.stroke();
+      c.beginPath(); c.arc(x,y,r*.1,0,Math.PI*2); c.fillStyle="#f4d45d"; c.fill();
+    } else if (skin.id === "japanese") {
+      c.strokeStyle="rgba(25,89,135,.75)"; c.lineWidth=2;
+      for(let i=0;i<4;i++){c.beginPath();c.arc(x-r*.48+i*r*.32,y+r*.2,r*.34,Math.PI*1.08,Math.PI*1.92);c.stroke();}
+      c.fillStyle="rgba(223,73,95,.72)";
+      for(let i=0;i<5;i++){const a=i*Math.PI*2/5; c.beginPath();c.ellipse(x+Math.cos(a)*r*.28,y-r*.3+Math.sin(a)*r*.28,r*.13,r*.07,a,0,Math.PI*2);c.fill();}
+    } else if (skin.id === "indian") {
+      const colors=["#ffe15d","#65e0cf","#e65b9d","#8b5cf6"];
+      for(let ring=0;ring<3;ring++){
+        for(let i=0;i<10;i++){
+          const a=i*Math.PI/5+ring*.17; const rr=r*(.2+ring*.2);
+          c.beginPath(); c.ellipse(x+Math.cos(a)*rr,y+Math.sin(a)*rr,r*.15,r*.07,a,0,Math.PI*2); c.fillStyle=colors[(i+ring)%colors.length]; c.globalAlpha=.48; c.fill();
+        }
+      }
+      c.globalAlpha=1;
+    } else if (skin.id === "royal-gold") {
+      c.strokeStyle="rgba(101,55,5,.62)"; c.lineWidth=1.7;
+      drawStarShape(c,x,y,r*.52,r*.34,6); c.stroke();
+      c.beginPath(); c.moveTo(x-r*.38,y+r*.28); c.lineTo(x-r*.25,y-r*.18); c.lineTo(x,y+r*.02); c.lineTo(x+r*.25,y-r*.18); c.lineTo(x+r*.38,y+r*.28); c.closePath(); c.stroke();
+    } else if (skin.id === "legend") {
+      c.strokeStyle=`rgba(255,212,74,${.62+.3*pulse})`; c.lineWidth=1.8;
+      drawStarShape(c,x,y,r*.48,r*.26,8,Math.PI/8); c.stroke();
+      c.beginPath(); c.arc(x,y,r*.21,0,Math.PI*2); c.fillStyle="rgba(255,215,80,.2)"; c.fill(); c.stroke();
+    } else if (skin.id === "opal") {
+      c.globalCompositeOperation="screen";
+      for(let i=0;i<5;i++){
+        const h=(now*55+i*73)%360; c.fillStyle=`hsla(${h},95%,70%,.22)`;
+        c.beginPath(); c.arc(x+Math.cos(now+i)*r*.28,y+Math.sin(now*.7+i)*r*.28,r*.36,0,Math.PI*2); c.fill();
+      }
+      c.globalCompositeOperation="source-over";
+    } else if (skin.id === "neon") {
+      c.strokeStyle=`hsl(${(now*100+140)%360},100%,67%)`; c.lineWidth=3;
+      c.beginPath(); c.arc(x,y,r*.5,0,Math.PI*2); c.stroke();
+      c.strokeStyle=`hsl(${(now*100+260)%360},100%,67%)`; c.lineWidth=1.6;
+      drawPolygon(c,x,y,6,r*.34,now*.3); c.stroke();
+    }
+    c.restore();
+
+    // Outer ring and highlight.
+    c.beginPath(); c.arc(x,y,r*.97,0,Math.PI*2);
+    c.strokeStyle = skin.id === "legend" ? "#f6c945"
+      : skin.id === "royal-gold" ? "#ffe37c"
+      : skin.id === "matte-black" ? "#aeb8c2"
+      : skin.id === "crystal" ? "rgba(230,250,255,.86)"
+      : "rgba(255,255,255,.46)";
+    c.lineWidth = skin.id === "legend" ? 3 : 2.1; c.stroke();
+
+    const shine=c.createRadialGradient(x-r*.36,y-r*.42,1,x-r*.2,y-r*.2,r*.72);
+    shine.addColorStop(0, skin.id === "matte-black" ? "rgba(255,255,255,.1)" : "rgba(255,255,255,.42)");
+    shine.addColorStop(1,"rgba(255,255,255,0)");
+    c.beginPath(); c.arc(x-r*.18,y-r*.2,r*.34,0,Math.PI*2); c.fillStyle=shine; c.fill();
+
+    if (skin.id === "classic") {
+      c.beginPath(); c.arc(x,y,r*.31,0,Math.PI*2); c.fillStyle="rgba(255,252,238,.95)"; c.fill();
+      c.strokeStyle="rgba(104,58,21,.54)"; c.lineWidth=1.3; c.stroke();
+    } else if (!["legend","arabic","pharaonic","japanese","indian","dragon","phoenix","royal-gold"].includes(skin.id)) {
+      c.beginPath(); c.arc(x,y,r*.23,0,Math.PI*2); c.fillStyle="rgba(255,255,255,.16)"; c.fill();
+    }
+
+    if (skin.id === "legend" && (performance.now()<strikerImpactUntil || performance.now()<legendVictoryUntil)) {
+      c.strokeStyle=`rgba(255,215,70,${.55+.35*pulse})`; c.lineWidth=4;
+      c.beginPath(); c.arc(x,y,r*(1.13+.08*pulse),0,Math.PI*2); c.stroke();
+      for(let i=0;i<8;i++){
+        const a=i*Math.PI/4+now*.4; c.beginPath(); c.moveTo(x+Math.cos(a)*r*1.15,y+Math.sin(a)*r*1.15); c.lineTo(x+Math.cos(a)*r*(1.35+.12*pulse),y+Math.sin(a)*r*(1.35+.12*pulse)); c.stroke();
+      }
+    }
+
+    c.restore();
+  }
+
+  function showShop() {
+    if (phase === "moving" || replaying) {
+      setStatus("انتظر حتى تنتهي الضربة، ثم افتح متجر المضارب.");
+      return;
+    }
+    if (phase === "ready" && mode !== "menu") {
+      clearTurnTimer();
+      if (aiTimer) { clearTimeout(aiTimer); aiTimer = null; }
+      shopPausedTurn = true;
+    }
+    if (modalCardEl) modalCardEl.classList.add("shop-modal-card");
+    modalTitleEl.textContent = "متجر المضارب";
+    renderShopContent();
+    infoModalEl.classList.remove("hidden");
+    startShopPreviewAnimation();
+  }
+
+  function renderShopContent() {
+    const categories = Object.entries(SHOP_CATEGORY_NAMES).map(([id,label]) =>
+      `<button class="shop-filter ${activeShopCategory===id?"active":""}" data-shop-category="${id}">${label}</button>`
+    ).join("");
+    const visible = activeShopCategory === "all" ? STRIKER_SKINS : STRIKER_SKINS.filter(s=>s.category===activeShopCategory);
+    const cards = visible.map(skin => {
+      const owned = profile.ownedStrikers.includes(skin.id);
+      const equipped = profile.equippedStriker === skin.id;
+      let button;
+      if (equipped) button = `<button class="shop-action equipped" disabled>مجهّز الآن</button>`;
+      else if (owned) button = `<button class="shop-action" data-equip-skin="${skin.id}">تجهيز</button>`;
+      else button = `<button class="shop-action buy" data-buy-skin="${skin.id}" ${profile.coins<skin.price?"disabled":""}>شراء</button>`;
+      return `<article class="shop-card ${owned?"owned":""} ${equipped?"equipped":""}">
+        <span class="shop-tag">${SHOP_CATEGORY_NAMES[skin.category]}</span>
+        <div class="shop-preview"><canvas width="112" height="112" data-skin-preview="${skin.id}"></canvas></div>
+        <h3>${skin.name}</h3><p>${skin.description}</p>
+        <div class="shop-card-footer"><span class="shop-price">${skin.price===0?"مجاني":skin.price+" عملة"}</span>${button}</div>
+      </article>`;
+    }).join("");
+    const dailyAvailable = isDailyRewardAvailable();
+    modalBodyEl.innerHTML = `
+      <div class="shop-toolbar">
+        <div class="shop-balance">رصيدك: <strong id="shopCoins">${profile.coins}</strong> عملة</div>
+        <div>المضرب الحالي: <span class="current-striker">${skinById(profile.equippedStriker).name}</span></div>
+      </div>
+      <div class="daily-reward">
+        <div><strong>المكافأة اليومية: 50 عملة</strong><span>${dailyAvailable?"متاحة اليوم — استلمها الآن.":"تم استلام مكافأة اليوم."}</span></div>
+        <button class="shop-action buy" data-claim-daily ${dailyAvailable?"":"disabled"}>${dailyAvailable?"استلام":"تم الاستلام"}</button>
+      </div>
+      <div class="shop-categories">${categories}</div>
+      <div class="shop-grid">${cards}</div>`;
+    renderShopPreviews();
+  }
+
+  function renderShopPreviews() {
+    document.querySelectorAll("canvas[data-skin-preview]").forEach(previewCanvas => {
+      const pc = previewCanvas.getContext("2d");
+      pc.clearRect(0,0,previewCanvas.width,previewCanvas.height);
+      renderStrikerSkin(pc,56,54,36,previewCanvas.dataset.skinPreview,true);
+    });
+  }
+
+  function startShopPreviewAnimation() {
+    if (shopPreviewTimer) clearInterval(shopPreviewTimer);
+    shopPreviewTimer = setInterval(() => {
+      if (infoModalEl.classList.contains("hidden") || modalTitleEl.textContent !== "متجر المضارب") {
+        clearInterval(shopPreviewTimer); shopPreviewTimer=null; return;
+      }
+      renderShopPreviews();
+    }, 90);
+  }
+
+  function buySkin(id) {
+    const skin = skinById(id);
+    if (!skin || profile.ownedStrikers.includes(id)) return;
+    if (profile.coins < skin.price) {
+      showModal("الرصيد غير كافٍ", `<p class="notice">تحتاج إلى ${skin.price-profile.coins} عملة إضافية لشراء ${skin.name}.</p>`);
+      return;
+    }
+    profile.coins -= skin.price;
+    profile.ownedStrikers.push(id);
+    profile.equippedStriker = id;
+    saveProfile();
+    sound("queen",.65);
+    showShop();
+  }
+
+  function equipSkin(id) {
+    if (!profile.ownedStrikers.includes(id)) return;
+    profile.equippedStriker = id;
+    saveProfile();
+    sound("ui");
+    drawBoard();
+    showShop();
+  }
+
+  function claimDailyReward() {
+    if (!isDailyRewardAvailable()) return;
+    profile.coins += 50;
+    profile.lastDailyReward = localDateKey();
+    saveProfile();
+    sound("queen",.7);
+    showShop();
+  }
+
+  function closeInfoModal() {
+    infoModalEl.classList.add("hidden");
+    if (shopPreviewTimer) { clearInterval(shopPreviewTimer); shopPreviewTimer=null; }
+    if (modalCardEl) modalCardEl.classList.remove("shop-modal-card");
+    if (shopPausedTurn) {
+      shopPausedTurn = false;
+      if (phase === "ready" && mode !== "menu") {
+        startTurnTimer();
+        if (mode === "ai" && currentPlayer === 1) scheduleAI();
+      }
+    }
+  }
+
+  function maybeFinishMatch() {
+    const remaining = discs.filter(d => d.active && d.kind !== "striker").length;
+    if (remaining !== 0 || queenPendingPlayer !== null || phase === "finished") return false;
+    clearTimers();
+    phase = "finished";
+    const maxScore = Math.max(...scores);
+    const winners = scores.map((score,index)=>score===maxScore?index:null).filter(index=>index!==null);
+    const humanWon = winners.includes(0);
+    let reward = 0;
+    if (humanWon && playerCount > 1) {
+      reward = mode === "ai" && difficulty === "legendary" ? 150 : 100;
+      profile.coins += reward;
+      profile.wins += 1;
+      profile.trophies += mode === "ai" && difficulty === "legendary" ? 30 : 15;
+      profile.xp += mode === "ai" && difficulty === "legendary" ? 80 : 45;
+      updateAchievements();
+      saveProfile();
+      if (profile.equippedStriker === "legend") legendVictoryUntil = performance.now()+4500;
+    }
+    const names = winners.map(i => mode==="ai"&&i===1?"الذكاء الاصطناعي":`اللاعب ${i+1}`).join(" و ");
+    showModal("انتهت المباراة", `<p class="notice">الفائز: <strong>${names}</strong> بنتيجة ${maxScore} نقطة.${reward?` حصلت على ${reward} عملة.`:""}</p><button class="btn primary" onclick="document.getElementById('closeModal').click();document.getElementById('back').click();">العودة للبداية</button>`);
+    return true;
+  }
+
   function drawDisc(d) {
+    if (d.kind === "striker") {
+      drawSoftDiscShadow(d);
+      renderStrikerSkin(ctx, d.x, d.y, d.r, profile.equippedStriker || "classic", false);
+      return;
+    }
     drawSoftDiscShadow(d);
     ctx.save();
 
@@ -1672,6 +2146,7 @@ function renderHud() {
     timerEl.textContent = "جاهز";
     renderHud();
     updateRemaining();
+    if (maybeFinishMatch()) return;
 
     replayFrames = recordingFrames.slice();
     replayShotEl.disabled = replayFrames.length < 4;
@@ -1813,7 +2288,7 @@ function renderHud() {
     pocketedThisShot += 1;
     profile.pockets += 1;
     profile.xp += disc.kind === "white" ? 12 : 8;
-    profile.coins += disc.kind === "white" ? 5 : 3;
+    profile.coins += disc.kind === "white" ? 10 : 5;
     profile.trophies += disc.kind === "white" ? 5 : 3;
     updateAchievements();
     saveProfile();
@@ -1983,6 +2458,7 @@ function renderHud() {
       b.omega += cross2D(contactBX, contactBY, frictionX, frictionY) * inverseInertia(b);
     }
 
+    if ((a.kind === "striker" || b.kind === "striker") && profile.equippedStriker === "legend") strikerImpactUntil = performance.now() + 520;
     sound("collision", clamp(Math.abs(normalImpulse) / 520, .2, 1.2));
   }
 
@@ -2120,8 +2596,20 @@ function renderHud() {
   replayShotEl.addEventListener("click",()=>startReplay());
   document.getElementById("showAchievements").addEventListener("click", showAchievementsModal);
   document.getElementById("showAchievementsMenu").addEventListener("click", showAchievementsModal);
+  document.getElementById("openShopMenu").addEventListener("click", showShop);
+  document.getElementById("openShopGame").addEventListener("click", showShop);
   document.getElementById("onlineMode").addEventListener("click",()=>showModal("اللعب عبر الإنترنت",`<p class="notice">لتشغيل مباريات حقيقية عبر الإنترنت نحتاج ربط اللعبة بخدمة مثل Supabase Realtime، مع إنشاء حسابات وغرف ومزامنة وحماية من الغش. النسخة الحالية لا تدّعي وجود اتصال وهمي.</p><p>الخطوة البرمجية التالية هي إضافة قاعدة بيانات ومفتاح مشروع، ثم ربط الغرف والتصنيف العالمي.</p>`));
-  document.getElementById("closeModal").addEventListener("click",()=>infoModalEl.classList.add("hidden"));
+  document.getElementById("closeModal").addEventListener("click", closeInfoModal);
+  modalBodyEl.addEventListener("click", event => {
+    const category = event.target.closest("[data-shop-category]");
+    const buy = event.target.closest("[data-buy-skin]");
+    const equip = event.target.closest("[data-equip-skin]");
+    const daily = event.target.closest("[data-claim-daily]");
+    if (category) { activeShopCategory = category.dataset.shopCategory; renderShopContent(); startShopPreviewAnimation(); }
+    else if (buy) buySkin(buy.dataset.buySkin);
+    else if (equip) equipSkin(equip.dataset.equipSkin);
+    else if (daily) claimDailyReward();
+  });
 
   function loop(now){
     const frameDt = Math.min(Math.max((now - lastFrameTime) / 1000, 0), MAX_FRAME_DT);
