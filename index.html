@@ -112,7 +112,7 @@
     }
 
 
-    /* ===== v13: واجهة ألعاب بلا تمرير + PWA ===== */
+    /* ===== v14: نهاية المباراة بالملكة بعد آخر قطعة عادية ===== */
     html, body { height: 100%; overscroll-behavior: none; }
     body { overflow-x: hidden; }
     .app {
@@ -544,6 +544,10 @@
   let normalPocketedThisShot = false;
   let queenPendingPlayer = null;
   let queenCoveredThisShot = false;
+  let finalQueenReady = false;
+  let finalQueenPocketedThisShot = false;
+  let queenReturnedForEndgameThisShot = false;
+  let lastNormalPocketedThisShot = false;
   let shotPeakSpeed = 0;
   let profile = loadProfile();
   let activeShopCategory = "all";
@@ -556,6 +560,12 @@
 
   function clamp(value, min, max) { return Math.max(min, Math.min(max, value)); }
   function distance(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
+  function activeNormalPiecesCount() {
+    return discs.filter(d => d.active && (d.kind === "white" || d.kind === "black")).length;
+  }
+  function activeQueenExists() {
+    return discs.some(d => d.active && d.kind === "queen");
+  }
 
   function loadProfile() {
     const fallback = {
@@ -835,6 +845,10 @@
     scores = Array(count).fill(0);
     queenPendingPlayer = null;
     queenCoveredThisShot = false;
+    finalQueenReady = false;
+    finalQueenPocketedThisShot = false;
+    queenReturnedForEndgameThisShot = false;
+    lastNormalPocketedThisShot = false;
     discs = initialPieces();
     phase = "ready";
     strikerOffset = 50;
@@ -855,6 +869,7 @@
 
   function backToMenu() {
     clearTimers(); phase = "menu"; mode = "menu"; aiming = false; aimPoint = null; queenPendingPlayer = null;
+    finalQueenReady = false; finalQueenPocketedThisShot = false; queenReturnedForEndgameThisShot = false; lastNormalPocketedThisShot = false;
     gameEl.classList.add("hidden"); menuEl.classList.remove("hidden");
     document.body.classList.remove("game-active");
   }
@@ -887,6 +902,9 @@
     queenPocketedThisShot = false;
     normalPocketedThisShot = false;
     queenCoveredThisShot = false;
+    finalQueenPocketedThisShot = false;
+    queenReturnedForEndgameThisShot = false;
+    lastNormalPocketedThisShot = false;
     shotPeakSpeed = Math.hypot(vx, vy);
     replayShotEl.disabled = true;
     profile.shots += 1; profile.xp += 2; saveProfile();
@@ -920,7 +938,11 @@
 
     let queenMessage = "";
 
-    if (queenPendingPlayer === currentPlayer) {
+    if (finalQueenPocketedThisShot) {
+      queenPendingPlayer = null;
+      finalQueenReady = false;
+      queenMessage = " تم إدخال الملكة الأخيرة وإضافة 50 نقطة.";
+    } else if (queenPendingPlayer === currentPlayer) {
       if (normalPocketedThisShot && !strikerFoul) {
         awardCoveredQueen(currentPlayer);
         shotScored = true;
@@ -933,6 +955,18 @@
         queenPendingPlayer = null;
         queenMessage = " لم تتم تغطية الملكة، لذلك عادت إلى منتصف اللوحة.";
       }
+    }
+
+    // لا تُفتح الملكة النهائية إلا بعد اكتمال ضربة إدخال آخر قطعة عادية.
+    if (!finalQueenPocketedThisShot && activeNormalPiecesCount() === 0 && activeQueenExists() && queenPendingPlayer === null) {
+      finalQueenReady = true;
+      if (lastNormalPocketedThisShot) {
+        queenMessage += " أصبحت الملكة الآن القطعة الأخيرة، ويجب إدخالها لإنهاء المباراة.";
+      }
+    }
+
+    if (queenReturnedForEndgameThisShot) {
+      queenMessage += " أُعيدت الملكة لأنها دخلت قبل اكتمال ترتيب النهاية الصحيح.";
     }
 
     let nextPlayer = currentPlayer;
@@ -965,7 +999,6 @@
         : `لم تدخل قطعة. الدور الآن للاعب ${currentPlayer + 1}.`) + queenMessage);
     }
 
-    // لا توجد إعادة بطيئة تلقائية عند إدخال القطع. يبقى زر الإعادة اليدوية متاحًا فقط.
     startTurnTimer();
     if (mode === "ai" && currentPlayer === 1) scheduleAI();
   }
@@ -978,7 +1011,14 @@
     aiTimer = setTimeout(() => {
       if (phase !== "ready" || currentPlayer !== 1) return;
       const striker = getStriker();
-      const targets = discs.filter(d => d.active && d.kind !== "striker");
+      const normalsRemaining = activeNormalPiecesCount();
+      const targets = discs.filter(d => {
+        if (!d.active || d.kind === "striker") return false;
+        if (d.kind !== "queen") return true;
+        if (finalQueenReady && normalsRemaining === 0) return true;
+        if (normalsRemaining === 1) return false;
+        return true;
+      });
       if (!striker || !targets.length) return;
 
       const settings = {
@@ -1074,6 +1114,46 @@
     }
 
     if (disc.kind === "queen") {
+      const normalsRemaining = activeNormalPiecesCount();
+
+      // في المرحلة النهائية يجب إدخال آخر قطعة عادية في ضربة سابقة، ثم الملكة وحدها.
+      if (normalsRemaining <= 1 && !finalQueenReady) {
+        returnQueenToCenter();
+        queenReturnedForEndgameThisShot = true;
+        queenPocketedThisShot = false;
+        queenPendingPlayer = null;
+        sound("pocket", .9);
+        setStatus(normalsRemaining === 1
+          ? "لا يمكن إدخال الملكة الآن. أدخل آخر قطعة سوداء أو بيضاء أولًا، ثم أدخل الملكة في الضربة التالية."
+          : "يجب أن تبقى الملكة للضربة الأخيرة؛ أُعيدت إلى المنتصف.");
+        renderHud();
+        updateRemaining();
+        return;
+      }
+
+      // الملكة هي آخر قطعة على اللوح: تُحتسب مباشرة وتنتهي المباراة بعد توقف الضربة.
+      if (normalsRemaining === 0 && finalQueenReady) {
+        scores[currentPlayer] = (scores[currentPlayer] || 0) + 50;
+        finalQueenPocketedThisShot = true;
+        queenPocketedThisShot = true;
+        shotScored = true;
+        pocketedThisShot += 1;
+        queenPendingPlayer = null;
+        profile.queens += 1;
+        profile.pockets += 1;
+        profile.xp += 35;
+        profile.coins += 50;
+        profile.trophies += 20;
+        updateAchievements();
+        saveProfile();
+        sound("queen", 1.2);
+        setStatus("تم إدخال الملكة الأخيرة وإضافة 50 نقطة. ستنتهي المباراة بعد توقف القطع.");
+        renderHud();
+        updateRemaining();
+        return;
+      }
+
+      // القاعدة العادية قبل المرحلة النهائية: الملكة تحتاج إلى تغطية بقطعة عادية.
       queenPocketedThisShot = true;
       queenPendingPlayer = currentPlayer;
       shotScored = true;
@@ -1094,10 +1174,17 @@
     profile.xp += disc.kind === "white" ? 12 : 8;
     profile.coins += disc.kind === "white" ? 10 : 5;
     profile.trophies += disc.kind === "white" ? 5 : 3;
+
+    if (activeNormalPiecesCount() === 0 && activeQueenExists()) {
+      lastNormalPocketedThisShot = true;
+      setStatus(`تم إدخال آخر قطعة ${disc.kind === "white" ? "بيضاء" : "سوداء"} وإضافة ${points} نقاط. الملكة ستكون الهدف الأخير في الضربة التالية.`);
+    } else {
+      setStatus(`تم إدخال قطعة ${disc.kind === "white" ? "بيضاء" : "سوداء"} وإضافة ${points} نقاط.`);
+    }
+
     updateAchievements();
     saveProfile();
     sound("pocket", 1);
-    setStatus(`تم إدخال قطعة ${disc.kind === "white" ? "بيضاء" : "سوداء"} وإضافة ${points} نقاط.`);
     renderHud();
     updateRemaining();
   }
@@ -2116,7 +2203,9 @@
       if (profile.equippedStriker === "legend") legendVictoryUntil = performance.now()+4500;
     }
     const names = winners.map(i => mode==="ai"&&i===1?"الذكاء الاصطناعي":`اللاعب ${i+1}`).join(" و ");
-    showModal("انتهت المباراة", `<p class="notice">الفائز: <strong>${names}</strong> بنتيجة ${maxScore} نقطة.${reward?` حصلت على ${reward} عملة.`:""}</p><button class="btn primary" onclick="document.getElementById('closeModal').click();document.getElementById('back').click();">العودة للبداية</button>`);
+    const resultTitle = winners.length > 1 ? "تعادل في صدارة النقاط" : "الفائز صاحب أعلى نقاط";
+    const scoreRows = scores.map((score, i) => `<div class="stat">${mode==="ai"&&i===1?"الذكاء الاصطناعي":`اللاعب ${i+1}`}<br><strong>${score} نقطة</strong></div>`).join("");
+    showModal("انتهت المباراة", `<p class="notice">${resultTitle}: <strong>${names}</strong> بنتيجة ${maxScore} نقطة.${reward?` حصلت على ${reward} عملة.`:""}</p><div class="stats">${scoreRows}</div><button class="btn primary" onclick="document.getElementById('closeModal').click();document.getElementById('back').click();">العودة للبداية</button>`);
     return true;
   }
 
