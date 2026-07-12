@@ -234,6 +234,7 @@
   let strikerOffset = 50;
   let aiming = false;
   let aimPoint = null;
+  let pullStart = null;
   let aimVisible = true;
   let soundEnabled = true;
   let shotScored = false;
@@ -871,35 +872,119 @@
   }
 
   function woodGradient(d) {
-    const g = ctx.createRadialGradient(d.x - d.r * .35, d.y - d.r * .35, 2, d.x, d.y, d.r);
-    if (d.kind === "white") { g.addColorStop(0,"#fffdf5"); g.addColorStop(.38,"#f4ead5"); g.addColorStop(.75,"#dbc7a5"); g.addColorStop(1,"#b99a6b"); }
-    else if (d.kind === "black") { g.addColorStop(0,"#705d4d"); g.addColorStop(.35,"#433329"); g.addColorStop(.72,"#251a14"); g.addColorStop(1,"#120c08"); }
-    else if (d.kind === "queen") { g.addColorStop(0,"#ffc1ae"); g.addColorStop(.4,"#dc4f3d"); g.addColorStop(.78,"#98261d"); g.addColorStop(1,"#65140f"); }
-    else { g.addColorStop(0,"#f6d477"); g.addColorStop(.38,"#d9a33a"); g.addColorStop(.75,"#8d561d"); g.addColorStop(1,"#4d290e"); }
+    const g = ctx.createRadialGradient(d.x - d.r * .38, d.y - d.r * .42, 2, d.x, d.y, d.r * 1.05);
+    if (d.kind === "white") {
+      g.addColorStop(0,"#fffdfa");
+      g.addColorStop(.28,"#f8f1e2");
+      g.addColorStop(.58,"#eadcc4");
+      g.addColorStop(.82,"#d5c09e");
+      g.addColorStop(1,"#b1936a");
+    } else if (d.kind === "black") {
+      g.addColorStop(0,"#6c665f");
+      g.addColorStop(.32,"#38342f");
+      g.addColorStop(.68,"#1f1c19");
+      g.addColorStop(1,"#0d0c0b");
+    } else if (d.kind === "queen") {
+      g.addColorStop(0,"#ffb1ad");
+      g.addColorStop(.26,"#f05a4f");
+      g.addColorStop(.58,"#b31f1d");
+      g.addColorStop(.84,"#7e1214");
+      g.addColorStop(1,"#51080b");
+    } else {
+      g.addColorStop(0,"#fff0b7");
+      g.addColorStop(.28,"#f0c865");
+      g.addColorStop(.6,"#bf7f29");
+      g.addColorStop(.85,"#7b4a16");
+      g.addColorStop(1,"#4f2a0a");
+    }
     return g;
   }
 
-  function drawDisc(d) {
-    ctx.save(); ctx.shadowColor="rgba(0,0,0,.32)"; ctx.shadowBlur=d.kind==="striker"?18:11; ctx.shadowOffsetY=5;
-    ctx.beginPath(); ctx.arc(d.x,d.y,d.r,0,Math.PI*2); ctx.fillStyle=woodGradient(d); ctx.fill();
-    ctx.shadowColor="transparent"; ctx.lineWidth=d.kind==="striker"?4.5:2.2;
-    ctx.strokeStyle=d.kind==="white"?"rgba(119,83,44,.95)":"rgba(255,244,220,.38)"; ctx.stroke();
+  function drawWearMarks(d) {
+    const seed = typeof d.id === "number" ? d.id : String(d.id).split("").reduce((a,c)=>a+c.charCodeAt(0),0);
     ctx.save();
     ctx.translate(d.x, d.y);
     ctx.rotate(d.angle || 0);
-    ctx.beginPath(); ctx.arc(0,0,d.r*.82,0,Math.PI*2); ctx.clip();
-    ctx.strokeStyle=d.kind==="black"?"rgba(255,255,255,.06)":"rgba(89,58,28,.09)"; ctx.lineWidth=1;
-    for(let i=-2;i<=2;i++){
+    ctx.beginPath();
+    ctx.arc(0,0,d.r*.84,0,Math.PI*2);
+    ctx.clip();
+    for (let i = 0; i < 3; i++) {
+      const a = ((seed * 0.87) + i * 1.91) % (Math.PI * 2);
+      const len = d.r * (0.55 + ((seed + i) % 4) * 0.08);
+      ctx.strokeStyle = d.kind === "black" ? "rgba(255,255,255,.045)" : "rgba(82,58,29,.07)";
+      ctx.lineWidth = 1;
       ctx.beginPath();
-      ctx.moveTo(-d.r,i*4);
-      ctx.bezierCurveTo(-d.r*.3,i*6-3,d.r*.3,i*2+3,d.r,i*5);
+      ctx.moveTo(Math.cos(a) * d.r * .15, Math.sin(a) * d.r * .12);
+      ctx.lineTo(Math.cos(a) * len, Math.sin(a) * len * .92);
       ctx.stroke();
     }
     ctx.restore();
-    ctx.beginPath();ctx.arc(d.x-d.r*.28,d.y-d.r*.28,d.r*.22,0,Math.PI*2);ctx.fillStyle="rgba(255,255,255,.3)";ctx.fill();
-    if(d.kind==="striker"){
-      ctx.beginPath();ctx.arc(d.x,d.y,d.r*.67,0,Math.PI*2);ctx.strokeStyle="rgba(255,245,220,.95)";ctx.lineWidth=2.7;ctx.stroke();
-      ctx.beginPath();ctx.arc(d.x,d.y,d.r*.3,0,Math.PI*2);ctx.fillStyle="rgba(255,248,230,.92)";ctx.fill();
+  }
+
+  function drawDisc(d) {
+    ctx.save();
+    ctx.shadowColor = d.kind === "queen" ? "rgba(124,20,20,.16)" : "rgba(0,0,0,.24)";
+    ctx.shadowBlur = d.kind === "striker" ? 20 : 13;
+    ctx.shadowOffsetY = 6;
+    ctx.beginPath();
+    ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+    ctx.fillStyle = woodGradient(d);
+    ctx.fill();
+
+    const rim = ctx.createRadialGradient(d.x - d.r*.28, d.y - d.r*.3, 1, d.x, d.y, d.r);
+    rim.addColorStop(0, d.kind === "black" ? "rgba(255,255,255,.07)" : "rgba(255,255,255,.16)");
+    rim.addColorStop(.72, "rgba(255,255,255,0)");
+    rim.addColorStop(1, d.kind === "black" ? "rgba(0,0,0,.45)" : "rgba(70,44,18,.32)");
+    ctx.beginPath();
+    ctx.arc(d.x, d.y, d.r * .98, 0, Math.PI * 2);
+    ctx.fillStyle = rim;
+    ctx.fill();
+
+    ctx.shadowColor = "transparent";
+    ctx.lineWidth = d.kind === "striker" ? 4.5 : 2.35;
+    if (d.kind === "white") ctx.strokeStyle = "rgba(130,95,56,.92)";
+    else if (d.kind === "black") ctx.strokeStyle = "rgba(255,255,255,.16)";
+    else if (d.kind === "queen") ctx.strokeStyle = "rgba(255,218,218,.34)";
+    else ctx.strokeStyle = "rgba(255,247,224,.42)";
+    ctx.stroke();
+
+    drawWearMarks(d);
+
+    ctx.save();
+    ctx.translate(d.x, d.y);
+    ctx.rotate(d.angle || 0);
+    ctx.beginPath();
+    ctx.arc(0,0,d.r*.82,0,Math.PI*2);
+    ctx.clip();
+    ctx.strokeStyle = d.kind === "black" ? "rgba(255,255,255,.04)" : "rgba(90,60,28,.08)";
+    ctx.lineWidth = 1;
+    for(let i=-2;i<=2;i++){
+      ctx.beginPath();
+      ctx.moveTo(-d.r, i*4);
+      ctx.bezierCurveTo(-d.r*.2, i*6-3, d.r*.3, i*2+3, d.r, i*5);
+      ctx.stroke();
+    }
+    ctx.restore();
+
+    const highlight = ctx.createRadialGradient(d.x - d.r*.35, d.y - d.r*.4, 1, d.x - d.r*.3, d.y - d.r*.3, d.r*.72);
+    highlight.addColorStop(0, d.kind === "black" ? "rgba(255,255,255,.18)" : "rgba(255,255,255,.35)");
+    highlight.addColorStop(1, "rgba(255,255,255,0)");
+    ctx.beginPath();
+    ctx.arc(d.x - d.r*.18, d.y - d.r*.2, d.r*.34, 0, Math.PI*2);
+    ctx.fillStyle = highlight;
+    ctx.fill();
+
+    if(d.kind !== "striker") {
+      ctx.beginPath();
+      ctx.arc(d.x, d.y + d.r*.1, d.r*.72, .15*Math.PI, .88*Math.PI);
+      ctx.strokeStyle = "rgba(0,0,0,.08)";
+      ctx.lineWidth = 1.1;
+      ctx.stroke();
+    }
+
+    if(d.kind === "striker"){
+      ctx.beginPath(); ctx.arc(d.x,d.y,d.r*.67,0,Math.PI*2); ctx.strokeStyle="rgba(255,245,220,.95)"; ctx.lineWidth=2.7; ctx.stroke();
+      ctx.beginPath(); ctx.arc(d.x,d.y,d.r*.3,0,Math.PI*2); ctx.fillStyle="rgba(255,248,230,.92)"; ctx.fill();
     }
     ctx.restore();
   }
@@ -918,7 +1003,51 @@
     const displayDiscs = replaying && replayDisplay ? replayDisplay : discs;
     for(const d of displayDiscs) if(d.active) drawDisc(d);
     const striker = displayDiscs.find(d => d.kind === "striker");
-    if(aimVisible && aiming && aimPoint && striker){ctx.save();ctx.setLineDash([14,10]);ctx.lineWidth=5;ctx.strokeStyle="#2563eb";ctx.beginPath();ctx.moveTo(striker.x,striker.y);ctx.lineTo(aimPoint.x,aimPoint.y);ctx.stroke();ctx.setLineDash([]);ctx.beginPath();ctx.arc(aimPoint.x,aimPoint.y,13,0,Math.PI*2);ctx.fillStyle="#fbbf24";ctx.fill();const power=clamp(distance(striker,aimPoint)/3.2,0,100);ctx.fillStyle="rgba(15,23,42,.86)";ctx.fillRect(285,26,330,35);ctx.fillStyle="#fbbf24";ctx.fillRect(285,26,3.3*power,35);ctx.strokeStyle="#fff";ctx.strokeRect(285,26,330,35);ctx.restore();}
+    if(aimVisible && aiming && aimPoint && striker){
+      const pullDx = striker.x - aimPoint.x, pullDy = striker.y - aimPoint.y;
+      const pullLen = Math.hypot(pullDx, pullDy);
+      if (pullLen > 6) {
+        const dirX = pullDx / pullLen, dirY = pullDy / pullLen;
+        const ghostOffset = clamp(pullLen * .18, 8, 34);
+        const ghostX = striker.x - dirX * ghostOffset, ghostY = striker.y - dirY * ghostOffset;
+        const previewLen = clamp(pullLen * 1.55, 120, 260);
+        const previewX = striker.x + dirX * previewLen, previewY = striker.y + dirY * previewLen;
+        ctx.save();
+        ctx.globalAlpha = .28;
+        drawDisc({ ...striker, x: ghostX, y: ghostY });
+        ctx.restore();
+        ctx.save();
+        ctx.setLineDash([14,10]);
+        ctx.lineWidth = 5;
+        ctx.strokeStyle = "#2563eb";
+        ctx.beginPath();
+        ctx.moveTo(striker.x, striker.y);
+        ctx.lineTo(previewX, previewY);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.beginPath();
+        ctx.arc(previewX, previewY, 11, 0, Math.PI * 2);
+        ctx.fillStyle = "#fbbf24";
+        ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(striker.x, striker.y);
+        ctx.lineTo(aimPoint.x, aimPoint.y);
+        ctx.strokeStyle = "rgba(255,255,255,.24)";
+        ctx.lineWidth = 3;
+        ctx.stroke();
+        const power = clamp(pullLen / 3.2, 0, 100);
+        ctx.fillStyle = "rgba(15,23,42,.86)";
+        ctx.fillRect(285,26,330,35);
+        ctx.fillStyle = "#fbbf24";
+        ctx.fillRect(285,26,3.3*power,35);
+        ctx.strokeStyle = "#fff";
+        ctx.strokeRect(285,26,330,35);
+        ctx.fillStyle = "#e2e8f0";
+        ctx.font = "bold 16px Arial";
+        ctx.fillText("اسحب المضرب للخلف ثم اتركه", 336, 48);
+        ctx.restore();
+      }
+    }
   }
 
   function canvasPoint(event) {
@@ -927,17 +1056,34 @@
 
   canvas.addEventListener("pointerdown", event => {
     if(replaying || phase!=="ready" || (mode==="ai"&&currentPlayer===1)) return;
-    const striker=getStriker();if(!striker||!striker.active)return;const p=canvasPoint(event);
-    if(distance(p,striker)>striker.r*2.7){setStatus("ابدأ السحب من المضرب نفسه.");return;}
-    canvas.setPointerCapture(event.pointerId);aiming=true;aimPoint=p;sound("ui");
+    const striker=getStriker(); if(!striker || !striker.active) return;
+    const p = canvasPoint(event);
+    if(distance(p,striker)>striker.r*2.7){ setStatus("اضغط على المضرب ثم اسحبه للخلف لتحديد اتجاه الضربة."); return; }
+    canvas.setPointerCapture(event.pointerId);
+    aiming = true;
+    pullStart = { x: striker.x, y: striker.y };
+    aimPoint = p;
+    sound("ui");
   });
-  canvas.addEventListener("pointermove", event => { if(aiming) aimPoint=canvasPoint(event); });
+  canvas.addEventListener("pointermove", event => {
+    if(!aiming) return;
+    aimPoint = canvasPoint(event);
+  });
   canvas.addEventListener("pointerup", event => {
-    if(!aiming)return;const striker=getStriker();const p=canvasPoint(event);aiming=false;aimPoint=null;if(!striker)return;
-    const dx=p.x-striker.x,dy=p.y-striker.y,len=Math.hypot(dx,dy);if(len<35){setStatus("اسحب لمسافة أكبر.");return;}
-    const speed=clamp(len*3.35,480,1650);beginShot(dx/len*speed,dy/len*speed);
+    if(!aiming) return;
+    const striker = getStriker();
+    const p = canvasPoint(event);
+    aiming = false;
+    aimPoint = null;
+    pullStart = null;
+    if(!striker) return;
+    const dx = striker.x - p.x, dy = striker.y - p.y;
+    const len = Math.hypot(dx, dy);
+    if(len < 35){ setStatus("اسحب المضرب إلى الخلف لمسافة أكبر ثم اتركه."); return; }
+    const speed = clamp(len * 3.35, 480, 1650);
+    beginShot(dx / len * speed, dy / len * speed);
   });
-  canvas.addEventListener("pointercancel",()=>{aiming=false;aimPoint=null;});
+  canvas.addEventListener("pointercancel",()=>{aiming=false;aimPoint=null;pullStart=null;});
 
   strikerPositionEl.addEventListener("input", event => {
     if(phase!=="ready" || (mode==="ai"&&currentPlayer===1))return;strikerOffset=Number(event.target.value);placeStriker(currentPlayer,strikerOffset);
