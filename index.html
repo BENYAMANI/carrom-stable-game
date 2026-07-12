@@ -326,6 +326,50 @@
       .controls { padding:6px; }
     }
 
+
+    /* ===== v15: مضاربي + غرف بطولات P2P + فرق أربعة لاعبين ===== */
+    .mode-card.tournament-card { background:linear-gradient(145deg,rgba(124,58,237,.96),rgba(67,56,202,.96)); border-color:rgba(196,181,253,.65); }
+    .owned-section { margin:12px 0 16px; padding:13px; border-radius:16px; background:linear-gradient(135deg,rgba(94,234,212,.09),rgba(37,99,235,.08)); border:1px solid rgba(94,234,212,.3); }
+    .owned-section-head { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px; }
+    .owned-section-head h3 { margin:0; font-size:16px; }
+    .owned-section-head span { color:#94a3b8; font-size:12px; }
+    .owned-strip { display:grid; grid-template-columns:repeat(auto-fit,minmax(145px,1fr)); gap:9px; }
+    .owned-mini { display:grid; grid-template-columns:52px 1fr; align-items:center; gap:8px; padding:8px; border-radius:13px; background:#0f172a; border:1px solid rgba(255,255,255,.09); }
+    .owned-mini.equipped { border-color:#fbbf24; box-shadow:0 0 0 1px rgba(251,191,36,.18); }
+    .owned-mini canvas { width:48px; height:48px; border-radius:0; cursor:default; transform:none!important; }
+    .owned-mini strong { display:block; font-size:11px; line-height:1.35; }
+    .owned-mini button { margin-top:5px; border:0; border-radius:8px; padding:5px 8px; background:#2563eb; color:#fff; font-weight:900; font-size:10px; }
+    .owned-mini button[disabled] { background:#14532d; color:#dcfce7; }
+
+    .tournament-hub { display:grid; gap:13px; }
+    .room-choice-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+    .room-choice { padding:14px; border-radius:16px; background:#0f172a; border:1px solid rgba(255,255,255,.12); }
+    .room-choice h3 { margin:0 0 9px; }
+    .room-choice p { margin:0 0 12px; color:#94a3b8; font-size:12px; line-height:1.6; }
+    .room-field { display:grid; gap:6px; margin:8px 0; }
+    .room-field label { font-size:12px; font-weight:900; color:#cbd5e1; }
+    .room-field input,.room-field select { width:100%; padding:11px; border-radius:10px; border:1px solid #475569; background:#07101f; color:#fff; }
+    .room-code-box { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px; border-radius:14px; background:rgba(251,191,36,.1); border:1px solid rgba(251,191,36,.42); }
+    .room-code-box strong { font-size:24px; letter-spacing:5px; color:#fde68a; direction:ltr; }
+    .room-status { padding:10px 12px; border-radius:12px; background:rgba(37,99,235,.1); border:1px solid rgba(96,165,250,.3); color:#dbeafe; line-height:1.55; }
+    .room-players { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+    .room-player { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:10px; border-radius:12px; background:#0f172a; border:1px solid rgba(255,255,255,.09); }
+    .room-player.connected { border-color:rgba(94,234,212,.4); }
+    .room-player small { color:#94a3b8; display:block; margin-top:2px; }
+    .room-actions { display:flex; flex-wrap:wrap; gap:8px; }
+    .room-actions .btn { flex:1; min-width:145px; }
+    .online-turn-badge { display:inline-flex; align-items:center; gap:6px; color:#5eead4; font-size:11px; margin-top:4px; }
+    .team-card { border-color:rgba(196,181,253,.25); }
+    .team-card.active { background:linear-gradient(135deg,#6d28d9,#1d4ed8); }
+    .turn-card { background:#0f172a; border-color:#fbbf24; }
+
+    @media (max-width:700px) {
+      .room-choice-grid,.room-players { grid-template-columns:1fr; }
+      .owned-strip { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .owned-mini { grid-template-columns:40px 1fr; }
+      .owned-mini canvas { width:38px; height:38px; }
+    }
+
   </style>
 </head>
 <body>
@@ -381,7 +425,7 @@
         <button class="mode-card" data-mode="local2" data-count="2"><span class="mode-icon" aria-hidden="true">👥</span><span class="mode-label">لاعبان محليًا</span></button>
         <button class="mode-card" data-mode="local4" data-count="4"><span class="mode-icon" aria-hidden="true">👨‍👩‍👧‍👦</span><span class="mode-label">أربعة لاعبين</span></button>
         <button class="mode-card" data-mode="training" data-count="1"><span class="mode-icon" aria-hidden="true">🎯</span><span class="mode-label">وضع التدريب</span></button>
-        <button id="onlineMode" class="mode-card" type="button"><span class="mode-icon" aria-hidden="true">🌐</span><span class="mode-label">اللعب عبر الإنترنت</span></button>
+        <button id="tournamentMode" class="mode-card tournament-card" type="button"><span class="mode-icon" aria-hidden="true">🏟️</span><span class="mode-label">بطولات الأصدقاء</span></button>
       </div>
 
       <div class="menu-bottom-row">
@@ -391,7 +435,7 @@
           <div class="profile-chip">الكؤوس<strong id="menuTrophies">0</strong></div>
           <div class="profile-chip">العملات<strong id="menuCoins">0</strong></div>
         </div>
-        <div class="notice compact-note">تعمل اللعبة محليًا دون تسجيل. التثبيت على أندرويد يفتحها كتطبيق مستقل، مع دعم العمل دون اتصال بعد أول زيارة.</div>
+        <div class="notice compact-note">اللعب المحلي يعمل دون تسجيل. غرف البطولات تحتاج اتصالًا بالإنترنت، ويبقى جهاز منشئ الغرفة مفتوحًا حتى نهاية المباراة.</div>
       </div>
     </section>
 
@@ -447,6 +491,7 @@
     </footer>
   </main>
 
+<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js"></script>
 <script>
 (() => {
   "use strict";
@@ -557,6 +602,13 @@
   let legendVictoryUntil = 0;
   let currentTheme = localStorage.getItem("carrom-board-theme") || "arabic";
   if (themeEl) themeEl.value = currentTheme;
+  let teamScores = [0, 0];
+  const onlineSession = {
+    active:false, isHost:false, started:false, roomCode:"", capacity:4,
+    peer:null, hostConnection:null, connections:new Map(), players:[],
+    localSlot:0, syncTimer:null, stateSequence:0, lastAppliedSequence:0,
+    lobbyMessage:"", resultShown:false
+  };
 
   function clamp(value, min, max) { return Math.max(min, Math.min(max, value)); }
   function distance(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
@@ -565,6 +617,44 @@
   }
   function activeQueenExists() {
     return discs.some(d => d.active && d.kind === "queen");
+  }
+
+
+  function isTeamGame() { return playerCount === 4; }
+  function teamIndexForPlayer(index) { return Number(index) % 2; }
+  function playerScore(index) { return isTeamGame() ? (teamScores[teamIndexForPlayer(index)] || 0) : (scores[index] || 0); }
+  function addScore(index, points) {
+    if (isTeamGame()) {
+      const team = teamIndexForPlayer(index);
+      teamScores[team] = Math.max(0, (teamScores[team] || 0) + points);
+      scores[index] = teamScores[team];
+      scores[(index + 2) % 4] = teamScores[team];
+    } else scores[index] = Math.max(0, (scores[index] || 0) + points);
+  }
+  function deductScore(index, points) {
+    const available = playerScore(index);
+    const deduction = Math.min(points, available);
+    addScore(index, -deduction);
+    return deduction;
+  }
+  function playerName(index) {
+    if (mode === "ai" && index === 1) return "الذكاء الاصطناعي";
+    if (playerCount === 1) return "التدريب";
+    if (mode === "online" && onlineSession.players[index]?.name) return onlineSession.players[index].name;
+    return `اللاعب ${index + 1}`;
+  }
+  function activeStrikerSkin() {
+    if (mode === "online" && onlineSession.players[currentPlayer]?.skin) return onlineSession.players[currentPlayer].skin;
+    return profile.equippedStriker || "classic";
+  }
+  function canLocalControl() {
+    if (phase !== "ready" || replaying) return false;
+    if (mode === "ai") return currentPlayer !== 1;
+    if (mode === "online") return onlineSession.active && onlineSession.started && currentPlayer === onlineSession.localSlot;
+    return true;
+  }
+  function refreshControlAvailability() {
+    strikerPositionEl.disabled = !canLocalControl();
   }
 
   function loadProfile() {
@@ -689,7 +779,7 @@
   function playerSide(index, count) {
     if (count === 1) return "bottom";
     if (count === 2) return index === 0 ? "bottom" : "top";
-    return ["bottom", "top", "left", "right"][index] || "bottom";
+    return ["bottom", "right", "top", "left"][index] || "bottom";
   }
 
   function baselinePosition(index, count, percent) {
@@ -753,6 +843,7 @@
 
   function startTurnTimer() {
     clearTurnTimer();
+    if (mode === "online" && onlineSession.active && !onlineSession.isHost) return;
     if (phase !== "ready" || mode === "menu") return;
 
     let seconds = TURN_SECONDS;
@@ -807,7 +898,7 @@
   }
 
   function awardCoveredQueen(playerIndex) {
-    scores[playerIndex] = (scores[playerIndex] || 0) + 50;
+    addScore(playerIndex, 50);
     queenPendingPlayer = null;
     queenCoveredThisShot = true;
     profile.queens += 1;
@@ -843,6 +934,7 @@
     playerCount = count;
     currentPlayer = 0;
     scores = Array(count).fill(0);
+    teamScores = [0, 0];
     queenPendingPlayer = null;
     queenCoveredThisShot = false;
     finalQueenReady = false;
@@ -857,32 +949,54 @@
     menuEl.classList.add("hidden");
     gameEl.classList.remove("hidden");
     document.body.classList.add("game-active");
-    setStatus(count === 4 ? "اللاعب 1 يبدأ. الترتيب: 1 ثم 2 ثم 3 ثم 4." : "اللاعب 1 يبدأ. حرّك المضرب ثم اسحب نحو الهدف.");
+    if (count === 4) {
+      setStatus("بطولة فرق: الفريق 1 يضم اللاعبين 1 و3، والفريق 2 يضم اللاعبين 2 و4. ترتيب الدور مع عقارب الساعة: 1 ثم 2 ثم 3 ثم 4.");
+    } else setStatus("اللاعب 1 يبدأ. حرّك المضرب ثم اسحبه للخلف باتجاه معاكس للهدف.");
     renderHud();
     updateRemaining();
     ensureAudio();
-    startTurnTimer();
+    refreshControlAvailability();
+    if (!(mode === "online" && onlineSession.active && !onlineSession.isHost)) startTurnTimer();
     if (mode === "ai" && currentPlayer === 1) scheduleAI();
+    if (mode === "online" && onlineSession.isHost) startOnlineStateSync();
   }
 
   function restart() { startGame(mode, playerCount); }
 
   function backToMenu() {
+    const wasOnline = mode === "online" || onlineSession.active;
     clearTimers(); phase = "menu"; mode = "menu"; aiming = false; aimPoint = null; queenPendingPlayer = null;
     finalQueenReady = false; finalQueenPocketedThisShot = false; queenReturnedForEndgameThisShot = false; lastNormalPocketedThisShot = false;
     gameEl.classList.add("hidden"); menuEl.classList.remove("hidden");
     document.body.classList.remove("game-active");
+    if (wasOnline) leaveOnlineRoom(false);
   }
 
   function setStatus(text) { statusEl.textContent = text; }
 
   function renderHud() {
     hudEl.innerHTML = "";
+    if (playerCount === 4) {
+      const teamNames = [
+        `${playerName(0)} + ${playerName(2)}`,
+        `${playerName(1)} + ${playerName(3)}`
+      ];
+      for (let team = 0; team < 2; team++) {
+        const card = document.createElement("div");
+        card.className = "player-card team-card" + (teamIndexForPlayer(currentPlayer) === team ? " active" : "");
+        card.innerHTML = `<div>الفريق ${team + 1}</div><small>${teamNames[team]}</small><div class="score">${teamScores[team] || 0} نقطة</div>`;
+        hudEl.appendChild(card);
+      }
+      const turn = document.createElement("div");
+      turn.className = "player-card turn-card";
+      turn.innerHTML = `<div>الدور الآن</div><div class="score">${playerName(currentPlayer)}</div>${mode === "online" ? `<span class="online-turn-badge">● غرفة ${onlineSession.roomCode}</span>` : ""}`;
+      hudEl.appendChild(turn);
+      return;
+    }
     for (let i = 0; i < playerCount; i++) {
       const card = document.createElement("div");
       card.className = "player-card" + (i === currentPlayer ? " active" : "");
-      const name = mode === "ai" && i === 1 ? "الذكاء الاصطناعي" : playerCount === 1 ? "التدريب" : `اللاعب ${i + 1}`;
-      card.innerHTML = `<div>${name}</div><div class="score">${scores[i] || 0} نقطة</div>`;
+      card.innerHTML = `<div>${playerName(i)}</div><div class="score">${scores[i] || 0} نقطة</div>`;
       hudEl.appendChild(card);
     }
   }
@@ -937,7 +1051,6 @@
     discs.forEach(d => { d.vx = 0; d.vy = 0; d.omega = 0; });
 
     let queenMessage = "";
-
     if (finalQueenPocketedThisShot) {
       queenPendingPlayer = null;
       finalQueenReady = false;
@@ -957,50 +1070,35 @@
       }
     }
 
-    // لا تُفتح الملكة النهائية إلا بعد اكتمال ضربة إدخال آخر قطعة عادية.
     if (!finalQueenPocketedThisShot && activeNormalPiecesCount() === 0 && activeQueenExists() && queenPendingPlayer === null) {
       finalQueenReady = true;
-      if (lastNormalPocketedThisShot) {
-        queenMessage += " أصبحت الملكة الآن القطعة الأخيرة، ويجب إدخالها لإنهاء المباراة.";
-      }
+      if (lastNormalPocketedThisShot) queenMessage += " أصبحت الملكة الآن القطعة الأخيرة، ويجب إدخالها لإنهاء المباراة.";
     }
-
-    if (queenReturnedForEndgameThisShot) {
-      queenMessage += " أُعيدت الملكة لأنها دخلت قبل اكتمال ترتيب النهاية الصحيح.";
-    }
+    if (queenReturnedForEndgameThisShot) queenMessage += " أُعيدت الملكة لأنها دخلت قبل اكتمال ترتيب النهاية الصحيح.";
 
     let nextPlayer = currentPlayer;
-    if (playerCount > 1 && (!shotScored || strikerFoul)) {
-      nextPlayer = (currentPlayer + 1) % playerCount;
-    }
-
+    if (playerCount > 1 && (!shotScored || strikerFoul)) nextPlayer = (currentPlayer + 1) % playerCount;
     currentPlayer = nextPlayer;
     strikerOffset = 50;
     strikerPositionEl.value = "50";
     placeStriker(currentPlayer, 50);
     phase = "ready";
-    strikerPositionEl.disabled = mode === "ai" && currentPlayer === 1;
     countdownEl.classList.add("hidden");
     timerEl.textContent = "جاهز";
     renderHud();
     updateRemaining();
+    refreshControlAvailability();
     if (maybeFinishMatch()) return;
 
     replayFrames = recordingFrames.slice();
     replayShotEl.disabled = replayFrames.length < 4;
+    if (strikerFoul) setStatus(`مخالفة: دخل المضرب. الدور الآن لـ${playerName(currentPlayer)}.${queenMessage}`);
+    else if (shotScored) setStatus(`ضربة ناجحة. يستمر دور ${playerName(currentPlayer)}.${queenMessage}`);
+    else setStatus((playerCount === 1 ? "انتهت الضربة. يمكنك المحاولة مجددًا." : `لم تدخل قطعة. الدور الآن لـ${playerName(currentPlayer)}.`) + queenMessage);
 
-    if (strikerFoul) {
-      setStatus(`مخالفة: دخل المضرب. الدور الآن للاعب ${currentPlayer + 1}.${queenMessage}`);
-    } else if (shotScored) {
-      setStatus(`ضربة ناجحة. يستمر دور اللاعب ${currentPlayer + 1}.${queenMessage}`);
-    } else {
-      setStatus((playerCount === 1
-        ? "انتهت الضربة. يمكنك المحاولة مجددًا."
-        : `لم تدخل قطعة. الدور الآن للاعب ${currentPlayer + 1}.`) + queenMessage);
-    }
-
-    startTurnTimer();
+    if (!(mode === "online" && onlineSession.active && !onlineSession.isHost)) startTurnTimer();
     if (mode === "ai" && currentPlayer === 1) scheduleAI();
+    if (mode === "online" && onlineSession.isHost) broadcastOnlineState(true);
   }
 
   function scheduleAI() {
@@ -1101,13 +1199,11 @@
 
     if (disc.kind === "striker") {
       strikerFoul = true;
-      const currentScore = scores[currentPlayer] || 0;
-      const penalty = Math.min(10, currentScore);
-      scores[currentPlayer] = currentScore - penalty;
+      const penalty = deductScore(currentPlayer, 10);
       sound("pocket", 1.15);
       setStatus(penalty > 0
-        ? `مخالفة: سقط المضرب في الجيب، وتم خصم ${penalty} نقاط من اللاعب ${currentPlayer + 1}.`
-        : `مخالفة: سقط المضرب في الجيب، لكن لا توجد نقاط للخصم من اللاعب ${currentPlayer + 1}.`);
+        ? `مخالفة: سقط المضرب، وتم خصم ${penalty} نقاط من ${isTeamGame()?`الفريق ${teamIndexForPlayer(currentPlayer)+1}`:playerName(currentPlayer)}.`
+        : `مخالفة: سقط المضرب، ولا توجد نقاط متاحة للخصم.`);
       renderHud();
       updateRemaining();
       return;
@@ -1115,8 +1211,6 @@
 
     if (disc.kind === "queen") {
       const normalsRemaining = activeNormalPiecesCount();
-
-      // في المرحلة النهائية يجب إدخال آخر قطعة عادية في ضربة سابقة، ثم الملكة وحدها.
       if (normalsRemaining <= 1 && !finalQueenReady) {
         returnQueenToCenter();
         queenReturnedForEndgameThisShot = true;
@@ -1130,10 +1224,8 @@
         updateRemaining();
         return;
       }
-
-      // الملكة هي آخر قطعة على اللوح: تُحتسب مباشرة وتنتهي المباراة بعد توقف الضربة.
       if (normalsRemaining === 0 && finalQueenReady) {
-        scores[currentPlayer] = (scores[currentPlayer] || 0) + 50;
+        addScore(currentPlayer, 50);
         finalQueenPocketedThisShot = true;
         queenPocketedThisShot = true;
         shotScored = true;
@@ -1152,8 +1244,6 @@
         updateRemaining();
         return;
       }
-
-      // القاعدة العادية قبل المرحلة النهائية: الملكة تحتاج إلى تغطية بقطعة عادية.
       queenPocketedThisShot = true;
       queenPendingPlayer = currentPlayer;
       shotScored = true;
@@ -1166,7 +1256,7 @@
     }
 
     const points = disc.kind === "white" ? 10 : 5;
-    scores[currentPlayer] = (scores[currentPlayer] || 0) + points;
+    addScore(currentPlayer, points);
     shotScored = true;
     normalPocketedThisShot = true;
     pocketedThisShot += 1;
@@ -1174,14 +1264,10 @@
     profile.xp += disc.kind === "white" ? 12 : 8;
     profile.coins += disc.kind === "white" ? 10 : 5;
     profile.trophies += disc.kind === "white" ? 5 : 3;
-
     if (activeNormalPiecesCount() === 0 && activeQueenExists()) {
       lastNormalPocketedThisShot = true;
       setStatus(`تم إدخال آخر قطعة ${disc.kind === "white" ? "بيضاء" : "سوداء"} وإضافة ${points} نقاط. الملكة ستكون الهدف الأخير في الضربة التالية.`);
-    } else {
-      setStatus(`تم إدخال قطعة ${disc.kind === "white" ? "بيضاء" : "سوداء"} وإضافة ${points} نقاط.`);
-    }
-
+    } else setStatus(`تم إدخال قطعة ${disc.kind === "white" ? "بيضاء" : "سوداء"} وإضافة ${points} نقاط.`);
     updateAchievements();
     saveProfile();
     sound("pocket", 1);
@@ -1349,7 +1435,7 @@
       b.omega += cross2D(contactBX, contactBY, frictionX, frictionY) * inverseInertia(b);
     }
 
-    if ((a.kind === "striker" || b.kind === "striker") && profile.equippedStriker === "legend") strikerImpactUntil = performance.now() + 520;
+    if ((a.kind === "striker" || b.kind === "striker") && activeStrikerSkin() === "legend") strikerImpactUntil = performance.now() + 520;
     sound("collision", clamp(Math.abs(normalImpulse) / 520, .2, 1.2));
   }
 
@@ -1397,7 +1483,7 @@
         replaying = false; replayDisplay = null;
         slowBadgeEl.classList.add("hidden");
         replayShotEl.disabled = false;
-        strikerPositionEl.disabled = phase !== "ready" || (mode === "ai" && currentPlayer === 1);
+        refreshControlAvailability();
         updateCamera(discs);
         if (onDone) onDone();
         return;
@@ -2069,6 +2155,10 @@
   }
 
   function showShop() {
+    if (mode === "online" && onlineSession.started && phase !== "menu") {
+      setStatus("افتح المتجر من الشاشة الرئيسية بعد انتهاء مباراة البطولة.");
+      return;
+    }
     if (phase === "moving" || replaying) {
       setStatus("انتظر حتى تنتهي الضربة، ثم افتح متجر المضارب.");
       return;
@@ -2089,6 +2179,14 @@
     const categories = Object.entries(SHOP_CATEGORY_NAMES).map(([id,label]) =>
       `<button class="shop-filter ${activeShopCategory===id?"active":""}" data-shop-category="${id}">${label}</button>`
     ).join("");
+    const ownedSkins = STRIKER_SKINS.filter(s => profile.ownedStrikers.includes(s.id));
+    const ownedCards = ownedSkins.map(skin => {
+      const equipped = profile.equippedStriker === skin.id;
+      return `<div class="owned-mini ${equipped?"equipped":""}">
+        <canvas width="56" height="56" data-skin-preview="${skin.id}"></canvas>
+        <div><strong>${skin.name}</strong><button ${equipped?"disabled":""} data-equip-skin="${skin.id}">${equipped?"مجهّز":"تجهيز"}</button></div>
+      </div>`;
+    }).join("");
     const visible = activeShopCategory === "all" ? STRIKER_SKINS : STRIKER_SKINS.filter(s=>s.category===activeShopCategory);
     const cards = visible.map(skin => {
       const owned = profile.ownedStrikers.includes(skin.id);
@@ -2110,8 +2208,12 @@
         <div class="shop-balance">رصيدك: <strong id="shopCoins">${profile.coins}</strong> عملة</div>
         <div>المضرب الحالي: <span class="current-striker">${skinById(profile.equippedStriker).name}</span></div>
       </div>
+      <section class="owned-section">
+        <div class="owned-section-head"><h3>مضاربي المملوكة</h3><span>${ownedSkins.length} من ${STRIKER_SKINS.length}</span></div>
+        <div class="owned-strip">${ownedCards}</div>
+      </section>
       <div class="daily-reward">
-        <div><strong>المكافأة اليومية: 50 عملة</strong><span>${dailyAvailable?"متاحة اليوم — استلمها الآن.":"تم استلام مكافأة اليوم."}</span></div>
+        <div><strong>المكافأة اليومية: 5 عملات</strong><span>${dailyAvailable?"متاحة اليوم — استلمها الآن.":"تم استلام مكافأة اليوم."}</span></div>
         <button class="shop-action buy" data-claim-daily ${dailyAvailable?"":"disabled"}>${dailyAvailable?"استلام":"تم الاستلام"}</button>
       </div>
       <div class="shop-categories">${categories}</div>
@@ -2163,7 +2265,7 @@
 
   function claimDailyReward() {
     if (!isDailyRewardAvailable()) return;
-    profile.coins += 50;
+    profile.coins += 5;
     profile.lastDailyReward = localDateKey();
     saveProfile();
     sound("queen",.7);
@@ -2188,31 +2290,46 @@
     if (remaining !== 0 || queenPendingPlayer !== null || phase === "finished") return false;
     clearTimers();
     phase = "finished";
-    const maxScore = Math.max(...scores);
-    const winners = scores.map((score,index)=>score===maxScore?index:null).filter(index=>index!==null);
-    const humanWon = winners.includes(0);
     let reward = 0;
-    if (humanWon && playerCount > 1) {
-      reward = mode === "ai" && difficulty === "legendary" ? 150 : 100;
-      profile.coins += reward;
-      profile.wins += 1;
-      profile.trophies += mode === "ai" && difficulty === "legendary" ? 30 : 15;
-      profile.xp += mode === "ai" && difficulty === "legendary" ? 80 : 45;
-      updateAchievements();
-      saveProfile();
-      if (profile.equippedStriker === "legend") legendVictoryUntil = performance.now()+4500;
+    let resultTitle = "";
+    let winnerLabel = "";
+    let maxScore = 0;
+    let scoreRows = "";
+
+    if (playerCount === 4) {
+      maxScore = Math.max(teamScores[0] || 0, teamScores[1] || 0);
+      const winningTeams = [0,1].filter(team => (teamScores[team] || 0) === maxScore);
+      resultTitle = winningTeams.length > 1 ? "تعادل بين الفريقين" : "الفريق الفائز";
+      winnerLabel = winningTeams.map(team => `الفريق ${team+1}`).join(" و ");
+      scoreRows = [0,1].map(team => `<div class="stat">الفريق ${team+1}<br><small>${playerName(team)} + ${playerName(team+2)}</small><br><strong>${teamScores[team] || 0} نقطة</strong></div>`).join("");
+    } else {
+      maxScore = Math.max(...scores);
+      const winners = scores.map((score,index)=>score===maxScore?index:null).filter(index=>index!==null);
+      resultTitle = winners.length > 1 ? "تعادل في صدارة النقاط" : "الفائز صاحب أعلى نقاط";
+      winnerLabel = winners.map(i => playerName(i)).join(" و ");
+      scoreRows = scores.map((score,i)=>`<div class="stat">${playerName(i)}<br><strong>${score} نقطة</strong></div>`).join("");
+      if (mode === "ai" && winners.includes(0)) {
+        reward = 20;
+        profile.coins += reward;
+        profile.wins += 1;
+        profile.trophies += difficulty === "legendary" ? 30 : 15;
+        profile.xp += difficulty === "legendary" ? 80 : 45;
+        updateAchievements();
+        saveProfile();
+        if (activeStrikerSkin() === "legend") legendVictoryUntil = performance.now()+4500;
+      }
     }
-    const names = winners.map(i => mode==="ai"&&i===1?"الذكاء الاصطناعي":`اللاعب ${i+1}`).join(" و ");
-    const resultTitle = winners.length > 1 ? "تعادل في صدارة النقاط" : "الفائز صاحب أعلى نقاط";
-    const scoreRows = scores.map((score, i) => `<div class="stat">${mode==="ai"&&i===1?"الذكاء الاصطناعي":`اللاعب ${i+1}`}<br><strong>${score} نقطة</strong></div>`).join("");
-    showModal("انتهت المباراة", `<p class="notice">${resultTitle}: <strong>${names}</strong> بنتيجة ${maxScore} نقطة.${reward?` حصلت على ${reward} عملة.`:""}</p><div class="stats">${scoreRows}</div><button class="btn primary" onclick="document.getElementById('closeModal').click();document.getElementById('back').click();">العودة للبداية</button>`);
+
+    const html = `<p class="notice">${resultTitle}: <strong>${winnerLabel}</strong> بنتيجة ${maxScore} نقطة.${reward?` حصلت على ${reward} عملة.`:""}</p><div class="stats">${scoreRows}</div><button class="btn primary" data-result-back>العودة للبداية</button>`;
+    showModal("انتهت المباراة", html);
+    if (mode === "online" && onlineSession.isHost) broadcastOnlineMessage({type:"result", title:"انتهت المباراة", html});
     return true;
   }
 
   function drawDisc(d) {
     if (d.kind === "striker") {
       drawSoftDiscShadow(d);
-      renderStrikerSkin(ctx, d.x, d.y, d.r, profile.equippedStriker || "classic", false);
+      renderStrikerSkin(ctx, d.x, d.y, d.r, activeStrikerSkin(), false);
       return;
     }
     drawSoftDiscShadow(d);
@@ -2391,11 +2508,27 @@
 
 function renderHud() {
     hudEl.innerHTML = "";
+    if (playerCount === 4) {
+      const teamNames = [
+        `${playerName(0)} + ${playerName(2)}`,
+        `${playerName(1)} + ${playerName(3)}`
+      ];
+      for (let team = 0; team < 2; team++) {
+        const card = document.createElement("div");
+        card.className = "player-card team-card" + (teamIndexForPlayer(currentPlayer) === team ? " active" : "");
+        card.innerHTML = `<div>الفريق ${team + 1}</div><small>${teamNames[team]}</small><div class="score">${teamScores[team] || 0} نقطة</div>`;
+        hudEl.appendChild(card);
+      }
+      const turn = document.createElement("div");
+      turn.className = "player-card turn-card";
+      turn.innerHTML = `<div>الدور الآن</div><div class="score">${playerName(currentPlayer)}</div>${mode === "online" ? `<span class="online-turn-badge">● غرفة ${onlineSession.roomCode}</span>` : ""}`;
+      hudEl.appendChild(turn);
+      return;
+    }
     for (let i = 0; i < playerCount; i++) {
       const card = document.createElement("div");
       card.className = "player-card" + (i === currentPlayer ? " active" : "");
-      const name = mode === "ai" && i === 1 ? "الذكاء الاصطناعي" : playerCount === 1 ? "التدريب" : `اللاعب ${i + 1}`;
-      card.innerHTML = `<div>${name}</div><div class="score">${scores[i] || 0} نقطة</div>`;
+      card.innerHTML = `<div>${playerName(i)}</div><div class="score">${scores[i] || 0} نقطة</div>`;
       hudEl.appendChild(card);
     }
   }
@@ -2447,8 +2580,11 @@ function renderHud() {
     discs.forEach(d => { d.vx = 0; d.vy = 0; d.omega = 0; });
 
     let queenMessage = "";
-
-    if (queenPendingPlayer === currentPlayer) {
+    if (finalQueenPocketedThisShot) {
+      queenPendingPlayer = null;
+      finalQueenReady = false;
+      queenMessage = " تم إدخال الملكة الأخيرة وإضافة 50 نقطة.";
+    } else if (queenPendingPlayer === currentPlayer) {
       if (normalPocketedThisShot && !strikerFoul) {
         awardCoveredQueen(currentPlayer);
         shotScored = true;
@@ -2463,39 +2599,35 @@ function renderHud() {
       }
     }
 
-    let nextPlayer = currentPlayer;
-    if (playerCount > 1 && (!shotScored || strikerFoul)) {
-      nextPlayer = (currentPlayer + 1) % playerCount;
+    if (!finalQueenPocketedThisShot && activeNormalPiecesCount() === 0 && activeQueenExists() && queenPendingPlayer === null) {
+      finalQueenReady = true;
+      if (lastNormalPocketedThisShot) queenMessage += " أصبحت الملكة الآن القطعة الأخيرة، ويجب إدخالها لإنهاء المباراة.";
     }
+    if (queenReturnedForEndgameThisShot) queenMessage += " أُعيدت الملكة لأنها دخلت قبل اكتمال ترتيب النهاية الصحيح.";
 
+    let nextPlayer = currentPlayer;
+    if (playerCount > 1 && (!shotScored || strikerFoul)) nextPlayer = (currentPlayer + 1) % playerCount;
     currentPlayer = nextPlayer;
     strikerOffset = 50;
     strikerPositionEl.value = "50";
     placeStriker(currentPlayer, 50);
     phase = "ready";
-    strikerPositionEl.disabled = mode === "ai" && currentPlayer === 1;
     countdownEl.classList.add("hidden");
     timerEl.textContent = "جاهز";
     renderHud();
     updateRemaining();
+    refreshControlAvailability();
     if (maybeFinishMatch()) return;
 
     replayFrames = recordingFrames.slice();
     replayShotEl.disabled = replayFrames.length < 4;
+    if (strikerFoul) setStatus(`مخالفة: دخل المضرب. الدور الآن لـ${playerName(currentPlayer)}.${queenMessage}`);
+    else if (shotScored) setStatus(`ضربة ناجحة. يستمر دور ${playerName(currentPlayer)}.${queenMessage}`);
+    else setStatus((playerCount === 1 ? "انتهت الضربة. يمكنك المحاولة مجددًا." : `لم تدخل قطعة. الدور الآن لـ${playerName(currentPlayer)}.`) + queenMessage);
 
-    if (strikerFoul) {
-      setStatus(`مخالفة: دخل المضرب. الدور الآن للاعب ${currentPlayer + 1}.${queenMessage}`);
-    } else if (shotScored) {
-      setStatus(`ضربة ناجحة. يستمر دور اللاعب ${currentPlayer + 1}.${queenMessage}`);
-    } else {
-      setStatus((playerCount === 1
-        ? "انتهت الضربة. يمكنك المحاولة مجددًا."
-        : `لم تدخل قطعة. الدور الآن للاعب ${currentPlayer + 1}.`) + queenMessage);
-    }
-
-    // لا توجد إعادة بطيئة تلقائية عند إدخال القطع. يبقى زر الإعادة اليدوية متاحًا فقط.
-    startTurnTimer();
+    if (!(mode === "online" && onlineSession.active && !onlineSession.isHost)) startTurnTimer();
     if (mode === "ai" && currentPlayer === 1) scheduleAI();
+    if (mode === "online" && onlineSession.isHost) broadcastOnlineState(true);
   }
 
   function scheduleAI() {
@@ -2589,19 +2721,51 @@ function renderHud() {
 
     if (disc.kind === "striker") {
       strikerFoul = true;
-      const currentScore = scores[currentPlayer] || 0;
-      const penalty = Math.min(10, currentScore);
-      scores[currentPlayer] = currentScore - penalty;
+      const penalty = deductScore(currentPlayer, 10);
       sound("pocket", 1.15);
       setStatus(penalty > 0
-        ? `مخالفة: سقط المضرب في الجيب، وتم خصم ${penalty} نقاط من اللاعب ${currentPlayer + 1}.`
-        : `مخالفة: سقط المضرب في الجيب، لكن لا توجد نقاط للخصم من اللاعب ${currentPlayer + 1}.`);
+        ? `مخالفة: سقط المضرب، وتم خصم ${penalty} نقاط من ${isTeamGame()?`الفريق ${teamIndexForPlayer(currentPlayer)+1}`:playerName(currentPlayer)}.`
+        : `مخالفة: سقط المضرب، ولا توجد نقاط متاحة للخصم.`);
       renderHud();
       updateRemaining();
       return;
     }
 
     if (disc.kind === "queen") {
+      const normalsRemaining = activeNormalPiecesCount();
+      if (normalsRemaining <= 1 && !finalQueenReady) {
+        returnQueenToCenter();
+        queenReturnedForEndgameThisShot = true;
+        queenPocketedThisShot = false;
+        queenPendingPlayer = null;
+        sound("pocket", .9);
+        setStatus(normalsRemaining === 1
+          ? "لا يمكن إدخال الملكة الآن. أدخل آخر قطعة سوداء أو بيضاء أولًا، ثم أدخل الملكة في الضربة التالية."
+          : "يجب أن تبقى الملكة للضربة الأخيرة؛ أُعيدت إلى المنتصف.");
+        renderHud();
+        updateRemaining();
+        return;
+      }
+      if (normalsRemaining === 0 && finalQueenReady) {
+        addScore(currentPlayer, 50);
+        finalQueenPocketedThisShot = true;
+        queenPocketedThisShot = true;
+        shotScored = true;
+        pocketedThisShot += 1;
+        queenPendingPlayer = null;
+        profile.queens += 1;
+        profile.pockets += 1;
+        profile.xp += 35;
+        profile.coins += 50;
+        profile.trophies += 20;
+        updateAchievements();
+        saveProfile();
+        sound("queen", 1.2);
+        setStatus("تم إدخال الملكة الأخيرة وإضافة 50 نقطة. ستنتهي المباراة بعد توقف القطع.");
+        renderHud();
+        updateRemaining();
+        return;
+      }
       queenPocketedThisShot = true;
       queenPendingPlayer = currentPlayer;
       shotScored = true;
@@ -2614,7 +2778,7 @@ function renderHud() {
     }
 
     const points = disc.kind === "white" ? 10 : 5;
-    scores[currentPlayer] = (scores[currentPlayer] || 0) + points;
+    addScore(currentPlayer, points);
     shotScored = true;
     normalPocketedThisShot = true;
     pocketedThisShot += 1;
@@ -2622,10 +2786,13 @@ function renderHud() {
     profile.xp += disc.kind === "white" ? 12 : 8;
     profile.coins += disc.kind === "white" ? 10 : 5;
     profile.trophies += disc.kind === "white" ? 5 : 3;
+    if (activeNormalPiecesCount() === 0 && activeQueenExists()) {
+      lastNormalPocketedThisShot = true;
+      setStatus(`تم إدخال آخر قطعة ${disc.kind === "white" ? "بيضاء" : "سوداء"} وإضافة ${points} نقاط. الملكة ستكون الهدف الأخير في الضربة التالية.`);
+    } else setStatus(`تم إدخال قطعة ${disc.kind === "white" ? "بيضاء" : "سوداء"} وإضافة ${points} نقاط.`);
     updateAchievements();
     saveProfile();
     sound("pocket", 1);
-    setStatus(`تم إدخال قطعة ${disc.kind === "white" ? "بيضاء" : "سوداء"} وإضافة ${points} نقاط.`);
     renderHud();
     updateRemaining();
   }
@@ -2790,7 +2957,7 @@ function renderHud() {
       b.omega += cross2D(contactBX, contactBY, frictionX, frictionY) * inverseInertia(b);
     }
 
-    if ((a.kind === "striker" || b.kind === "striker") && profile.equippedStriker === "legend") strikerImpactUntil = performance.now() + 520;
+    if ((a.kind === "striker" || b.kind === "striker") && activeStrikerSkin() === "legend") strikerImpactUntil = performance.now() + 520;
     sound("collision", clamp(Math.abs(normalImpulse) / 520, .2, 1.2));
   }
 
@@ -2838,7 +3005,7 @@ function renderHud() {
         replaying = false; replayDisplay = null;
         slowBadgeEl.classList.add("hidden");
         replayShotEl.disabled = false;
-        strikerPositionEl.disabled = phase !== "ready" || (mode === "ai" && currentPlayer === 1);
+        refreshControlAvailability();
         updateCamera(discs);
         if (onDone) onDone();
         return;
@@ -2881,43 +3048,280 @@ function renderHud() {
     }
   }
 
+
+  function normalizeRoomCode(value) { return String(value || "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 6); }
+  function generateRoomCode() {
+    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    let code = "";
+    crypto.getRandomValues(new Uint32Array(6)).forEach(value => code += chars[value % chars.length]);
+    return code;
+  }
+  function roomPeerId(code) { return `carrom-${String(code).toLowerCase()}`; }
+  function onlinePlayerTeam(slot) { return onlineSession.capacity === 4 ? `الفريق ${teamIndexForPlayer(slot)+1}` : "مواجهة فردية"; }
+  function currentPlayerProfileName() { return localStorage.getItem("carrom-player-name") || ""; }
+  function setCurrentPlayerProfileName(name) { localStorage.setItem("carrom-player-name", name); }
+
+  function destroyOnlinePeer() {
+    if (onlineSession.syncTimer) clearInterval(onlineSession.syncTimer);
+    onlineSession.syncTimer = null;
+    for (const conn of onlineSession.connections.values()) { try { conn.close(); } catch (_) {} }
+    onlineSession.connections.clear();
+    if (onlineSession.hostConnection) { try { onlineSession.hostConnection.close(); } catch (_) {} }
+    onlineSession.hostConnection = null;
+    if (onlineSession.peer) { try { onlineSession.peer.destroy(); } catch (_) {} }
+    onlineSession.peer = null;
+  }
+
+  function leaveOnlineRoom(showHub = true) {
+    if (onlineSession.active && !onlineSession.isHost && onlineSession.hostConnection?.open) {
+      try { onlineSession.hostConnection.send({type:"leave", slot:onlineSession.localSlot}); } catch (_) {}
+    }
+    destroyOnlinePeer();
+    Object.assign(onlineSession, {
+      active:false,isHost:false,started:false,roomCode:"",capacity:4,players:[],localSlot:0,
+      stateSequence:0,lastAppliedSequence:0,lobbyMessage:"",resultShown:false
+    });
+    if (showHub) showTournamentHub();
+  }
+
+  function showTournamentHub() {
+    if (modalCardEl) modalCardEl.classList.remove("shop-modal-card");
+    modalTitleEl.textContent = "بطولات الأصدقاء";
+    if (!onlineSession.active) {
+      const savedName = currentPlayerProfileName();
+      modalBodyEl.innerHTML = `<div class="tournament-hub">
+        <div class="room-status">أنشئ غرفة وشارك الرمز مع أصدقائك. الاتصال مباشر بين الأجهزة؛ يجب أن يبقى جهاز منشئ الغرفة مفتوحًا حتى نهاية المباراة.</div>
+        <div class="room-choice-grid">
+          <section class="room-choice"><h3>إنشاء بطولة</h3><p>أنشئ مواجهة ثنائية أو بطولة فرق من أربعة لاعبين.</p>
+            <div class="room-field"><label>اسمك</label><input id="hostPlayerName" maxlength="18" value="${savedName}" placeholder="اكتب اسم اللاعب"></div>
+            <div class="room-field"><label>نوع الغرفة</label><select id="roomCapacity"><option value="4" selected>بطولة فرق — 4 لاعبين</option><option value="2">مواجهة ثنائية — لاعبان</option></select></div>
+            <button class="btn primary" data-create-room>إنشاء الغرفة</button>
+          </section>
+          <section class="room-choice"><h3>الانضمام برمز</h3><p>اكتب اسمك ورمز الغرفة الذي أرسله لك منشئ البطولة.</p>
+            <div class="room-field"><label>اسمك</label><input id="joinPlayerName" maxlength="18" value="${savedName}" placeholder="اكتب اسم اللاعب"></div>
+            <div class="room-field"><label>رمز الغرفة</label><input id="joinRoomCode" maxlength="6" dir="ltr" placeholder="ABC123"></div>
+            <button class="btn" data-join-room>دخول الغرفة</button>
+          </section>
+        </div>
+      </div>`;
+    } else renderTournamentLobby();
+    infoModalEl.classList.remove("hidden");
+  }
+
+  function renderTournamentLobby() {
+    if (!onlineSession.active) return showTournamentHub();
+    const required = onlineSession.capacity;
+    const players = Array.from({length:required}, (_,slot) => onlineSession.players[slot] || null);
+    const connectedCount = players.filter(Boolean).length;
+    const rows = players.map((player,slot) => `<div class="room-player ${player?"connected":""}">
+      <div><strong>${player ? player.name : `المقعد ${slot+1}`}</strong><small>${required===4?onlinePlayerTeam(slot):slot===0?"المضيف":"المنافس"} — ${["أسفل","يمين","أعلى","يسار"][slot] || "أعلى"}</small></div>
+      <span>${player ? (slot===onlineSession.localSlot?"أنت":"متصل") : "بانتظار لاعب"}</span>
+    </div>`).join("");
+    const canStart = onlineSession.isHost && connectedCount === required && !onlineSession.started;
+    modalBodyEl.innerHTML = `<div class="tournament-hub">
+      <div class="room-code-box"><div><small>رمز الغرفة</small><strong>${onlineSession.roomCode}</strong></div><button class="btn" data-copy-room>نسخ الرمز</button></div>
+      <div class="room-status">${onlineSession.lobbyMessage || (onlineSession.started?"المباراة بدأت.":`متصل ${connectedCount} من ${required}.`)}</div>
+      <div class="room-players">${rows}</div>
+      <div class="room-actions">
+        ${onlineSession.isHost ? `<button class="btn primary" data-start-online ${canStart?"":"disabled"}>${connectedCount===required?"بدء البطولة":"انتظار اكتمال اللاعبين"}</button>` : `<button class="btn" disabled>بانتظار منشئ الغرفة</button>`}
+        <button class="btn" data-leave-room>مغادرة الغرفة</button>
+      </div>
+    </div>`;
+  }
+
+  function peerErrorMessage(err) {
+    if (!err) return "تعذر الاتصال بالغرفة.";
+    if (err.type === "unavailable-id") return "رمز الغرفة مستخدم حاليًا. حاول إنشاء غرفة جديدة.";
+    if (err.type === "peer-unavailable") return "الغرفة غير موجودة أو أن منشئها أغلق الصفحة.";
+    if (err.type === "browser-incompatible") return "هذا المتصفح لا يدعم الاتصال المباشر. استخدم Chrome حديثًا.";
+    return `تعذر الاتصال: ${err.type || err.message || "خطأ في الشبكة"}`;
+  }
+
+  function createTournamentRoom(name, capacity) {
+    name = String(name || "").trim().slice(0,18);
+    if (!name) return showModal("الاسم مطلوب", '<p class="notice">اكتب اسم اللاعب أولًا.</p>');
+    if (typeof Peer === "undefined") return showModal("تعذر تحميل الاتصال", '<p class="notice">تحقق من اتصال الإنترنت ثم حدّث الصفحة.</p>');
+    leaveOnlineRoom(false);
+    setCurrentPlayerProfileName(name);
+    const code = generateRoomCode();
+    Object.assign(onlineSession,{active:true,isHost:true,started:false,roomCode:code,capacity:Number(capacity)===2?2:4,players:[],localSlot:0,lobbyMessage:"جاري فتح الغرفة..."});
+    onlineSession.players[0] = {slot:0,name,skin:profile.equippedStriker || "classic",connected:true};
+    const peer = new Peer(roomPeerId(code), {debug:1});
+    onlineSession.peer = peer;
+    peer.on("open", () => { onlineSession.lobbyMessage="الغرفة جاهزة. شارك الرمز مع أصدقائك."; renderTournamentLobby(); });
+    peer.on("connection", connection => setupHostConnection(connection));
+    peer.on("error", err => { onlineSession.lobbyMessage=peerErrorMessage(err); renderTournamentLobby(); });
+    peer.on("disconnected", () => { onlineSession.lobbyMessage="انقطع الاتصال بخدمة الغرف. جاري إعادة الاتصال..."; try{peer.reconnect();}catch(_){} renderTournamentLobby(); });
+    showTournamentHub();
+  }
+
+  function setupHostConnection(connection) {
+    connection.on("data", message => {
+      if (!message || typeof message !== "object") return;
+      if (message.type === "join" && connection.__slot === undefined) {
+        const freeSlot = Array.from({length:onlineSession.capacity},(_,i)=>i).find(slot=>!onlineSession.players[slot]);
+        if (freeSlot === undefined) { connection.send({type:"rejected",reason:"الغرفة مكتملة."}); connection.close(); return; }
+        connection.__slot = freeSlot;
+        onlineSession.connections.set(freeSlot, connection);
+        onlineSession.players[freeSlot] = {slot:freeSlot,name:String(message.name||`اللاعب ${freeSlot+1}`).slice(0,18),skin:message.skin||"classic",connected:true};
+        connection.send({type:"joined",slot:freeSlot,roomCode:onlineSession.roomCode,capacity:onlineSession.capacity,players:onlineSession.players});
+        broadcastOnlineMessage({type:"lobby",players:onlineSession.players,capacity:onlineSession.capacity,roomCode:onlineSession.roomCode});
+        onlineSession.lobbyMessage=`انضم ${onlineSession.players[freeSlot].name}.`;
+        renderTournamentLobby();
+      } else if (message.type === "command") handleOnlineCommand(connection.__slot, message);
+      else if (message.type === "leave") removeOnlinePlayer(connection.__slot);
+    });
+    connection.on("close", () => removeOnlinePlayer(connection.__slot));
+    connection.on("error", () => removeOnlinePlayer(connection.__slot));
+  }
+
+  function removeOnlinePlayer(slot) {
+    if (slot === undefined || slot === 0) return;
+    onlineSession.connections.delete(slot);
+    const departed = onlineSession.players[slot]?.name;
+    onlineSession.players[slot] = null;
+    onlineSession.lobbyMessage = departed ? `غادر ${departed} الغرفة.` : "غادر أحد اللاعبين.";
+    broadcastOnlineMessage({type:"lobby",players:onlineSession.players,capacity:onlineSession.capacity,roomCode:onlineSession.roomCode});
+    if (!onlineSession.started) renderTournamentLobby();
+  }
+
+  function joinTournamentRoom(name, code) {
+    name=String(name||"").trim().slice(0,18); code=normalizeRoomCode(code);
+    if (!name || code.length !== 6) return showModal("بيانات غير مكتملة", '<p class="notice">اكتب اسمًا ورمز غرفة مكونًا من 6 خانات.</p>');
+    if (typeof Peer === "undefined") return showModal("تعذر تحميل الاتصال", '<p class="notice">تحقق من اتصال الإنترنت ثم حدّث الصفحة.</p>');
+    leaveOnlineRoom(false); setCurrentPlayerProfileName(name);
+    Object.assign(onlineSession,{active:true,isHost:false,started:false,roomCode:code,players:[],localSlot:-1,lobbyMessage:"جاري الاتصال بالغرفة..."});
+    const peer = new Peer(undefined,{debug:1}); onlineSession.peer=peer;
+    peer.on("open",()=>{
+      const conn=peer.connect(roomPeerId(code),{serialization:"json",reliable:true,metadata:{name}});
+      onlineSession.hostConnection=conn;
+      conn.on("open",()=>conn.send({type:"join",name,skin:profile.equippedStriker||"classic"}));
+      conn.on("data",handleClientOnlineMessage);
+      conn.on("close",()=>onlineConnectionLost());
+      conn.on("error",()=>onlineConnectionLost());
+    });
+    peer.on("error",err=>{onlineSession.lobbyMessage=peerErrorMessage(err);renderTournamentLobby();});
+    showTournamentHub();
+  }
+
+  function handleClientOnlineMessage(message) {
+    if (!message || typeof message !== "object") return;
+    if (message.type === "joined") {
+      onlineSession.localSlot=message.slot; onlineSession.capacity=message.capacity; onlineSession.players=message.players||[];
+      onlineSession.lobbyMessage="تم الاتصال بالغرفة بنجاح."; renderTournamentLobby();
+    } else if (message.type === "rejected") {
+      onlineSession.lobbyMessage=message.reason||"تعذر دخول الغرفة."; renderTournamentLobby();
+    } else if (message.type === "lobby") {
+      onlineSession.players=message.players||onlineSession.players; onlineSession.capacity=message.capacity||onlineSession.capacity; renderTournamentLobby();
+    } else if (message.type === "start") startOnlineClientMatch(message);
+    else if (message.type === "state") applyOnlineState(message);
+    else if (message.type === "result") showModal(message.title||"انتهت المباراة", message.html||"");
+    else if (message.type === "room-closed") { showModal("أُغلقت الغرفة", '<p class="notice">غادر منشئ الغرفة أو أغلق الصفحة.</p>'); leaveOnlineRoom(false); }
+  }
+
+  function onlineConnectionLost() {
+    if (!onlineSession.active) return;
+    showModal("انقطع الاتصال", '<p class="notice">فُقد الاتصال بمنشئ الغرفة. تأكد من الإنترنت أو اطلب منه إنشاء غرفة جديدة.</p>');
+    destroyOnlinePeer();
+    onlineSession.active=false; onlineSession.started=false;
+  }
+
+  function broadcastOnlineMessage(message) {
+    if (!onlineSession.isHost) return;
+    for (const conn of onlineSession.connections.values()) if (conn?.open) { try{conn.send(message);}catch(_){} }
+  }
+
+  function startOnlineTournament() {
+    if (!onlineSession.isHost || onlineSession.players.filter(Boolean).length !== onlineSession.capacity) return;
+    onlineSession.started=true; onlineSession.resultShown=false;
+    infoModalEl.classList.add("hidden");
+    startGame("online", onlineSession.capacity);
+    broadcastOnlineMessage({type:"start",capacity:onlineSession.capacity,players:onlineSession.players,roomCode:onlineSession.roomCode,theme:currentTheme});
+    broadcastOnlineState(true);
+  }
+
+  function startOnlineClientMatch(message) {
+    clearTimers();
+    onlineSession.started=true; onlineSession.capacity=message.capacity; onlineSession.players=message.players||onlineSession.players;
+    mode="online"; playerCount=message.capacity; currentPlayer=0; scores=Array(playerCount).fill(0); teamScores=[0,0];
+    queenPendingPlayer=null; finalQueenReady=false; finalQueenPocketedThisShot=false; queenReturnedForEndgameThisShot=false; lastNormalPocketedThisShot=false;
+    discs=initialPieces(); phase="ready"; strikerOffset=50; currentTheme=message.theme||currentTheme; if(themeEl)themeEl.value=currentTheme;
+    menuEl.classList.add("hidden"); gameEl.classList.remove("hidden"); document.body.classList.add("game-active");
+    setStatus("تم بدء مباراة البطولة. في انتظار بيانات المضيف..."); renderHud(); updateRemaining(); refreshControlAvailability(); infoModalEl.classList.add("hidden");
+  }
+
+  function onlineSnapshot() {
+    return {
+      type:"state",seq:++onlineSession.stateSequence,discs:discs.map(d=>({...d})),scores:[...scores],teamScores:[...teamScores],
+      currentPlayer,phase,strikerOffset,queenPendingPlayer,finalQueenReady,finalQueenPocketedThisShot,
+      players:onlineSession.players,status:statusEl.textContent,timer:timerEl.textContent,
+      countdownText:countdownEl.textContent,countdownHidden:countdownEl.classList.contains("hidden"),theme:currentTheme
+    };
+  }
+
+  function broadcastOnlineState(force=false) {
+    if (!onlineSession.isHost || !onlineSession.started) return;
+    broadcastOnlineMessage(onlineSnapshot());
+  }
+  function startOnlineStateSync() {
+    if (!onlineSession.isHost || !onlineSession.started) return;
+    if (onlineSession.syncTimer) clearInterval(onlineSession.syncTimer);
+    onlineSession.syncTimer=setInterval(()=>broadcastOnlineState(),85);
+  }
+
+  function applyOnlineState(state) {
+    if (!onlineSession.active || onlineSession.isHost || state.seq <= onlineSession.lastAppliedSequence) return;
+    onlineSession.lastAppliedSequence=state.seq;
+    discs=(state.discs||[]).map(d=>({...d})); scores=[...(state.scores||[])]; teamScores=[...(state.teamScores||[0,0])];
+    currentPlayer=state.currentPlayer; phase=state.phase; strikerOffset=state.strikerOffset; queenPendingPlayer=state.queenPendingPlayer;
+    finalQueenReady=!!state.finalQueenReady; finalQueenPocketedThisShot=!!state.finalQueenPocketedThisShot; onlineSession.players=state.players||onlineSession.players;
+    currentTheme=state.theme||currentTheme; strikerPositionEl.value=String(strikerOffset);
+    statusEl.textContent=state.status||""; timerEl.textContent=state.timer||"جاهز"; countdownEl.textContent=state.countdownText||"";
+    countdownEl.classList.toggle("hidden",!!state.countdownHidden); renderHud(); updateRemaining(); refreshControlAvailability();
+  }
+
+  function sendOnlineCommand(action,payload={}) {
+    const message={type:"command",action,slot:onlineSession.localSlot,...payload};
+    if (onlineSession.isHost) handleOnlineCommand(onlineSession.localSlot,message);
+    else if (onlineSession.hostConnection?.open) onlineSession.hostConnection.send(message);
+  }
+
+  function handleOnlineCommand(slot,message) {
+    if (!onlineSession.isHost || mode!=="online" || !onlineSession.started || slot!==currentPlayer || phase!=="ready") return;
+    if (message.action==="position") {
+      strikerOffset=clamp(Number(message.value)||50,0,100); strikerPositionEl.value=String(strikerOffset); placeStriker(currentPlayer,strikerOffset); broadcastOnlineState(true);
+    } else if (message.action==="shot") {
+      const vx=Number(message.vx),vy=Number(message.vy); if(Number.isFinite(vx)&&Number.isFinite(vy)) beginShot(vx,vy);
+    }
+  }
+
   function canvasPoint(event) {
     const r=canvas.getBoundingClientRect();return {x:(event.clientX-r.left)/r.width*BOARD_SIZE,y:(event.clientY-r.top)/r.height*BOARD_SIZE};
   }
 
   canvas.addEventListener("pointerdown", event => {
-    if(replaying || phase!=="ready" || (mode==="ai"&&currentPlayer===1)) return;
+    if (!canLocalControl()) return;
     const striker=getStriker(); if(!striker || !striker.active) return;
-    const p = canvasPoint(event);
+    const p=canvasPoint(event);
     if(distance(p,striker)>striker.r*2.7){ setStatus("اضغط على المضرب ثم اسحبه للخلف لتحديد اتجاه الضربة."); return; }
-    canvas.setPointerCapture(event.pointerId);
-    aiming = true;
-    pullStart = { x: striker.x, y: striker.y };
-    aimPoint = p;
-    sound("ui");
+    canvas.setPointerCapture(event.pointerId); aiming=true; pullStart={x:striker.x,y:striker.y}; aimPoint=p; sound("ui");
   });
-  canvas.addEventListener("pointermove", event => {
-    if(!aiming) return;
-    aimPoint = canvasPoint(event);
-  });
+  canvas.addEventListener("pointermove", event => { if(aiming) aimPoint=canvasPoint(event); });
   canvas.addEventListener("pointerup", event => {
-    if(!aiming) return;
-    const striker = getStriker();
-    const p = canvasPoint(event);
-    aiming = false;
-    aimPoint = null;
-    pullStart = null;
-    if(!striker) return;
-    const dx = striker.x - p.x, dy = striker.y - p.y;
-    const len = Math.hypot(dx, dy);
-    if(len < 35){ setStatus("اسحب المضرب إلى الخلف لمسافة أكبر ثم اتركه."); return; }
-    const speed = clamp(len * 3.35, 480, 1650);
-    beginShot(dx / len * speed, dy / len * speed);
+    if(!aiming || !canLocalControl()) return;
+    const striker=getStriker(); const p=canvasPoint(event); aiming=false; aimPoint=null; pullStart=null; if(!striker)return;
+    const dx=striker.x-p.x,dy=striker.y-p.y,len=Math.hypot(dx,dy);
+    if(len<35){setStatus("اسحب المضرب إلى الخلف لمسافة أكبر ثم اتركه.");return;}
+    const speed=clamp(len*3.35,480,1650),vx=dx/len*speed,vy=dy/len*speed;
+    if(mode==="online") sendOnlineCommand("shot",{vx,vy}); else beginShot(vx,vy);
   });
   canvas.addEventListener("pointercancel",()=>{aiming=false;aimPoint=null;pullStart=null;});
 
   strikerPositionEl.addEventListener("input", event => {
-    if(phase!=="ready" || (mode==="ai"&&currentPlayer===1))return;strikerOffset=Number(event.target.value);placeStriker(currentPlayer,strikerOffset);
+    if(!canLocalControl())return;
+    const value=Number(event.target.value);
+    if(mode==="online") sendOnlineCommand("position",{value});
+    else {strikerOffset=value;placeStriker(currentPlayer,strikerOffset);}
   });
   document.querySelectorAll("[data-mode]").forEach(button=>button.addEventListener("click",()=>startGame(button.dataset.mode,Number(button.dataset.count))));
   document.getElementById("restart").addEventListener("click",restart);
@@ -2937,17 +3341,29 @@ function renderHud() {
   document.getElementById("showAchievementsMenu").addEventListener("click", showAchievementsModal);
   document.getElementById("openShopMenu").addEventListener("click", showShop);
   document.getElementById("openShopGame").addEventListener("click", showShop);
-  document.getElementById("onlineMode").addEventListener("click",()=>showModal("اللعب عبر الإنترنت",`<p class="notice">لتشغيل مباريات حقيقية عبر الإنترنت نحتاج ربط اللعبة بخدمة مثل Supabase Realtime، مع إنشاء حسابات وغرف ومزامنة وحماية من الغش. النسخة الحالية لا تدّعي وجود اتصال وهمي.</p><p>الخطوة البرمجية التالية هي إضافة قاعدة بيانات ومفتاح مشروع، ثم ربط الغرف والتصنيف العالمي.</p>`));
+  document.getElementById("tournamentMode").addEventListener("click", showTournamentHub);
   document.getElementById("closeModal").addEventListener("click", closeInfoModal);
   modalBodyEl.addEventListener("click", event => {
     const category = event.target.closest("[data-shop-category]");
     const buy = event.target.closest("[data-buy-skin]");
     const equip = event.target.closest("[data-equip-skin]");
     const daily = event.target.closest("[data-claim-daily]");
+    const createRoom = event.target.closest("[data-create-room]");
+    const joinRoom = event.target.closest("[data-join-room]");
+    const startOnline = event.target.closest("[data-start-online]");
+    const leaveRoom = event.target.closest("[data-leave-room]");
+    const copyRoom = event.target.closest("[data-copy-room]");
+    const resultBack = event.target.closest("[data-result-back]");
     if (category) { activeShopCategory = category.dataset.shopCategory; renderShopContent(); startShopPreviewAnimation(); }
     else if (buy) buySkin(buy.dataset.buySkin);
     else if (equip) equipSkin(equip.dataset.equipSkin);
     else if (daily) claimDailyReward();
+    else if (createRoom) createTournamentRoom(document.getElementById("hostPlayerName")?.value, document.getElementById("roomCapacity")?.value);
+    else if (joinRoom) joinTournamentRoom(document.getElementById("joinPlayerName")?.value, document.getElementById("joinRoomCode")?.value);
+    else if (startOnline) startOnlineTournament();
+    else if (leaveRoom) leaveOnlineRoom(true);
+    else if (copyRoom) { navigator.clipboard?.writeText(onlineSession.roomCode); onlineSession.lobbyMessage="تم نسخ رمز الغرفة."; renderTournamentLobby(); }
+    else if (resultBack) { closeInfoModal(); backToMenu(); }
   });
 
   function loop(now){
@@ -2956,7 +3372,7 @@ function renderHud() {
     physicsAccumulator += frameDt;
     let steps = 0;
     while (physicsAccumulator >= FIXED_DT && steps < MAX_SUB_STEPS) {
-      updatePhysics(FIXED_DT);
+      if (!(mode === "online" && onlineSession.active && !onlineSession.isHost)) updatePhysics(FIXED_DT);
       physicsAccumulator -= FIXED_DT;
       steps += 1;
     }

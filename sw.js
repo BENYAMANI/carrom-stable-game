@@ -1,4 +1,4 @@
-const CACHE_NAME = "carrom-pwa-v14-endgame";
+const CACHE_NAME = "carrom-pwa-v15-online";
 const APP_SHELL = [
   "./",
   "./index.html",
