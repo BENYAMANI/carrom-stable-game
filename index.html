@@ -46,7 +46,9 @@
     .player-card.active { background: #1d4ed8; border-color: #93c5fd; }
     .score { margin-top: 5px; color: #fde68a; }
     .game-wrap { display: grid; grid-template-columns: minmax(0, 760px) minmax(260px, 1fr); gap: 16px; align-items: start; }
-    canvas { display: block; width: 100%; height: auto; border-radius: 24px; touch-action: none; cursor: crosshair; box-shadow: 0 34px 85px rgba(0,0,0,.56); }
+    .camera-frame { position: relative; overflow: hidden; border-radius: 24px; background: #111827; box-shadow: 0 34px 85px rgba(0,0,0,.56); }
+    canvas { display: block; width: 100%; height: auto; border-radius: 24px; touch-action: none; cursor: crosshair; transform-origin: 50% 50%; transition: transform 90ms linear; box-shadow: none; }
+    .slow-badge { position: absolute; top: 14px; left: 14px; z-index: 5; padding: 9px 13px; border-radius: 999px; background: rgba(127,29,29,.9); border: 1px solid rgba(254,202,202,.45); color: #fee2e2; font-weight: 900; letter-spacing: .4px; }
     .controls { padding: 18px; position: sticky; top: 12px; }
     .status { padding: 14px; border-radius: 12px; background: #0f172a; color: #e2e8f0; line-height: 1.7; margin: 14px 0; min-height: 76px; }
     .countdown { text-align: center; padding: 11px; border-radius: 999px; background: rgba(251,191,36,.12); border: 1px solid rgba(251,191,36,.5); color: #fde68a; font-weight: 900; margin-bottom: 12px; }
@@ -58,6 +60,15 @@
     footer strong { color: #e2e8f0; }
     .hidden { display: none !important; }
     .notice { margin-top: 14px; background: #0f172a; border-radius: 12px; padding: 14px; color: #cbd5e1; }
+    .profile-strip { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-top: 14px; }
+    .profile-chip { background: #0f172a; border-radius: 11px; padding: 10px; text-align: center; color: #cbd5e1; }
+    .profile-chip strong { color: #fbbf24; display: block; margin-top: 4px; }
+    .modal { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 18px; background: rgba(2,6,23,.82); }
+    .modal-card { width: min(680px,100%); max-height: 86vh; overflow: auto; padding: 22px; border-radius: 18px; background: #172033; border: 1px solid var(--border); box-shadow: 0 30px 90px rgba(0,0,0,.55); }
+    .achievement-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(190px,1fr)); gap: 10px; margin: 16px 0; }
+    .achievement { padding: 13px; border-radius: 12px; background: #0f172a; border: 1px solid rgba(255,255,255,.08); color: #94a3b8; }
+    .achievement.unlocked { border-color: rgba(251,191,36,.52); color: #f8fafc; background: rgba(120,83,16,.18); }
+    .achievement strong { display: block; color: inherit; margin-bottom: 5px; }
     @media (max-width: 900px) {
       .game-wrap { grid-template-columns: 1fr; }
       .controls { position: static; }
@@ -69,7 +80,7 @@
     <header>
       <p class="eyebrow">لعبة كيرم مستقرة — ملف واحد فقط</p>
       <h1>كيرم محمد عبدالله الجابري</h1>
-      <p>تم تطوير الفيزياء لتعمل بخطوات زمنية ثابتة ودقيقة، مع احتساب السرعة والزخم والاحتكاك وزوايا الاصطدام ودوران الحبوب بصورة أكثر واقعية.</p>
+      <p>فيزياء محسنة، خمسة مستويات للذكاء الاصطناعي، كاميرا تتبع ديناميكية، إعادة بطيئة للتسديدات المميزة، وتصنيف وإنجازات محفوظة على الجهاز.</p>
     </header>
 
     <section id="menu" class="menu panel">
@@ -77,9 +88,11 @@
       <div class="field">
         <label for="difficulty">مستوى الذكاء الاصطناعي</label>
         <select id="difficulty">
+          <option value="rookie">تجريبي</option>
           <option value="easy">مبتدئ</option>
           <option value="medium" selected>متوسط</option>
           <option value="hard">متقدم</option>
+          <option value="expert">محترف</option>
         </select>
       </div>
       <div class="menu-grid">
@@ -87,14 +100,25 @@
         <button class="btn" data-mode="local2" data-count="2">لاعبان على نفس الجهاز</button>
         <button class="btn" data-mode="local4" data-count="4">أربعة لاعبين على نفس الجهاز</button>
         <button class="btn" data-mode="training" data-count="1">وضع التدريب</button>
+        <button id="onlineMode" class="btn">اللعب عبر الإنترنت</button>
+        <button id="showAchievementsMenu" class="btn">التصنيف والإنجازات</button>
       </div>
-      <div class="notice">اللعب عبر الإنترنت يحتاج خادمًا وقاعدة بيانات لحظية؛ لذلك لم أضع زرًا وهميًا داخل هذه النسخة المستقرة.</div>
+      <div class="profile-strip">
+        <div class="profile-chip">الرتبة<strong id="menuRank">برونزي</strong></div>
+        <div class="profile-chip">XP<strong id="menuXp">0</strong></div>
+        <div class="profile-chip">الكؤوس<strong id="menuTrophies">0</strong></div>
+        <div class="profile-chip">العملات<strong id="menuCoins">0</strong></div>
+      </div>
+      <div class="notice">اللعب المحلي والتدريب يعملان بالكامل. اللعب الحقيقي عبر الإنترنت يحتاج خدمة مزامنة وقاعدة بيانات، لذلك زر الأونلاين يشرح متطلبات التفعيل بدل إظهار اتصال وهمي.</div>
     </section>
 
     <section id="game" class="hidden">
       <div id="hud" class="hud"></div>
       <div class="game-wrap">
-        <canvas id="board" width="900" height="900" aria-label="لوح لعبة الكيرم"></canvas>
+        <div id="cameraFrame" class="camera-frame">
+          <canvas id="board" width="900" height="900" aria-label="لوح لعبة الكيرم"></canvas>
+          <div id="slowBadge" class="slow-badge hidden">إعادة بطيئة</div>
+        </div>
         <aside class="controls panel">
           <div class="field">
             <label for="strikerPosition">موقع المضرب على خط البداية</label>
@@ -104,6 +128,8 @@
           <div class="stats">
             <div class="stat">القطع المتبقية<br><strong id="remaining">19</strong></div>
             <div class="stat">الوقت<br><strong id="timer">جاهز</strong></div>
+            <div class="stat">الرتبة<br><strong id="rankLabel">برونزي</strong></div>
+            <div class="stat">XP<br><strong id="xpLabel">0</strong></div>
           </div>
 
           <div id="countdown" class="countdown hidden">7</div>
@@ -112,6 +138,8 @@
           <div class="actions">
             <button id="toggleAim" class="btn">إخفاء خط التصويب</button>
             <button id="toggleSound" class="btn">كتم الصوت</button>
+            <button id="replayShot" class="btn" disabled>إعادة بطيئة للتسديدة</button>
+            <button id="showAchievements" class="btn">التصنيف والإنجازات</button>
             <button id="restart" class="btn">إعادة المباراة</button>
             <button id="back" class="btn">العودة للبداية</button>
           </div>
@@ -124,6 +152,14 @@
         </aside>
       </div>
     </section>
+
+    <div id="infoModal" class="modal hidden" role="dialog" aria-modal="true">
+      <div class="modal-card">
+        <h2 id="modalTitle">التصنيف والإنجازات</h2>
+        <div id="modalBody"></div>
+        <button id="closeModal" class="btn primary">إغلاق</button>
+      </div>
+    </div>
 
     <footer>
       <div>جميع الحقوق محفوظة © 2026</div>
@@ -172,6 +208,14 @@
   const difficultyEl = document.getElementById("difficulty");
   const toggleAimEl = document.getElementById("toggleAim");
   const toggleSoundEl = document.getElementById("toggleSound");
+  const cameraFrameEl = document.getElementById("cameraFrame");
+  const slowBadgeEl = document.getElementById("slowBadge");
+  const replayShotEl = document.getElementById("replayShot");
+  const rankLabelEl = document.getElementById("rankLabel");
+  const xpLabelEl = document.getElementById("xpLabel");
+  const infoModalEl = document.getElementById("infoModal");
+  const modalTitleEl = document.getElementById("modalTitle");
+  const modalBodyEl = document.getElementById("modalBody");
 
   const pocketCenters = [
     { x: 55, y: 55 },
@@ -202,9 +246,100 @@
   let lastCollisionSound = 0;
   let lastFrameTime = performance.now();
   let physicsAccumulator = 0;
+  let replayFrames = [];
+  let recordingFrames = [];
+  let replayDisplay = null;
+  let replayTimer = null;
+  let replaying = false;
+  let lastReplayCapture = 0;
+  let pocketedThisShot = 0;
+  let queenPocketedThisShot = false;
+  let shotPeakSpeed = 0;
+  let profile = loadProfile();
 
   function clamp(value, min, max) { return Math.max(min, Math.min(max, value)); }
   function distance(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
+
+  function loadProfile() {
+    const fallback = { xp: 0, coins: 0, trophies: 0, shots: 0, pockets: 0, queens: 0, wins: 0, achievements: [] };
+    try {
+      return { ...fallback, ...JSON.parse(localStorage.getItem("carrom-pro-profile") || "{}") };
+    } catch (_) { return fallback; }
+  }
+
+  function saveProfile() {
+    localStorage.setItem("carrom-pro-profile", JSON.stringify(profile));
+    updateProfileUI();
+  }
+
+  function rankName(trophies) {
+    if (trophies >= 1200) return "ألماسي";
+    if (trophies >= 700) return "بلاتيني";
+    if (trophies >= 350) return "ذهبي";
+    if (trophies >= 120) return "فضي";
+    return "برونزي";
+  }
+
+  const achievementDefinitions = [
+    { id: "first-pocket", title: "أول قطعة", text: "أدخل أول قطعة في الجيب", test: p => p.pockets >= 1 },
+    { id: "ten-pockets", title: "جامع القطع", text: "أدخل 10 قطع", test: p => p.pockets >= 10 },
+    { id: "queen", title: "صياد الملكة", text: "أدخل الملكة الحمراء", test: p => p.queens >= 1 },
+    { id: "fifty-shots", title: "خبير التسديد", text: "نفذ 50 ضربة", test: p => p.shots >= 50 },
+    { id: "silver", title: "الرتبة الفضية", text: "احصل على 120 كأسًا", test: p => p.trophies >= 120 },
+    { id: "gold", title: "الرتبة الذهبية", text: "احصل على 350 كأسًا", test: p => p.trophies >= 350 },
+  ];
+
+  function updateAchievements() {
+    let unlocked = false;
+    for (const achievement of achievementDefinitions) {
+      if (achievement.test(profile) && !profile.achievements.includes(achievement.id)) {
+        profile.achievements.push(achievement.id);
+        profile.xp += 40;
+        profile.coins += 25;
+        unlocked = true;
+      }
+    }
+    if (unlocked) sound("queen", .55);
+  }
+
+  function updateProfileUI() {
+    const rank = rankName(profile.trophies);
+    const fields = {
+      menuRank: rank,
+      menuXp: profile.xp,
+      menuTrophies: profile.trophies,
+      menuCoins: profile.coins,
+    };
+    Object.entries(fields).forEach(([id, value]) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = String(value);
+    });
+    if (rankLabelEl) rankLabelEl.textContent = rank;
+    if (xpLabelEl) xpLabelEl.textContent = String(profile.xp);
+  }
+
+  function showModal(title, html) {
+    modalTitleEl.textContent = title;
+    modalBodyEl.innerHTML = html;
+    infoModalEl.classList.remove("hidden");
+  }
+
+  function showAchievementsModal() {
+    const cards = achievementDefinitions.map(item => {
+      const unlocked = profile.achievements.includes(item.id);
+      return `<div class="achievement ${unlocked ? "unlocked" : ""}"><strong>${unlocked ? "✓ " : "🔒 "}${item.title}</strong>${item.text}</div>`;
+    }).join("");
+    showModal("التصنيف والإنجازات", `
+      <div class="profile-strip">
+        <div class="profile-chip">الرتبة<strong>${rankName(profile.trophies)}</strong></div>
+        <div class="profile-chip">XP<strong>${profile.xp}</strong></div>
+        <div class="profile-chip">الكؤوس<strong>${profile.trophies}</strong></div>
+        <div class="profile-chip">العملات<strong>${profile.coins}</strong></div>
+      </div>
+      <div class="achievement-grid">${cards}</div>
+      <p class="notice">التصنيف محفوظ على هذا الجهاز. الترتيب العالمي الحقيقي يحتاج خادمًا وحسابات مستخدمين.</p>
+    `);
+  }
 
   function createDisc(id, kind, x, y, r) {
     const mass = kind === "striker" ? 1.35 : kind === "queen" ? 1.05 : 1;
@@ -295,6 +430,12 @@
     if (shotTimer) clearTimeout(shotTimer);
     if (countdownTimer) clearInterval(countdownTimer);
     if (aiTimer) clearTimeout(aiTimer);
+    if (replayTimer) clearInterval(replayTimer);
+    replayTimer = null;
+    replaying = false;
+    replayDisplay = null;
+    slowBadgeEl.classList.add("hidden");
+    canvas.style.transform = "scale(1)";
     shotTimer = countdownTimer = aiTimer = null;
     countdownEl.classList.add("hidden");
     timerEl.textContent = "جاهز";
@@ -349,6 +490,10 @@
     const striker = getStriker(); if (!striker || !striker.active) return;
     striker.vx = vx; striker.vy = vy; striker.omega = 0;
     shotScored = false; strikerFoul = false; phase = "moving"; aiming = false; aimPoint = null;
+    recordingFrames = []; replayFrames = []; replayDisplay = null; lastReplayCapture = 0;
+    pocketedThisShot = 0; queenPocketedThisShot = false; shotPeakSpeed = Math.hypot(vx, vy);
+    replayShotEl.disabled = true;
+    profile.shots += 1; profile.xp += 2; saveProfile();
     strikerPositionEl.disabled = true;
     sound("strike", clamp(Math.hypot(vx, vy) / 30, .5, 1.2));
     startSevenSecondTimer();
@@ -388,12 +533,19 @@
     countdownEl.classList.add("hidden");
     timerEl.textContent = "جاهز";
     renderHud();
+    replayFrames = recordingFrames.slice();
+    replayShotEl.disabled = replayFrames.length < 4;
 
     if (strikerFoul) setStatus(`مخالفة: دخل المضرب. الدور الآن للاعب ${currentPlayer + 1}.`);
     else if (shotScored) setStatus(`ضربة ناجحة. يستمر دور اللاعب ${currentPlayer + 1}.`);
     else setStatus(playerCount === 1 ? "انتهت الضربة. يمكنك المحاولة مجددًا." : `لم تدخل قطعة. الدور الآن للاعب ${currentPlayer + 1}.`);
 
-    if (mode === "ai" && currentPlayer === 1) scheduleAI();
+    const afterReplay = () => { if (mode === "ai" && currentPlayer === 1) scheduleAI(); };
+    if ((shotScored || queenPocketedThisShot || shotPeakSpeed > 1450) && replayFrames.length > 4) {
+      setTimeout(() => startReplay(afterReplay), 350);
+    } else {
+      afterReplay();
+    }
   }
 
   function scheduleAI() {
@@ -404,15 +556,45 @@
       const striker = getStriker();
       const targets = discs.filter(d => d.active && d.kind !== "striker");
       if (!striker || !targets.length) return;
-      const target = targets.reduce((best, d) => distance(striker, d) < distance(striker, best) ? d : best);
-      const dx = target.x - striker.x, dy = target.y - striker.y, len = Math.max(1, Math.hypot(dx, dy));
-      const spread = difficulty === "easy" ? .35 : difficulty === "medium" ? .16 : .06;
-      const error = (Math.random() - .5) * spread;
+      const settings = {
+        rookie: { spread: .55, speed: 650 },
+        easy: { spread: .34, speed: 820 },
+        medium: { spread: .16, speed: 1080 },
+        hard: { spread: .075, speed: 1320 },
+        expert: { spread: .025, speed: 1520 },
+      }[difficulty] || { spread: .16, speed: 1080 };
+
+      let target;
+      if (difficulty === "rookie") {
+        target = targets[Math.floor(Math.random() * targets.length)];
+      } else if (difficulty === "hard" || difficulty === "expert") {
+        target = targets.reduce((best, disc) => {
+          const discPocket = Math.min(...pocketCenters.map(p => distance(disc, p)));
+          const bestPocket = Math.min(...pocketCenters.map(p => distance(best, p)));
+          const discScore = discPocket + distance(striker, disc) * .28;
+          const bestScore = bestPocket + distance(striker, best) * .28;
+          return discScore < bestScore ? disc : best;
+        });
+      } else {
+        target = targets.reduce((best, d) => distance(striker, d) < distance(striker, best) ? d : best);
+      }
+
+      let aimX = target.x;
+      let aimY = target.y;
+      if (difficulty === "hard" || difficulty === "expert") {
+        const pocket = pocketCenters.reduce((best, p) => distance(target, p) < distance(target, best) ? p : best);
+        const pdx = pocket.x - target.x, pdy = pocket.y - target.y;
+        const plen = Math.max(1, Math.hypot(pdx, pdy));
+        aimX = target.x - (pdx / plen) * (target.r + STRIKER_RADIUS * .65);
+        aimY = target.y - (pdy / plen) * (target.r + STRIKER_RADIUS * .65);
+      }
+
+      const dx = aimX - striker.x, dy = aimY - striker.y, len = Math.max(1, Math.hypot(dx, dy));
+      const error = (Math.random() - .5) * settings.spread;
       const cos = Math.cos(error), sin = Math.sin(error);
       const nx = (dx / len) * cos - (dy / len) * sin;
       const ny = (dx / len) * sin + (dy / len) * cos;
-      const speed = difficulty === "easy" ? 780 : difficulty === "medium" ? 1080 : 1360;
-      beginShot(nx * speed, ny * speed);
+      beginShot(nx * settings.speed, ny * settings.speed);
     }, 900);
   }
 
@@ -426,6 +608,13 @@
       const points = disc.kind === "queen" ? 3 : 1;
       scores[currentPlayer] = (scores[currentPlayer] || 0) + points;
       shotScored = true;
+      pocketedThisShot += 1;
+      profile.pockets += 1;
+      profile.xp += disc.kind === "queen" ? 25 : 8;
+      profile.coins += disc.kind === "queen" ? 15 : 3;
+      profile.trophies += disc.kind === "queen" ? 10 : 3;
+      if (disc.kind === "queen") { queenPocketedThisShot = true; profile.queens += 1; }
+      updateAchievements(); saveProfile();
       sound(disc.kind === "queen" ? "queen" : "pocket", 1);
     }
     renderHud(); updateRemaining();
@@ -594,6 +783,60 @@
     sound("collision", clamp(Math.abs(normalImpulse) / 520, .2, 1.2));
   }
 
+  function captureReplayFrame(now) {
+    if (phase !== "moving" || replaying || now - lastReplayCapture < 48) return;
+    lastReplayCapture = now;
+    recordingFrames.push(discs.map(d => ({ ...d })));
+    if (recordingFrames.length > 180) recordingFrames.shift();
+  }
+
+  function fastestDisc(list) {
+    let best = null;
+    let speed = 0;
+    for (const disc of list) {
+      if (!disc.active) continue;
+      const nextSpeed = Math.hypot(disc.vx || 0, disc.vy || 0);
+      if (nextSpeed > speed) { speed = nextSpeed; best = disc; }
+    }
+    shotPeakSpeed = Math.max(shotPeakSpeed, speed);
+    return best;
+  }
+
+  function updateCamera(list) {
+    if (phase !== "moving" && !replaying) {
+      canvas.style.transformOrigin = "50% 50%";
+      canvas.style.transform = "scale(1)";
+      return;
+    }
+    const target = fastestDisc(list);
+    if (!target) return;
+    canvas.style.transformOrigin = `${target.x / BOARD_SIZE * 100}% ${target.y / BOARD_SIZE * 100}%`;
+    canvas.style.transform = `scale(${replaying ? 1.16 : 1.08})`;
+  }
+
+  function startReplay(onDone) {
+    if (replaying || replayFrames.length < 4) { if (onDone) onDone(); return; }
+    replaying = true;
+    slowBadgeEl.classList.remove("hidden");
+    replayShotEl.disabled = true;
+    strikerPositionEl.disabled = true;
+    let index = 0;
+    replayTimer = setInterval(() => {
+      if (index >= replayFrames.length) {
+        clearInterval(replayTimer); replayTimer = null;
+        replaying = false; replayDisplay = null;
+        slowBadgeEl.classList.add("hidden");
+        replayShotEl.disabled = false;
+        strikerPositionEl.disabled = phase !== "ready" || (mode === "ai" && currentPlayer === 1);
+        updateCamera(discs);
+        if (onDone) onDone();
+        return;
+      }
+      replayDisplay = replayFrames[index].map(d => ({ ...d }));
+      index += 1;
+    }, 115);
+  }
+
   function updatePhysics(dt) {
     if (phase !== "moving") return;
 
@@ -672,8 +915,9 @@
     ctx.strokeStyle="#8d3823";ctx.lineWidth=3.5;ctx.beginPath();ctx.arc(450,450,116,0,Math.PI*2);ctx.stroke();ctx.beginPath();ctx.arc(450,450,48,0,Math.PI*2);ctx.stroke();
     const lines=[[250,BASELINE_NEAR,650,BASELINE_NEAR],[250,BASELINE_FAR,650,BASELINE_FAR],[BASELINE_NEAR,250,BASELINE_NEAR,650],[BASELINE_FAR,250,BASELINE_FAR,650]];for(const l of lines){ctx.beginPath();ctx.moveTo(l[0],l[1]);ctx.lineTo(l[2],l[3]);ctx.stroke();}
     const side=playerSide(currentPlayer,playerCount);ctx.fillStyle="rgba(37,99,235,.075)";if(side==="bottom")ctx.fillRect(218,708,464,96);if(side==="top")ctx.fillRect(218,96,464,96);if(side==="left")ctx.fillRect(96,218,96,464);if(side==="right")ctx.fillRect(708,218,96,464);
-    for(const d of discs) if(d.active) drawDisc(d);
-    const striker=getStriker();
+    const displayDiscs = replaying && replayDisplay ? replayDisplay : discs;
+    for(const d of displayDiscs) if(d.active) drawDisc(d);
+    const striker = displayDiscs.find(d => d.kind === "striker");
     if(aimVisible && aiming && aimPoint && striker){ctx.save();ctx.setLineDash([14,10]);ctx.lineWidth=5;ctx.strokeStyle="#2563eb";ctx.beginPath();ctx.moveTo(striker.x,striker.y);ctx.lineTo(aimPoint.x,aimPoint.y);ctx.stroke();ctx.setLineDash([]);ctx.beginPath();ctx.arc(aimPoint.x,aimPoint.y,13,0,Math.PI*2);ctx.fillStyle="#fbbf24";ctx.fill();const power=clamp(distance(striker,aimPoint)/3.2,0,100);ctx.fillStyle="rgba(15,23,42,.86)";ctx.fillRect(285,26,330,35);ctx.fillStyle="#fbbf24";ctx.fillRect(285,26,3.3*power,35);ctx.strokeStyle="#fff";ctx.strokeRect(285,26,330,35);ctx.restore();}
   }
 
@@ -682,7 +926,7 @@
   }
 
   canvas.addEventListener("pointerdown", event => {
-    if(phase!=="ready" || (mode==="ai"&&currentPlayer===1)) return;
+    if(replaying || phase!=="ready" || (mode==="ai"&&currentPlayer===1)) return;
     const striker=getStriker();if(!striker||!striker.active)return;const p=canvasPoint(event);
     if(distance(p,striker)>striker.r*2.7){setStatus("ابدأ السحب من المضرب نفسه.");return;}
     canvas.setPointerCapture(event.pointerId);aiming=true;aimPoint=p;sound("ui");
@@ -703,6 +947,11 @@
   document.getElementById("back").addEventListener("click",backToMenu);
   toggleAimEl.addEventListener("click",()=>{aimVisible=!aimVisible;toggleAimEl.textContent=aimVisible?"إخفاء خط التصويب":"إظهار خط التصويب";});
   toggleSoundEl.addEventListener("click",()=>{soundEnabled=!soundEnabled;toggleSoundEl.textContent=soundEnabled?"كتم الصوت":"تشغيل الصوت";if(soundEnabled)sound("ui");});
+  replayShotEl.addEventListener("click",()=>startReplay());
+  document.getElementById("showAchievements").addEventListener("click", showAchievementsModal);
+  document.getElementById("showAchievementsMenu").addEventListener("click", showAchievementsModal);
+  document.getElementById("onlineMode").addEventListener("click",()=>showModal("اللعب عبر الإنترنت",`<p class="notice">لتشغيل مباريات حقيقية عبر الإنترنت نحتاج ربط اللعبة بخدمة مثل Supabase Realtime، مع إنشاء حسابات وغرف ومزامنة وحماية من الغش. النسخة الحالية لا تدّعي وجود اتصال وهمي.</p><p>الخطوة البرمجية التالية هي إضافة قاعدة بيانات ومفتاح مشروع، ثم ربط الغرف والتصنيف العالمي.</p>`));
+  document.getElementById("closeModal").addEventListener("click",()=>infoModalEl.classList.add("hidden"));
 
   function loop(now){
     const frameDt = Math.min(Math.max((now - lastFrameTime) / 1000, 0), MAX_FRAME_DT);
@@ -715,9 +964,12 @@
       steps += 1;
     }
     if (steps === MAX_SUB_STEPS) physicsAccumulator = 0;
+    captureReplayFrame(now);
+    updateCamera(replaying && replayDisplay ? replayDisplay : discs);
     drawBoard();
     requestAnimationFrame(loop);
   }
+  updateAchievements(); saveProfile();
   discs=initialPieces();drawBoard();requestAnimationFrame(loop);
 })();
 </script>
