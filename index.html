@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0f172a" />
+  <title>كيرم محمد عبدالله الجابري</title>
+  <style>
+    :root {
+      --bg: #0b1220;
+      --panel: #172033;
+      --panel-2: #0f172a;
+      --text: #f8fafc;
+      --muted: #cbd5e1;
+      --accent: #fbbf24;
+      --blue: #2563eb;
+      --border: rgba(255,255,255,.12);
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); font-family: Arial, Tahoma, sans-serif; }
+    body {
+      background:
+        radial-gradient(circle at 50% -10%, rgba(37,99,235,.18), transparent 36%),
+        linear-gradient(180deg, #0f172a 0%, #070d18 100%);
+    }
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+    .app { width: min(1100px, calc(100% - 24px)); margin: 0 auto; padding: 24px 0 40px; }
+    header { text-align: center; margin-bottom: 18px; }
+    header .eyebrow { color: #5eead4; font-weight: 800; margin: 0; }
+    header h1 { margin: 8px 0; font-size: clamp(30px, 5vw, 48px); }
+    header p { max-width: 850px; margin: 0 auto; color: var(--muted); line-height: 1.8; }
+    .panel { background: rgba(23,32,51,.96); border: 1px solid var(--border); border-radius: 20px; box-shadow: 0 24px 70px rgba(0,0,0,.35); }
+    .menu { max-width: 760px; margin: 28px auto; padding: 24px; }
+    .menu h2 { text-align: center; margin-top: 0; }
+    .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px,1fr)); gap: 12px; }
+    .btn { border: 1px solid #64748b; border-radius: 12px; padding: 14px 18px; background: #0f172a; color: white; font-weight: 800; }
+    .btn.primary { border: none; background: var(--accent); color: #111827; }
+    .btn:disabled { opacity: .45; cursor: not-allowed; }
+    .field { margin-bottom: 18px; }
+    .field label { display: block; font-weight: 800; margin-bottom: 8px; }
+    .field select, .field input[type="range"] { width: 100%; }
+    .field select { padding: 12px; border-radius: 10px; border: 1px solid #64748b; background: #0f172a; color: white; }
+    .hud { display: grid; grid-template-columns: repeat(auto-fit,minmax(140px,1fr)); gap: 10px; margin-bottom: 14px; }
+    .player-card { padding: 12px; border-radius: 13px; background: #172033; border: 2px solid transparent; text-align: center; font-weight: 800; }
+    .player-card.active { background: #1d4ed8; border-color: #93c5fd; }
+    .score { margin-top: 5px; color: #fde68a; }
+    .game-wrap { display: grid; grid-template-columns: minmax(0, 760px) minmax(260px, 1fr); gap: 16px; align-items: start; }
+    canvas { display: block; width: 100%; height: auto; border-radius: 24px; touch-action: none; cursor: crosshair; box-shadow: 0 34px 85px rgba(0,0,0,.56); }
+    .controls { padding: 18px; position: sticky; top: 12px; }
+    .status { padding: 14px; border-radius: 12px; background: #0f172a; color: #e2e8f0; line-height: 1.7; margin: 14px 0; min-height: 76px; }
+    .countdown { text-align: center; padding: 11px; border-radius: 999px; background: rgba(251,191,36,.12); border: 1px solid rgba(251,191,36,.5); color: #fde68a; font-weight: 900; margin-bottom: 12px; }
+    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0; }
+    .stat { background: #0f172a; padding: 10px; border-radius: 10px; text-align: center; color: #cbd5e1; }
+    .actions { display: grid; gap: 9px; }
+    .help { color: #94a3b8; line-height: 1.7; font-size: 14px; margin-top: 12px; }
+    footer { text-align: center; color: #94a3b8; border-top: 1px solid var(--border); margin-top: 26px; padding-top: 18px; line-height: 1.8; }
+    footer strong { color: #e2e8f0; }
+    .hidden { display: none !important; }
+    .notice { margin-top: 14px; background: #0f172a; border-radius: 12px; padding: 14px; color: #cbd5e1; }
+    @media (max-width: 900px) {
+      .game-wrap { grid-template-columns: 1fr; }
+      .controls { position: static; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <p class="eyebrow">لعبة كيرم مستقرة — ملف واحد فقط</p>
+      <h1>كيرم محمد عبدالله الجابري</h1>
+      <p>اسحب من المضرب نحو الهدف ثم اتركه. يبدأ عداد 7 ثوانٍ فور الضربة، وبعده تتوقف القطع ويُجهّز الدور التالي. يستمر نفس اللاعب إذا أدخل قطعة صحيحة.</p>
+    </header>
+
+    <section id="menu" class="menu panel">
+      <h2>اختر طريقة اللعب</h2>
+      <div class="field">
+        <label for="difficulty">مستوى الذكاء الاصطناعي</label>
+        <select id="difficulty">
+          <option value="easy">مبتدئ</option>
+          <option value="medium" selected>متوسط</option>
+          <option value="hard">متقدم</option>
+        </select>
+      </div>
+      <div class="menu-grid">
+        <button class="btn primary" data-mode="ai" data-count="2">العب ضد الذكاء الاصطناعي</button>
+        <button class="btn" data-mode="local2" data-count="2">لاعبان على نفس الجهاز</button>
+        <button class="btn" data-mode="local4" data-count="4">أربعة لاعبين على نفس الجهاز</button>
+        <button class="btn" data-mode="training" data-count="1">وضع التدريب</button>
+      </div>
+      <div class="notice">اللعب عبر الإنترنت يحتاج خادمًا وقاعدة بيانات لحظية؛ لذلك لم أضع زرًا وهميًا داخل هذه النسخة المستقرة.</div>
+    </section>
+
+    <section id="game" class="hidden">
+      <div id="hud" class="hud"></div>
+      <div class="game-wrap">
+        <canvas id="board" width="900" height="900" aria-label="لوح لعبة الكيرم"></canvas>
+        <aside class="controls panel">
+          <div class="field">
+            <label for="strikerPosition">موقع المضرب على خط البداية</label>
+            <input id="strikerPosition" type="range" min="0" max="100" value="50" />
+          </div>
+
+          <div class="stats">
+            <div class="stat">القطع المتبقية<br><strong id="remaining">19</strong></div>
+            <div class="stat">الوقت<br><strong id="timer">جاهز</strong></div>
+          </div>
+
+          <div id="countdown" class="countdown hidden">7</div>
+          <div id="status" class="status">جاهز للعب.</div>
+
+          <div class="actions">
+            <button id="toggleAim" class="btn">إخفاء خط التصويب</button>
+            <button id="toggleSound" class="btn">كتم الصوت</button>
+            <button id="restart" class="btn">إعادة المباراة</button>
+            <button id="back" class="btn">العودة للبداية</button>
+          </div>
+          <div class="help">
+            1. حرّك المضرب بالشريط.<br>
+            2. اضغط على المضرب نفسه واسحب نحو الهدف.<br>
+            3. اترك زر الفأرة أو إصبعك لتنفيذ الضربة.<br>
+            4. في أربعة لاعبين يكون الترتيب: 1 ثم 2 ثم 3 ثم 4.
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <footer>
+      <div>جميع الحقوق محفوظة © 2026</div>
+      <strong>تطوير اللعبة بواسطة محمد عبدالله الجابري</strong>
+    </footer>
+  </main>
+
+<script>
+(() => {
+  "use strict";
+
+  const BOARD_SIZE = 900;
+  const POCKET_RADIUS = 42;
+  const PIECE_RADIUS = 18;
+  const STRIKER_RADIUS = 23;
+  const WALL_MIN = 54;
+  const WALL_MAX = BOARD_SIZE - 54;
+  const BASELINE_NEAR = 145;
+  const BASELINE_FAR = BOARD_SIZE - 145;
+  const FRICTION = 0.9925;
+  const STOP_SPEED = 0.07;
+  const SHOT_SECONDS = 7;
+
+  const menuEl = document.getElementById("menu");
+  const gameEl = document.getElementById("game");
+  const hudEl = document.getElementById("hud");
+  const canvas = document.getElementById("board");
+  const ctx = canvas.getContext("2d");
+  const strikerPositionEl = document.getElementById("strikerPosition");
+  const statusEl = document.getElementById("status");
+  const countdownEl = document.getElementById("countdown");
+  const timerEl = document.getElementById("timer");
+  const remainingEl = document.getElementById("remaining");
+  const difficultyEl = document.getElementById("difficulty");
+  const toggleAimEl = document.getElementById("toggleAim");
+  const toggleSoundEl = document.getElementById("toggleSound");
+
+  const pocketCenters = [
+    { x: 55, y: 55 },
+    { x: BOARD_SIZE - 55, y: 55 },
+    { x: 55, y: BOARD_SIZE - 55 },
+    { x: BOARD_SIZE - 55, y: BOARD_SIZE - 55 },
+  ];
+
+  let discs = [];
+  let mode = "menu";
+  let difficulty = "medium";
+  let playerCount = 2;
+  let currentPlayer = 0;
+  let scores = [0, 0];
+  let phase = "menu";
+  let strikerOffset = 50;
+  let aiming = false;
+  let aimPoint = null;
+  let aimVisible = true;
+  let soundEnabled = true;
+  let shotScored = false;
+  let strikerFoul = false;
+  let shotDeadline = 0;
+  let shotTimer = null;
+  let countdownTimer = null;
+  let aiTimer = null;
+  let audioContext = null;
+  let lastCollisionSound = 0;
+
+  function clamp(value, min, max) { return Math.max(min, Math.min(max, value)); }
+  function distance(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
+
+  function initialPieces() {
+    const next = [];
+    let id = 0;
+    next.push({ id: "queen", kind: "queen", x: 450, y: 450, vx: 0, vy: 0, r: PIECE_RADIUS, active: true });
+    for (let i = 0; i < 6; i++) {
+      const angle = Math.PI * 2 * i / 6;
+      next.push({ id: `p-${id++}`, kind: i % 2 === 0 ? "black" : "white", x: 450 + Math.cos(angle) * 34, y: 450 + Math.sin(angle) * 34, vx: 0, vy: 0, r: PIECE_RADIUS, active: true });
+    }
+    for (let i = 0; i < 12; i++) {
+      const angle = Math.PI * 2 * i / 12;
+      next.push({ id: `p-${id++}`, kind: i % 2 === 0 ? "white" : "black", x: 450 + Math.cos(angle) * 66, y: 450 + Math.sin(angle) * 66, vx: 0, vy: 0, r: PIECE_RADIUS, active: true });
+    }
+    next.push({ id: "striker", kind: "striker", x: 450, y: BASELINE_FAR, vx: 0, vy: 0, r: STRIKER_RADIUS, active: true });
+    return next;
+  }
+
+  function playerSide(index, count) {
+    if (count === 1) return "bottom";
+    if (count === 2) return index === 0 ? "bottom" : "top";
+    return ["bottom", "top", "left", "right"][index] || "bottom";
+  }
+
+  function baselinePosition(index, count, percent) {
+    const side = playerSide(index, count);
+    const axis = 245 + (percent / 100) * 410;
+    if (side === "top") return { x: axis, y: BASELINE_NEAR };
+    if (side === "left") return { x: BASELINE_NEAR, y: axis };
+    if (side === "right") return { x: BASELINE_FAR, y: axis };
+    return { x: axis, y: BASELINE_FAR };
+  }
+
+  function getStriker() { return discs.find(d => d.kind === "striker"); }
+
+  function placeStriker(index = currentPlayer, offset = 50) {
+    const striker = getStriker();
+    if (!striker) return;
+    const p = baselinePosition(index, playerCount, offset);
+    striker.x = p.x; striker.y = p.y; striker.vx = 0; striker.vy = 0; striker.active = true;
+  }
+
+  function ensureAudio() {
+    if (!soundEnabled) return null;
+    try {
+      if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioContext.state === "suspended") audioContext.resume();
+      return audioContext;
+    } catch (_) { return null; }
+  }
+
+  function tone(freqStart, freqEnd, duration, volume, type = "triangle") {
+    const ac = ensureAudio(); if (!ac) return;
+    const now = ac.currentTime;
+    const osc = ac.createOscillator();
+    const gain = ac.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freqStart, now);
+    osc.frequency.exponentialRampToValueAtTime(Math.max(25, freqEnd), now + duration);
+    gain.gain.setValueAtTime(Math.max(.0001, volume), now);
+    gain.gain.exponentialRampToValueAtTime(.0001, now + duration);
+    osc.connect(gain); gain.connect(ac.destination); osc.start(now); osc.stop(now + duration);
+  }
+
+  function sound(kind, intensity = 1) {
+    if (!soundEnabled) return;
+    if (kind === "strike") { tone(260, 70, .11, .12 * intensity); tone(1300, 720, .04, .035 * intensity, "sine"); }
+    else if (kind === "collision") {
+      const now = performance.now(); if (now - lastCollisionSound < 24) return; lastCollisionSound = now;
+      tone(900 + Math.random() * 350, 550, .028, .025 * intensity, "triangle");
+    } else if (kind === "wall") tone(180, 90, .065, .026 * intensity);
+    else if (kind === "pocket") tone(135, 42, .22, .13 * intensity, "sine");
+    else if (kind === "queen") { tone(760, 340, .18, .08); setTimeout(() => tone(980, 420, .18, .07), 80); }
+    else tone(520, 360, .035, .02);
+  }
+
+  function clearTimers() {
+    if (shotTimer) clearTimeout(shotTimer);
+    if (countdownTimer) clearInterval(countdownTimer);
+    if (aiTimer) clearTimeout(aiTimer);
+    shotTimer = countdownTimer = aiTimer = null;
+    countdownEl.classList.add("hidden");
+    timerEl.textContent = "جاهز";
+  }
+
+  function startGame(nextMode, count) {
+    clearTimers();
+    mode = nextMode;
+    difficulty = difficultyEl.value;
+    playerCount = count;
+    currentPlayer = 0;
+    scores = Array(count).fill(0);
+    discs = initialPieces();
+    phase = "ready";
+    strikerOffset = 50;
+    strikerPositionEl.value = "50";
+    placeStriker();
+    menuEl.classList.add("hidden");
+    gameEl.classList.remove("hidden");
+    setStatus(count === 4 ? "اللاعب 1 يبدأ. الترتيب: 1 ثم 2 ثم 3 ثم 4." : "اللاعب 1 يبدأ. حرّك المضرب ثم اسحب نحو الهدف.");
+    renderHud();
+    updateRemaining();
+    ensureAudio();
+  }
+
+  function restart() { startGame(mode, playerCount); }
+
+  function backToMenu() {
+    clearTimers(); phase = "menu"; mode = "menu"; aiming = false; aimPoint = null;
+    gameEl.classList.add("hidden"); menuEl.classList.remove("hidden");
+  }
+
+  function setStatus(text) { statusEl.textContent = text; }
+
+  function renderHud() {
+    hudEl.innerHTML = "";
+    for (let i = 0; i < playerCount; i++) {
+      const card = document.createElement("div");
+      card.className = "player-card" + (i === currentPlayer ? " active" : "");
+      const name = mode === "ai" && i === 1 ? "الذكاء الاصطناعي" : playerCount === 1 ? "التدريب" : `اللاعب ${i + 1}`;
+      card.innerHTML = `<div>${name}</div><div class="score">${scores[i] || 0} نقطة</div>`;
+      hudEl.appendChild(card);
+    }
+  }
+
+  function updateRemaining() {
+    remainingEl.textContent = String(discs.filter(d => d.active && d.kind !== "striker").length);
+  }
+
+  function beginShot(vx, vy) {
+    if (phase !== "ready") return;
+    const striker = getStriker(); if (!striker || !striker.active) return;
+    striker.vx = vx; striker.vy = vy;
+    shotScored = false; strikerFoul = false; phase = "moving"; aiming = false; aimPoint = null;
+    strikerPositionEl.disabled = true;
+    sound("strike", clamp(Math.hypot(vx, vy) / 30, .5, 1.2));
+    startSevenSecondTimer();
+  }
+
+  function startSevenSecondTimer() {
+    clearTimers();
+    let seconds = SHOT_SECONDS;
+    shotDeadline = performance.now() + SHOT_SECONDS * 1000;
+    countdownEl.textContent = `انتهاء الضربة خلال ${seconds} ثوانٍ`;
+    countdownEl.classList.remove("hidden");
+    timerEl.textContent = `${seconds} ث`;
+    setStatus("بدأت الضربة. عند انتهاء 7 ثوانٍ تتوقف القطع ويُحسم الدور.");
+    countdownTimer = setInterval(() => {
+      seconds = Math.max(0, Math.ceil((shotDeadline - performance.now()) / 1000));
+      countdownEl.textContent = `انتهاء الضربة خلال ${seconds} ثوانٍ`;
+      timerEl.textContent = `${seconds} ث`;
+    }, 150);
+    shotTimer = setTimeout(finishShotByTimer, SHOT_SECONDS * 1000);
+  }
+
+  function finishShotByTimer() {
+    if (phase !== "moving") return;
+    if (countdownTimer) clearInterval(countdownTimer);
+    countdownTimer = null; shotTimer = null;
+    discs.forEach(d => { d.vx = 0; d.vy = 0; });
+
+    let nextPlayer = currentPlayer;
+    if (playerCount > 1 && (!shotScored || strikerFoul)) nextPlayer = (currentPlayer + 1) % playerCount;
+
+    currentPlayer = nextPlayer;
+    strikerOffset = 50;
+    strikerPositionEl.value = "50";
+    placeStriker(currentPlayer, 50);
+    phase = "ready";
+    strikerPositionEl.disabled = mode === "ai" && currentPlayer === 1;
+    countdownEl.classList.add("hidden");
+    timerEl.textContent = "جاهز";
+    renderHud();
+
+    if (strikerFoul) setStatus(`مخالفة: دخل المضرب. الدور الآن للاعب ${currentPlayer + 1}.`);
+    else if (shotScored) setStatus(`ضربة ناجحة. يستمر دور اللاعب ${currentPlayer + 1}.`);
+    else setStatus(playerCount === 1 ? "انتهت الضربة. يمكنك المحاولة مجددًا." : `لم تدخل قطعة. الدور الآن للاعب ${currentPlayer + 1}.`);
+
+    if (mode === "ai" && currentPlayer === 1) scheduleAI();
+  }
+
+  function scheduleAI() {
+    if (phase !== "ready") return;
+    setStatus("الذكاء الاصطناعي يحدد الضربة...");
+    aiTimer = setTimeout(() => {
+      if (phase !== "ready" || currentPlayer !== 1) return;
+      const striker = getStriker();
+      const targets = discs.filter(d => d.active && d.kind !== "striker");
+      if (!striker || !targets.length) return;
+      const target = targets.reduce((best, d) => distance(striker, d) < distance(striker, best) ? d : best);
+      const dx = target.x - striker.x, dy = target.y - striker.y, len = Math.max(1, Math.hypot(dx, dy));
+      const spread = difficulty === "easy" ? .35 : difficulty === "medium" ? .16 : .06;
+      const error = (Math.random() - .5) * spread;
+      const cos = Math.cos(error), sin = Math.sin(error);
+      const nx = (dx / len) * cos - (dy / len) * sin;
+      const ny = (dx / len) * sin + (dy / len) * cos;
+      const speed = difficulty === "easy" ? 18 : difficulty === "medium" ? 23 : 28;
+      beginShot(nx * speed, ny * speed);
+    }, 900);
+  }
+
+  function pocketDisc(disc) {
+    disc.active = false; disc.vx = 0; disc.vy = 0;
+    if (disc.kind === "striker") {
+      strikerFoul = true;
+      scores[currentPlayer] = Math.max(0, (scores[currentPlayer] || 0) - 1);
+      sound("pocket", 1.15);
+    } else {
+      const points = disc.kind === "queen" ? 3 : 1;
+      scores[currentPlayer] = (scores[currentPlayer] || 0) + points;
+      shotScored = true;
+      sound(disc.kind === "queen" ? "queen" : "pocket", 1);
+    }
+    renderHud(); updateRemaining();
+  }
+
+  function updatePhysics() {
+    if (phase !== "moving") return;
+    for (const d of discs) {
+      if (!d.active) continue;
+      d.x += d.vx; d.y += d.vy; d.vx *= FRICTION; d.vy *= FRICTION;
+      if (Math.abs(d.vx) < STOP_SPEED) d.vx = 0;
+      if (Math.abs(d.vy) < STOP_SPEED) d.vy = 0;
+      const pocket = pocketCenters.find(p => distance(d, p) < POCKET_RADIUS);
+      if (pocket) { pocketDisc(d); continue; }
+      if (d.x - d.r < WALL_MIN) { d.x = WALL_MIN + d.r; d.vx = Math.abs(d.vx) * .82; sound("wall", Math.abs(d.vx) / 18); }
+      if (d.x + d.r > WALL_MAX) { d.x = WALL_MAX - d.r; d.vx = -Math.abs(d.vx) * .82; sound("wall", Math.abs(d.vx) / 18); }
+      if (d.y - d.r < WALL_MIN) { d.y = WALL_MIN + d.r; d.vy = Math.abs(d.vy) * .82; sound("wall", Math.abs(d.vy) / 18); }
+      if (d.y + d.r > WALL_MAX) { d.y = WALL_MAX - d.r; d.vy = -Math.abs(d.vy) * .82; sound("wall", Math.abs(d.vy) / 18); }
+    }
+    for (let i = 0; i < discs.length; i++) {
+      const a = discs[i]; if (!a.active) continue;
+      for (let j = i + 1; j < discs.length; j++) {
+        const b = discs[j]; if (!b.active) continue;
+        const dx = b.x - a.x, dy = b.y - a.y, dist = Math.hypot(dx, dy), minDist = a.r + b.r;
+        if (dist <= 0 || dist >= minDist) continue;
+        const nx = dx / dist, ny = dy / dist, overlap = minDist - dist;
+        a.x -= nx * overlap * .5; a.y -= ny * overlap * .5; b.x += nx * overlap * .5; b.y += ny * overlap * .5;
+        const rel = (b.vx - a.vx) * nx + (b.vy - a.vy) * ny;
+        if (rel < 0) {
+          const impulse = -rel * .96;
+          a.vx -= impulse * nx; a.vy -= impulse * ny; b.vx += impulse * nx; b.vy += impulse * ny;
+          sound("collision", clamp(Math.abs(impulse) / 10, .25, 1.1));
+        }
+      }
+    }
+  }
+
+  function woodGradient(d) {
+    const g = ctx.createRadialGradient(d.x - d.r * .35, d.y - d.r * .35, 2, d.x, d.y, d.r);
+    if (d.kind === "white") { g.addColorStop(0,"#fffdf5"); g.addColorStop(.38,"#f4ead5"); g.addColorStop(.75,"#dbc7a5"); g.addColorStop(1,"#b99a6b"); }
+    else if (d.kind === "black") { g.addColorStop(0,"#705d4d"); g.addColorStop(.35,"#433329"); g.addColorStop(.72,"#251a14"); g.addColorStop(1,"#120c08"); }
+    else if (d.kind === "queen") { g.addColorStop(0,"#ffc1ae"); g.addColorStop(.4,"#dc4f3d"); g.addColorStop(.78,"#98261d"); g.addColorStop(1,"#65140f"); }
+    else { g.addColorStop(0,"#f6d477"); g.addColorStop(.38,"#d9a33a"); g.addColorStop(.75,"#8d561d"); g.addColorStop(1,"#4d290e"); }
+    return g;
+  }
+
+  function drawDisc(d) {
+    ctx.save(); ctx.shadowColor="rgba(0,0,0,.32)"; ctx.shadowBlur=d.kind==="striker"?18:11; ctx.shadowOffsetY=5;
+    ctx.beginPath(); ctx.arc(d.x,d.y,d.r,0,Math.PI*2); ctx.fillStyle=woodGradient(d); ctx.fill();
+    ctx.shadowColor="transparent"; ctx.lineWidth=d.kind==="striker"?4.5:2.2;
+    ctx.strokeStyle=d.kind==="white"?"rgba(119,83,44,.95)":"rgba(255,244,220,.38)"; ctx.stroke();
+    ctx.save(); ctx.beginPath(); ctx.arc(d.x,d.y,d.r*.82,0,Math.PI*2); ctx.clip();
+    ctx.strokeStyle=d.kind==="black"?"rgba(255,255,255,.06)":"rgba(89,58,28,.09)"; ctx.lineWidth=1;
+    for(let i=-2;i<=2;i++){ctx.beginPath();ctx.moveTo(d.x-d.r,d.y+i*4);ctx.bezierCurveTo(d.x-d.r*.3,d.y+i*6-3,d.x+d.r*.3,d.y+i*2+3,d.x+d.r,d.y+i*5);ctx.stroke();}
+    ctx.restore();
+    ctx.beginPath();ctx.arc(d.x-d.r*.28,d.y-d.r*.28,d.r*.22,0,Math.PI*2);ctx.fillStyle="rgba(255,255,255,.3)";ctx.fill();
+    if(d.kind==="striker"){
+      ctx.beginPath();ctx.arc(d.x,d.y,d.r*.67,0,Math.PI*2);ctx.strokeStyle="rgba(255,245,220,.95)";ctx.lineWidth=2.7;ctx.stroke();
+      ctx.beginPath();ctx.arc(d.x,d.y,d.r*.3,0,Math.PI*2);ctx.fillStyle="rgba(255,248,230,.92)";ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  function drawBoard() {
+    ctx.clearRect(0,0,BOARD_SIZE,BOARD_SIZE);
+    const frame=ctx.createLinearGradient(0,0,900,900);frame.addColorStop(0,"#bd7739");frame.addColorStop(.3,"#975827");frame.addColorStop(.65,"#6a3818");frame.addColorStop(1,"#3d1c0d");ctx.fillStyle=frame;ctx.fillRect(0,0,900,900);
+    ctx.strokeStyle="rgba(255,255,255,.07)";ctx.lineWidth=1.5;for(let i=0;i<14;i++){const y=35+i*59;ctx.beginPath();ctx.moveTo(18,y);ctx.bezierCurveTo(190,y-18,690,y+17,882,y-7);ctx.stroke();}
+    ctx.save();ctx.shadowColor="rgba(0,0,0,.38)";ctx.shadowBlur=28;ctx.shadowOffsetY=12;const surface=ctx.createLinearGradient(50,50,850,850);surface.addColorStop(0,"#f9e9c5");surface.addColorStop(.45,"#edcf94");surface.addColorStop(1,"#d7af71");ctx.fillStyle=surface;ctx.fillRect(52,52,796,796);ctx.restore();
+    ctx.strokeStyle="#4d2813";ctx.lineWidth=12;ctx.strokeRect(52,52,796,796);ctx.strokeStyle="rgba(255,244,220,.38)";ctx.lineWidth=2;ctx.strokeRect(66,66,768,768);
+    ctx.strokeStyle="rgba(115,73,32,.18)";ctx.lineWidth=1;for(let i=0;i<11;i++){const y=105+i*64;ctx.beginPath();ctx.moveTo(74,y);ctx.bezierCurveTo(250,y-12,620,y+10,825,y-4);ctx.stroke();}
+    for(const p of pocketCenters){const g=ctx.createRadialGradient(p.x-8,p.y-8,4,p.x,p.y,POCKET_RADIUS);g.addColorStop(0,"#342116");g.addColorStop(.6,"#1c120c");g.addColorStop(1,"#080503");ctx.beginPath();ctx.arc(p.x,p.y,POCKET_RADIUS,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();ctx.beginPath();ctx.arc(p.x,p.y,POCKET_RADIUS+12,0,Math.PI*2);ctx.strokeStyle="rgba(99,56,28,.58)";ctx.lineWidth=8;ctx.stroke();}
+    ctx.strokeStyle="#8d3823";ctx.lineWidth=3.5;ctx.beginPath();ctx.arc(450,450,116,0,Math.PI*2);ctx.stroke();ctx.beginPath();ctx.arc(450,450,48,0,Math.PI*2);ctx.stroke();
+    const lines=[[250,BASELINE_NEAR,650,BASELINE_NEAR],[250,BASELINE_FAR,650,BASELINE_FAR],[BASELINE_NEAR,250,BASELINE_NEAR,650],[BASELINE_FAR,250,BASELINE_FAR,650]];for(const l of lines){ctx.beginPath();ctx.moveTo(l[0],l[1]);ctx.lineTo(l[2],l[3]);ctx.stroke();}
+    const side=playerSide(currentPlayer,playerCount);ctx.fillStyle="rgba(37,99,235,.075)";if(side==="bottom")ctx.fillRect(218,708,464,96);if(side==="top")ctx.fillRect(218,96,464,96);if(side==="left")ctx.fillRect(96,218,96,464);if(side==="right")ctx.fillRect(708,218,96,464);
+    for(const d of discs) if(d.active) drawDisc(d);
+    const striker=getStriker();
+    if(aimVisible && aiming && aimPoint && striker){ctx.save();ctx.setLineDash([14,10]);ctx.lineWidth=5;ctx.strokeStyle="#2563eb";ctx.beginPath();ctx.moveTo(striker.x,striker.y);ctx.lineTo(aimPoint.x,aimPoint.y);ctx.stroke();ctx.setLineDash([]);ctx.beginPath();ctx.arc(aimPoint.x,aimPoint.y,13,0,Math.PI*2);ctx.fillStyle="#fbbf24";ctx.fill();const power=clamp(distance(striker,aimPoint)/3.2,0,100);ctx.fillStyle="rgba(15,23,42,.86)";ctx.fillRect(285,26,330,35);ctx.fillStyle="#fbbf24";ctx.fillRect(285,26,3.3*power,35);ctx.strokeStyle="#fff";ctx.strokeRect(285,26,330,35);ctx.restore();}
+  }
+
+  function canvasPoint(event) {
+    const r=canvas.getBoundingClientRect();return {x:(event.clientX-r.left)/r.width*BOARD_SIZE,y:(event.clientY-r.top)/r.height*BOARD_SIZE};
+  }
+
+  canvas.addEventListener("pointerdown", event => {
+    if(phase!=="ready" || (mode==="ai"&&currentPlayer===1)) return;
+    const striker=getStriker();if(!striker||!striker.active)return;const p=canvasPoint(event);
+    if(distance(p,striker)>striker.r*2.7){setStatus("ابدأ السحب من المضرب نفسه.");return;}
+    canvas.setPointerCapture(event.pointerId);aiming=true;aimPoint=p;sound("ui");
+  });
+  canvas.addEventListener("pointermove", event => { if(aiming) aimPoint=canvasPoint(event); });
+  canvas.addEventListener("pointerup", event => {
+    if(!aiming)return;const striker=getStriker();const p=canvasPoint(event);aiming=false;aimPoint=null;if(!striker)return;
+    const dx=p.x-striker.x,dy=p.y-striker.y,len=Math.hypot(dx,dy);if(len<35){setStatus("اسحب لمسافة أكبر.");return;}
+    const speed=clamp(len/9.5,11,34);beginShot(dx/len*speed,dy/len*speed);
+  });
+  canvas.addEventListener("pointercancel",()=>{aiming=false;aimPoint=null;});
+
+  strikerPositionEl.addEventListener("input", event => {
+    if(phase!=="ready" || (mode==="ai"&&currentPlayer===1))return;strikerOffset=Number(event.target.value);placeStriker(currentPlayer,strikerOffset);
+  });
+  document.querySelectorAll("[data-mode]").forEach(button=>button.addEventListener("click",()=>startGame(button.dataset.mode,Number(button.dataset.count))));
+  document.getElementById("restart").addEventListener("click",restart);
+  document.getElementById("back").addEventListener("click",backToMenu);
+  toggleAimEl.addEventListener("click",()=>{aimVisible=!aimVisible;toggleAimEl.textContent=aimVisible?"إخفاء خط التصويب":"إظهار خط التصويب";});
+  toggleSoundEl.addEventListener("click",()=>{soundEnabled=!soundEnabled;toggleSoundEl.textContent=soundEnabled?"كتم الصوت":"تشغيل الصوت";if(soundEnabled)sound("ui");});
+
+  function loop(){updatePhysics();drawBoard();requestAnimationFrame(loop);}
+  discs=initialPieces();drawBoard();loop();
+})();
+</script>
+</body>
+</html>
