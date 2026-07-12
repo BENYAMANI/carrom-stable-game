@@ -180,6 +180,7 @@
   const BASELINE_NEAR = 145;
   const BASELINE_FAR = BOARD_SIZE - 145;
   const SHOT_SECONDS = 7;
+  const TURN_SECONDS = 10;
   const FIXED_DT = 1 / 120;
   const MAX_FRAME_DT = 0.05;
   const MAX_SUB_STEPS = 10;
@@ -240,8 +241,10 @@
   let shotScored = false;
   let strikerFoul = false;
   let shotDeadline = 0;
+  let turnDeadline = 0;
   let shotTimer = null;
   let countdownTimer = null;
+  let turnTimer = null;
   let aiTimer = null;
   let audioContext = null;
   let lastCollisionSound = 0;
@@ -430,6 +433,7 @@
   function clearTimers() {
     if (shotTimer) clearTimeout(shotTimer);
     if (countdownTimer) clearInterval(countdownTimer);
+    if (turnTimer) clearInterval(turnTimer);
     if (aiTimer) clearTimeout(aiTimer);
     if (replayTimer) clearInterval(replayTimer);
     replayTimer = null;
@@ -437,9 +441,66 @@
     replayDisplay = null;
     slowBadgeEl.classList.add("hidden");
     canvas.style.transform = "scale(1)";
-    shotTimer = countdownTimer = aiTimer = null;
+    shotTimer = countdownTimer = turnTimer = aiTimer = null;
     countdownEl.classList.add("hidden");
     timerEl.textContent = "جاهز";
+  }
+
+  function stopTurnTimer() {
+    if (turnTimer) clearInterval(turnTimer);
+    turnTimer = null;
+  }
+
+  function startTurnTimer() {
+    stopTurnTimer();
+    if (phase !== "ready" || replaying) return;
+
+    let seconds = TURN_SECONDS;
+    turnDeadline = performance.now() + TURN_SECONDS * 1000;
+    countdownEl.textContent = `وقت اللاعب ${currentPlayer + 1}: ${seconds} ثوانٍ`;
+    countdownEl.classList.remove("hidden");
+    timerEl.textContent = `${seconds} ث`;
+
+    turnTimer = setInterval(() => {
+      if (phase !== "ready" || replaying) return;
+      seconds = Math.max(0, Math.ceil((turnDeadline - performance.now()) / 1000));
+      countdownEl.textContent = `وقت اللاعب ${currentPlayer + 1}: ${seconds} ثوانٍ`;
+      timerEl.textContent = `${seconds} ث`;
+
+      if (seconds <= 0) {
+        handleTurnTimeout();
+      }
+    }, 150);
+  }
+
+  function handleTurnTimeout() {
+    if (phase !== "ready") return;
+    stopTurnTimer();
+
+    const previousPlayer = currentPlayer;
+    aiming = false;
+    aimPoint = null;
+    pullStart = null;
+
+    if (playerCount > 1) {
+      currentPlayer = (currentPlayer + 1) % playerCount;
+    }
+
+    strikerOffset = 50;
+    strikerPositionEl.value = "50";
+    placeStriker(currentPlayer, 50);
+    strikerPositionEl.disabled = mode === "ai" && currentPlayer === 1;
+    renderHud();
+    sound("ui");
+
+    if (playerCount === 1) {
+      setStatus("انتهت 10 ثوانٍ. تم تجديد وقت التدريب لك.");
+    } else {
+      setStatus(`انتهى وقت اللاعب ${previousPlayer + 1}. انتقل الدور مباشرة إلى اللاعب ${currentPlayer + 1}.`);
+    }
+
+    startTurnTimer();
+    if (mode === "ai" && currentPlayer === 1) scheduleAI();
   }
 
   function startGame(nextMode, count) {
@@ -456,10 +517,11 @@
     placeStriker();
     menuEl.classList.add("hidden");
     gameEl.classList.remove("hidden");
-    setStatus(count === 4 ? "اللاعب 1 يبدأ. الترتيب: 1 ثم 2 ثم 3 ثم 4." : "اللاعب 1 يبدأ. حرّك المضرب ثم اسحب نحو الهدف.");
+    setStatus(count === 4 ? "اللاعب 1 يبدأ. لكل لاعب 10 ثوانٍ، والترتيب: 1 ثم 2 ثم 3 ثم 4." : "اللاعب 1 يبدأ. لديك 10 ثوانٍ لتحريك المضرب والتسديد.");
     renderHud();
     updateRemaining();
     ensureAudio();
+    startTurnTimer();
   }
 
   function restart() { startGame(mode, playerCount); }
@@ -488,6 +550,7 @@
 
   function beginShot(vx, vy) {
     if (phase !== "ready") return;
+    stopTurnTimer();
     const striker = getStriker(); if (!striker || !striker.active) return;
     striker.vx = vx; striker.vy = vy; striker.omega = 0;
     shotScored = false; strikerFoul = false; phase = "moving"; aiming = false; aimPoint = null;
@@ -541,7 +604,10 @@
     else if (shotScored) setStatus(`ضربة ناجحة. يستمر دور اللاعب ${currentPlayer + 1}.`);
     else setStatus(playerCount === 1 ? "انتهت الضربة. يمكنك المحاولة مجددًا." : `لم تدخل قطعة. الدور الآن للاعب ${currentPlayer + 1}.`);
 
-    const afterReplay = () => { if (mode === "ai" && currentPlayer === 1) scheduleAI(); };
+    const afterReplay = () => {
+      startTurnTimer();
+      if (mode === "ai" && currentPlayer === 1) scheduleAI();
+    };
     if ((shotScored || queenPocketedThisShot || shotPeakSpeed > 1450) && replayFrames.length > 4) {
       setTimeout(() => startReplay(afterReplay), 350);
     } else {
