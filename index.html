@@ -74,22 +74,13 @@
       .controls { position: static; }
     }
   </style>
-
-  <script type="importmap">
-    {
-      "imports": {
-        "three": "https://cdn.jsdelivr.net/npm/three@0.185.1/build/three.module.js",
-        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.185.1/examples/jsm/"
-      }
-    }
-  </script>
 </head>
 <body>
   <main class="app">
     <header>
-      <p class="eyebrow">لعبة كيرم Ultra PBR — خامات 4K</p>
+      <p class="eyebrow">لعبة كيرم مستقرة — ملف واحد فقط</p>
       <h1>كيرم محمد عبدالله الجابري</h1>
-      <p>لوح بخامة خشبية 4K مولدة إجرائيًا، مواد PBR، انعكاسات واقعية، ظلال ديناميكية، زخارف محفورة، مع الفيزياء والكاميرا والإعادة البطيئة.</p>
+      <p>فيزياء محسنة، خمسة مستويات للذكاء الاصطناعي، كاميرا تتبع ديناميكية، إعادة بطيئة للتسديدات المميزة، وتصنيف وإنجازات محفوظة على الجهاز.</p>
     </header>
 
     <section id="menu" class="menu panel">
@@ -138,7 +129,7 @@
             <div class="stat">القطع المتبقية<br><strong id="remaining">19</strong></div>
             <div class="stat">الوقت<br><strong id="timer">جاهز</strong></div>
             <div class="stat">الرتبة<br><strong id="rankLabel">برونزي</strong></div>
-            <div class="stat">XP<br><strong id="xpLabel">0</strong></div><div class="stat">الجودة<br><strong id="graphicsLabel">PBR 4K</strong></div>
+            <div class="stat">XP<br><strong id="xpLabel">0</strong></div>
           </div>
 
           <div id="countdown" class="countdown hidden">7</div>
@@ -156,7 +147,7 @@
             1. حرّك المضرب بالشريط.<br>
             2. اضغط على المضرب نفسه واسحب نحو الهدف.<br>
             3. اترك زر الفأرة أو إصبعك لتنفيذ الضربة.<br>
-            4. في أربعة لاعبين يكون الترتيب: 1 ثم 2 ثم 3 ثم 4.<br>5. خامة اللوح 4K مع PBR وظلال وانعكاسات ديناميكية.
+            4. في أربعة لاعبين يكون الترتيب: 1 ثم 2 ثم 3 ثم 4.
           </div>
         </aside>
       </div>
@@ -176,10 +167,7 @@
     </footer>
   </main>
 
-<script type="module">
-import * as THREE from "three";
-import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
-
+<script>
 (() => {
   "use strict";
 
@@ -211,38 +199,7 @@ import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
   const gameEl = document.getElementById("game");
   const hudEl = document.getElementById("hud");
   const canvas = document.getElementById("board");
-  const graphicsLabelEl = document.getElementById("graphicsLabel");
-
-  const WORLD_SCALE = 80;
-  const SURFACE_Y = 0.34;
-  const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x0b1220);
-  const camera3D = new THREE.PerspectiveCamera(34, 1, 0.1, 100);
-  camera3D.position.set(0, 13.2, 10.5);
-  camera3D.lookAt(0, 0, 0);
-
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: "high-performance" });
-  renderer.setSize(900, 900, false);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2.25));
-  renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.05;
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
-  const pmrem = new THREE.PMREMGenerator(renderer);
-  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-  pmrem.dispose();
-
-  const raycaster = new THREE.Raycaster();
-  const pointerNdc = new THREE.Vector2();
-  const pointerPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -SURFACE_Y);
-  const pointerHit = new THREE.Vector3();
-  const discMeshes = new Map();
-  const boardGroup = new THREE.Group();
-  const discGroup = new THREE.Group();
-  const aimGroup = new THREE.Group();
-  scene.add(boardGroup, discGroup, aimGroup);
+  const ctx = canvas.getContext("2d");
   const strikerPositionEl = document.getElementById("strikerPosition");
   const statusEl = document.getElementById("status");
   const countdownEl = document.getElementById("countdown");
@@ -302,277 +259,6 @@ import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 
   function clamp(value, min, max) { return Math.max(min, Math.min(max, value)); }
   function distance(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
-
-
-  function makeCanvasTexture(size, painter, color = true) {
-    const textureCanvas = document.createElement("canvas");
-    textureCanvas.width = textureCanvas.height = size;
-    const textureContext = textureCanvas.getContext("2d", { alpha: false });
-    painter(textureContext, size);
-    const texture = new THREE.CanvasTexture(textureCanvas);
-    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-    texture.anisotropy = Math.min(16, renderer.capabilities.getMaxAnisotropy());
-    if (color) texture.colorSpace = THREE.SRGBColorSpace;
-    texture.needsUpdate = true;
-    return texture;
-  }
-
-  function paintWoodColor(context, size, options = {}) {
-    const dark = options.dark || false;
-    const gradient = context.createLinearGradient(0, 0, size, size);
-    if (dark) {
-      gradient.addColorStop(0, "#b67235");
-      gradient.addColorStop(0.35, "#8d4d21");
-      gradient.addColorStop(0.7, "#643316");
-      gradient.addColorStop(1, "#3b1b0c");
-    } else {
-      gradient.addColorStop(0, "#fae9c3");
-      gradient.addColorStop(0.38, "#efd39a");
-      gradient.addColorStop(0.72, "#dfba79");
-      gradient.addColorStop(1, "#c89558");
-    }
-    context.fillStyle = gradient;
-    context.fillRect(0, 0, size, size);
-
-    const seed = dark ? 17 : 29;
-    for (let index = 0; index < 430; index += 1) {
-      const y = ((index * 97 + seed * 31) % size) + Math.sin(index * 1.7) * 18;
-      const alpha = dark ? 0.045 + (index % 9) * 0.004 : 0.025 + (index % 11) * 0.003;
-      context.strokeStyle = dark ? `rgba(255,225,183,${alpha})` : `rgba(92,48,20,${alpha})`;
-      context.lineWidth = 0.7 + (index % 5) * 0.35;
-      context.beginPath();
-      context.moveTo(-30, y);
-      context.bezierCurveTo(size * 0.22, y - 24 + (index % 13), size * 0.7, y + 19 - (index % 17), size + 30, y - 7);
-      context.stroke();
-    }
-
-    for (let knot = 0; knot < 26; knot += 1) {
-      const x = ((knot * 631 + 223) % size);
-      const y = ((knot * 977 + 151) % size);
-      const radius = size * (0.008 + (knot % 5) * 0.0025);
-      const ring = context.createRadialGradient(x, y, 1, x, y, radius);
-      ring.addColorStop(0, dark ? "rgba(36,13,4,.32)" : "rgba(103,51,19,.18)");
-      ring.addColorStop(0.48, "rgba(255,255,255,0)");
-      ring.addColorStop(0.65, dark ? "rgba(255,224,174,.08)" : "rgba(74,31,7,.08)");
-      ring.addColorStop(1, "rgba(0,0,0,0)");
-      context.fillStyle = ring;
-      context.fillRect(x - radius, y - radius, radius * 2, radius * 2);
-    }
-
-    if (!dark && options.ornaments !== false) {
-      const unit = size / 900;
-      context.save();
-      context.strokeStyle = "rgba(130,43,25,.96)";
-      context.fillStyle = "rgba(130,43,25,.96)";
-      context.lineWidth = 3.2 * unit;
-      context.beginPath(); context.arc(450*unit,450*unit,116*unit,0,Math.PI*2); context.stroke();
-      context.beginPath(); context.arc(450*unit,450*unit,48*unit,0,Math.PI*2); context.stroke();
-      const lines=[[250,145,650,145],[250,755,650,755],[145,250,145,650],[755,250,755,650]];
-      lines.forEach(line=>{context.beginPath();context.moveTo(line[0]*unit,line[1]*unit);context.lineTo(line[2]*unit,line[3]*unit);context.stroke();});
-      for(let i=0;i<8;i+=1){const angle=Math.PI*2*i/8;context.beginPath();context.arc((450+Math.cos(angle)*77)*unit,(450+Math.sin(angle)*77)*unit,6.8*unit,0,Math.PI*2);context.fill();}
-      const corners=[[132,132,0,Math.PI/2],[768,132,Math.PI/2,Math.PI],[132,768,-Math.PI/2,0],[768,768,Math.PI,Math.PI*1.5]];
-      corners.forEach(([x,y,a,b])=>{context.beginPath();context.arc(x*unit,y*unit,76*unit,a,b);context.stroke();context.beginPath();context.arc(x*unit,y*unit,62*unit,a,b);context.stroke();});
-      context.restore();
-    }
-  }
-
-  function paintWoodRoughness(context, size, dark = false) {
-    context.fillStyle = dark ? "#9f9f9f" : "#bcbcbc";
-    context.fillRect(0, 0, size, size);
-    for (let index = 0; index < 360; index += 1) {
-      const y = (index * 131) % size;
-      const tone = 115 + (index % 7) * 12;
-      context.strokeStyle = `rgb(${tone},${tone},${tone})`;
-      context.lineWidth = 1 + (index % 4);
-      context.beginPath();
-      context.moveTo(0, y);
-      context.bezierCurveTo(size * 0.3, y - 18, size * 0.68, y + 13, size, y - 5);
-      context.stroke();
-    }
-  }
-
-  function paintWoodBump(context, size, dark = false) {
-    context.fillStyle = "#808080";
-    context.fillRect(0, 0, size, size);
-    for (let index = 0; index < 420; index += 1) {
-      const y = (index * 113 + 37) % size;
-      const tone = dark ? 116 + (index % 5) * 8 : 120 + (index % 5) * 7;
-      context.strokeStyle = `rgb(${tone},${tone},${tone})`;
-      context.lineWidth = 0.7 + (index % 3);
-      context.beginPath();
-      context.moveTo(-10, y);
-      context.bezierCurveTo(size * 0.25, y - 16, size * 0.72, y + 13, size + 10, y - 4);
-      context.stroke();
-    }
-  }
-
-  const textureSize = 4096;
-  const boardColorMap = makeCanvasTexture(textureSize, (context, size) => paintWoodColor(context, size, { dark: false, ornaments: true }));
-  const boardRoughnessMap = makeCanvasTexture(1536, (context, size) => paintWoodRoughness(context, size, false), false);
-  const boardBumpMap = makeCanvasTexture(2048, (context, size) => paintWoodBump(context, size, false), false);
-  const frameColorMap = makeCanvasTexture(2048, (context, size) => paintWoodColor(context, size, { dark: true, ornaments: false }));
-  const frameRoughnessMap = makeCanvasTexture(1024, (context, size) => paintWoodRoughness(context, size, true), false);
-  const frameBumpMap = makeCanvasTexture(1024, (context, size) => paintWoodBump(context, size, true), false);
-
-  const boardMaterial = new THREE.MeshPhysicalMaterial({
-    map: boardColorMap,
-    roughnessMap: boardRoughnessMap,
-    bumpMap: boardBumpMap,
-    bumpScale: 0.035,
-    roughness: 0.62,
-    metalness: 0,
-    clearcoat: 0.22,
-    clearcoatRoughness: 0.48,
-    envMapIntensity: 0.42,
-  });
-
-  const frameMaterial = new THREE.MeshPhysicalMaterial({
-    map: frameColorMap,
-    roughnessMap: frameRoughnessMap,
-    bumpMap: frameBumpMap,
-    bumpScale: 0.055,
-    roughness: 0.44,
-    metalness: 0,
-    clearcoat: 0.42,
-    clearcoatRoughness: 0.28,
-    envMapIntensity: 0.55,
-  });
-
-  function makeDiscMaterial(kind) {
-    const palette = {
-      white: ["#fffdf2", "#d9c8a9"],
-      black: ["#4b3a2f", "#140d09"],
-      queen: ["#e85b45", "#72160f"],
-      striker: ["#d9a83f", "#633611"],
-    }[kind];
-    const map = makeCanvasTexture(1024, (context, size) => {
-      const gradient = context.createRadialGradient(size*.35,size*.3,size*.03,size*.5,size*.5,size*.55);
-      gradient.addColorStop(0,palette[0]); gradient.addColorStop(1,palette[1]);
-      context.fillStyle=gradient; context.fillRect(0,0,size,size);
-      context.strokeStyle = kind === "black" ? "rgba(255,255,255,.06)" : "rgba(76,39,15,.12)";
-      for(let index=0;index<90;index+=1){const y=(index*61)%size;context.lineWidth=1+(index%3);context.beginPath();context.moveTo(0,y);context.bezierCurveTo(size*.3,y-8,size*.7,y+7,size,y-2);context.stroke();}
-    });
-    const roughnessMap = makeCanvasTexture(512, (context,size)=>paintWoodRoughness(context,size,kind==="black"), false);
-    return new THREE.MeshPhysicalMaterial({
-      map,
-      roughnessMap,
-      roughness: kind === "striker" ? 0.24 : 0.32,
-      metalness: 0,
-      clearcoat: kind === "striker" ? 0.78 : 0.62,
-      clearcoatRoughness: kind === "striker" ? 0.09 : 0.14,
-      reflectivity: 0.7,
-      envMapIntensity: kind === "black" ? 0.8 : 1.0,
-    });
-  }
-
-  const discMaterials = {
-    white: makeDiscMaterial("white"),
-    black: makeDiscMaterial("black"),
-    queen: makeDiscMaterial("queen"),
-    striker: makeDiscMaterial("striker"),
-  };
-
-  function buildPbrBoard() {
-    const surface = new THREE.Mesh(new THREE.BoxGeometry(10, 0.34, 10), boardMaterial);
-    surface.position.y = 0;
-    surface.receiveShadow = true;
-    boardGroup.add(surface);
-
-    const railGeometryH = new THREE.BoxGeometry(11.55, 0.64, 0.66);
-    const railGeometryV = new THREE.BoxGeometry(0.66, 0.64, 10.25);
-    const rails = [
-      [railGeometryH, 0, 0.18, -5.42], [railGeometryH, 0, 0.18, 5.42],
-      [railGeometryV, -5.42, 0.18, 0], [railGeometryV, 5.42, 0.18, 0],
-    ];
-    rails.forEach(([geometry,x,y,z])=>{const rail=new THREE.Mesh(geometry,frameMaterial);rail.position.set(x,y,z);rail.castShadow=true;rail.receiveShadow=true;boardGroup.add(rail);});
-
-    const pocketMaterial = new THREE.MeshPhysicalMaterial({ color: 0x080504, roughness: 0.78, clearcoat: 0.08 });
-    const pocketRingMaterial = new THREE.MeshPhysicalMaterial({ color: 0x3f210f, roughness: 0.42, clearcoat: 0.45 });
-    pocketCenters.forEach(point=>{
-      const x=(point.x-450)/WORLD_SCALE; const z=(point.y-450)/WORLD_SCALE;
-      const pocket=new THREE.Mesh(new THREE.CylinderGeometry(.47,.47,.18,48),pocketMaterial);
-      pocket.position.set(x,.2,z);pocket.receiveShadow=true;boardGroup.add(pocket);
-      const ring=new THREE.Mesh(new THREE.TorusGeometry(.52,.065,16,64),pocketRingMaterial);
-      ring.rotation.x=Math.PI/2;ring.position.set(x,.32,z);ring.castShadow=true;boardGroup.add(ring);
-    });
-
-    const ambient = new THREE.HemisphereLight(0xfff4de, 0x1d2638, 1.15);
-    scene.add(ambient);
-
-    const key = new THREE.DirectionalLight(0xffe3b5, 3.0);
-    key.position.set(-5.5, 11, 6.5);
-    key.castShadow = true;
-    key.shadow.mapSize.set(2048, 2048);
-    key.shadow.camera.left = -8; key.shadow.camera.right = 8; key.shadow.camera.top = 8; key.shadow.camera.bottom = -8;
-    key.shadow.bias = -0.00035;
-    scene.add(key);
-
-    const fill = new THREE.SpotLight(0xaed3ff, 7.5, 28, Math.PI/4, 0.48, 1.4);
-    fill.position.set(6, 9, -5);
-    fill.target.position.set(0,0,0);
-    fill.castShadow = true;
-    fill.shadow.mapSize.set(1536,1536);
-    scene.add(fill, fill.target);
-
-    const rim = new THREE.PointLight(0xffb764, 3.2, 22, 2);
-    rim.position.set(-5,4,-5);
-    scene.add(rim);
-  }
-
-  function createDiscMesh(disc) {
-    const radius = disc.r / WORLD_SCALE;
-    const height = disc.kind === "striker" ? 0.18 : 0.145;
-    const geometry = new THREE.CylinderGeometry(radius, radius, height, 64, 3, false);
-    const mesh = new THREE.Mesh(geometry, discMaterials[disc.kind]);
-    mesh.castShadow = true;
-    mesh.receiveShadow = true;
-    mesh.userData.discId = disc.id;
-    discGroup.add(mesh);
-    discMeshes.set(disc.id, mesh);
-    return mesh;
-  }
-
-  function syncDiscMeshes(list) {
-    const activeIds = new Set();
-    list.forEach(disc => {
-      activeIds.add(disc.id);
-      let mesh = discMeshes.get(disc.id);
-      if (!mesh) mesh = createDiscMesh(disc);
-      mesh.visible = !!disc.active;
-      mesh.position.set((disc.x-450)/WORLD_SCALE, SURFACE_Y + (disc.kind === "striker" ? .11 : .09), (disc.y-450)/WORLD_SCALE);
-      mesh.rotation.y = -(disc.angle || 0);
-    });
-    discMeshes.forEach((mesh,id)=>{if(!activeIds.has(id))mesh.visible=false;});
-  }
-
-  function updateAim3D(striker, point) {
-    while (aimGroup.children.length) {
-      const child = aimGroup.children.pop();
-      if (child.geometry) child.geometry.dispose();
-      if (child.material) {
-        if (Array.isArray(child.material)) child.material.forEach(material => material.dispose());
-        else child.material.dispose();
-      }
-    }
-    if (!aimVisible || !aiming || !point || !striker) return;
-    const start = new THREE.Vector3((striker.x-450)/WORLD_SCALE, SURFACE_Y+.22, (striker.y-450)/WORLD_SCALE);
-    const end = new THREE.Vector3((point.x-450)/WORLD_SCALE, SURFACE_Y+.22, (point.y-450)/WORLD_SCALE);
-    const direction = end.clone().sub(start);
-    const length = direction.length();
-    const lineMaterial = new THREE.LineDashedMaterial({ color: 0x3b82f6, dashSize: .16, gapSize: .09, linewidth: 2 });
-    const geometry = new THREE.BufferGeometry().setFromPoints([start,end]);
-    const line = new THREE.Line(geometry,lineMaterial); line.computeLineDistances(); aimGroup.add(line);
-    const target = new THREE.Mesh(new THREE.RingGeometry(.10,.15,36), new THREE.MeshBasicMaterial({color:0xfbbf24,side:THREE.DoubleSide}));
-    target.rotation.x=-Math.PI/2; target.position.copy(end); aimGroup.add(target);
-    const power = clamp(distance(striker, point)/3.2,0,100);
-    const barBack = new THREE.Mesh(new THREE.BoxGeometry(3.6,.035,.16),new THREE.MeshBasicMaterial({color:0x0f172a}));
-    barBack.position.set(0,SURFACE_Y+.28,-5.1);aimGroup.add(barBack);
-    const bar = new THREE.Mesh(new THREE.BoxGeometry(3.6*(power/100),.045,.18),new THREE.MeshBasicMaterial({color:0xfbbf24}));
-    bar.position.set(-1.8+1.8*(power/100),SURFACE_Y+.3,-5.1);aimGroup.add(bar);
-  }
-
-  buildPbrBoard();
-  if (graphicsLabelEl) graphicsLabelEl.textContent = "PBR 4K";
 
   function loadProfile() {
     const fallback = { xp: 0, coins: 0, trophies: 0, shots: 0, pockets: 0, queens: 0, wins: 0, achievements: [] };
@@ -1125,7 +811,7 @@ import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
     const target = fastestDisc(list);
     if (!target) return;
     canvas.style.transformOrigin = `${target.x / BOARD_SIZE * 100}% ${target.y / BOARD_SIZE * 100}%`;
-    canvas.style.transform = `scale(${replaying ? 1.12 : 1.055})`;
+    canvas.style.transform = `scale(${replaying ? 1.16 : 1.08})`;
   }
 
   function startReplay(onDone) {
@@ -1184,24 +870,59 @@ import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
     }
   }
 
+  function woodGradient(d) {
+    const g = ctx.createRadialGradient(d.x - d.r * .35, d.y - d.r * .35, 2, d.x, d.y, d.r);
+    if (d.kind === "white") { g.addColorStop(0,"#fffdf5"); g.addColorStop(.38,"#f4ead5"); g.addColorStop(.75,"#dbc7a5"); g.addColorStop(1,"#b99a6b"); }
+    else if (d.kind === "black") { g.addColorStop(0,"#705d4d"); g.addColorStop(.35,"#433329"); g.addColorStop(.72,"#251a14"); g.addColorStop(1,"#120c08"); }
+    else if (d.kind === "queen") { g.addColorStop(0,"#ffc1ae"); g.addColorStop(.4,"#dc4f3d"); g.addColorStop(.78,"#98261d"); g.addColorStop(1,"#65140f"); }
+    else { g.addColorStop(0,"#f6d477"); g.addColorStop(.38,"#d9a33a"); g.addColorStop(.75,"#8d561d"); g.addColorStop(1,"#4d290e"); }
+    return g;
+  }
+
+  function drawDisc(d) {
+    ctx.save(); ctx.shadowColor="rgba(0,0,0,.32)"; ctx.shadowBlur=d.kind==="striker"?18:11; ctx.shadowOffsetY=5;
+    ctx.beginPath(); ctx.arc(d.x,d.y,d.r,0,Math.PI*2); ctx.fillStyle=woodGradient(d); ctx.fill();
+    ctx.shadowColor="transparent"; ctx.lineWidth=d.kind==="striker"?4.5:2.2;
+    ctx.strokeStyle=d.kind==="white"?"rgba(119,83,44,.95)":"rgba(255,244,220,.38)"; ctx.stroke();
+    ctx.save();
+    ctx.translate(d.x, d.y);
+    ctx.rotate(d.angle || 0);
+    ctx.beginPath(); ctx.arc(0,0,d.r*.82,0,Math.PI*2); ctx.clip();
+    ctx.strokeStyle=d.kind==="black"?"rgba(255,255,255,.06)":"rgba(89,58,28,.09)"; ctx.lineWidth=1;
+    for(let i=-2;i<=2;i++){
+      ctx.beginPath();
+      ctx.moveTo(-d.r,i*4);
+      ctx.bezierCurveTo(-d.r*.3,i*6-3,d.r*.3,i*2+3,d.r,i*5);
+      ctx.stroke();
+    }
+    ctx.restore();
+    ctx.beginPath();ctx.arc(d.x-d.r*.28,d.y-d.r*.28,d.r*.22,0,Math.PI*2);ctx.fillStyle="rgba(255,255,255,.3)";ctx.fill();
+    if(d.kind==="striker"){
+      ctx.beginPath();ctx.arc(d.x,d.y,d.r*.67,0,Math.PI*2);ctx.strokeStyle="rgba(255,245,220,.95)";ctx.lineWidth=2.7;ctx.stroke();
+      ctx.beginPath();ctx.arc(d.x,d.y,d.r*.3,0,Math.PI*2);ctx.fillStyle="rgba(255,248,230,.92)";ctx.fill();
+    }
+    ctx.restore();
+  }
+
   function drawBoard() {
+    ctx.clearRect(0,0,BOARD_SIZE,BOARD_SIZE);
+    const frame=ctx.createLinearGradient(0,0,900,900);frame.addColorStop(0,"#bd7739");frame.addColorStop(.3,"#975827");frame.addColorStop(.65,"#6a3818");frame.addColorStop(1,"#3d1c0d");ctx.fillStyle=frame;ctx.fillRect(0,0,900,900);
+    ctx.strokeStyle="rgba(255,255,255,.07)";ctx.lineWidth=1.5;for(let i=0;i<14;i++){const y=35+i*59;ctx.beginPath();ctx.moveTo(18,y);ctx.bezierCurveTo(190,y-18,690,y+17,882,y-7);ctx.stroke();}
+    ctx.save();ctx.shadowColor="rgba(0,0,0,.38)";ctx.shadowBlur=28;ctx.shadowOffsetY=12;const surface=ctx.createLinearGradient(50,50,850,850);surface.addColorStop(0,"#f9e9c5");surface.addColorStop(.45,"#edcf94");surface.addColorStop(1,"#d7af71");ctx.fillStyle=surface;ctx.fillRect(52,52,796,796);ctx.restore();
+    ctx.strokeStyle="#4d2813";ctx.lineWidth=12;ctx.strokeRect(52,52,796,796);ctx.strokeStyle="rgba(255,244,220,.38)";ctx.lineWidth=2;ctx.strokeRect(66,66,768,768);
+    ctx.strokeStyle="rgba(115,73,32,.18)";ctx.lineWidth=1;for(let i=0;i<11;i++){const y=105+i*64;ctx.beginPath();ctx.moveTo(74,y);ctx.bezierCurveTo(250,y-12,620,y+10,825,y-4);ctx.stroke();}
+    for(const p of pocketCenters){const g=ctx.createRadialGradient(p.x-8,p.y-8,4,p.x,p.y,POCKET_RADIUS);g.addColorStop(0,"#342116");g.addColorStop(.6,"#1c120c");g.addColorStop(1,"#080503");ctx.beginPath();ctx.arc(p.x,p.y,POCKET_RADIUS,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();ctx.beginPath();ctx.arc(p.x,p.y,POCKET_RADIUS+12,0,Math.PI*2);ctx.strokeStyle="rgba(99,56,28,.58)";ctx.lineWidth=8;ctx.stroke();}
+    ctx.strokeStyle="#8d3823";ctx.lineWidth=3.5;ctx.beginPath();ctx.arc(450,450,116,0,Math.PI*2);ctx.stroke();ctx.beginPath();ctx.arc(450,450,48,0,Math.PI*2);ctx.stroke();
+    const lines=[[250,BASELINE_NEAR,650,BASELINE_NEAR],[250,BASELINE_FAR,650,BASELINE_FAR],[BASELINE_NEAR,250,BASELINE_NEAR,650],[BASELINE_FAR,250,BASELINE_FAR,650]];for(const l of lines){ctx.beginPath();ctx.moveTo(l[0],l[1]);ctx.lineTo(l[2],l[3]);ctx.stroke();}
+    const side=playerSide(currentPlayer,playerCount);ctx.fillStyle="rgba(37,99,235,.075)";if(side==="bottom")ctx.fillRect(218,708,464,96);if(side==="top")ctx.fillRect(218,96,464,96);if(side==="left")ctx.fillRect(96,218,96,464);if(side==="right")ctx.fillRect(708,218,96,464);
     const displayDiscs = replaying && replayDisplay ? replayDisplay : discs;
-    syncDiscMeshes(displayDiscs);
-    const striker = displayDiscs.find(d => d.kind === "striker" && d.active);
-    updateAim3D(striker, aimPoint);
-    renderer.render(scene, camera3D);
+    for(const d of displayDiscs) if(d.active) drawDisc(d);
+    const striker = displayDiscs.find(d => d.kind === "striker");
+    if(aimVisible && aiming && aimPoint && striker){ctx.save();ctx.setLineDash([14,10]);ctx.lineWidth=5;ctx.strokeStyle="#2563eb";ctx.beginPath();ctx.moveTo(striker.x,striker.y);ctx.lineTo(aimPoint.x,aimPoint.y);ctx.stroke();ctx.setLineDash([]);ctx.beginPath();ctx.arc(aimPoint.x,aimPoint.y,13,0,Math.PI*2);ctx.fillStyle="#fbbf24";ctx.fill();const power=clamp(distance(striker,aimPoint)/3.2,0,100);ctx.fillStyle="rgba(15,23,42,.86)";ctx.fillRect(285,26,330,35);ctx.fillStyle="#fbbf24";ctx.fillRect(285,26,3.3*power,35);ctx.strokeStyle="#fff";ctx.strokeRect(285,26,330,35);ctx.restore();}
   }
 
   function canvasPoint(event) {
-    const rect = canvas.getBoundingClientRect();
-    pointerNdc.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-    pointerNdc.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-    raycaster.setFromCamera(pointerNdc, camera3D);
-    if (!raycaster.ray.intersectPlane(pointerPlane, pointerHit)) return { x: 0, y: 0 };
-    return {
-      x: clamp(pointerHit.x * WORLD_SCALE + 450, 0, BOARD_SIZE),
-      y: clamp(pointerHit.z * WORLD_SCALE + 450, 0, BOARD_SIZE),
-    };
+    const r=canvas.getBoundingClientRect();return {x:(event.clientX-r.left)/r.width*BOARD_SIZE,y:(event.clientY-r.top)/r.height*BOARD_SIZE};
   }
 
   canvas.addEventListener("pointerdown", event => {
@@ -1231,14 +952,6 @@ import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
   document.getElementById("showAchievementsMenu").addEventListener("click", showAchievementsModal);
   document.getElementById("onlineMode").addEventListener("click",()=>showModal("اللعب عبر الإنترنت",`<p class="notice">لتشغيل مباريات حقيقية عبر الإنترنت نحتاج ربط اللعبة بخدمة مثل Supabase Realtime، مع إنشاء حسابات وغرف ومزامنة وحماية من الغش. النسخة الحالية لا تدّعي وجود اتصال وهمي.</p><p>الخطوة البرمجية التالية هي إضافة قاعدة بيانات ومفتاح مشروع، ثم ربط الغرف والتصنيف العالمي.</p>`));
   document.getElementById("closeModal").addEventListener("click",()=>infoModalEl.classList.add("hidden"));
-
-  const resizeObserver = new ResizeObserver(() => {
-    const rect = canvas.getBoundingClientRect();
-    const aspect = Math.max(0.1, rect.width / Math.max(1, rect.height));
-    camera3D.aspect = aspect;
-    camera3D.updateProjectionMatrix();
-  });
-  resizeObserver.observe(canvas);
 
   function loop(now){
     const frameDt = Math.min(Math.max((now - lastFrameTime) / 1000, 0), MAX_FRAME_DT);
