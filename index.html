@@ -2,9 +2,17 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#0f172a" />
   <title>كيرم محمد عبدالله الجابري</title>
+  <meta name="description" content="لعبة كيرم عربية بفيزياء واقعية ومتجر مضارب وتصنيف وإنجازات." />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="كيرم" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png" />
+  <link rel="apple-touch-icon" href="./icon-192.png" />
   <style>
     :root {
       --bg: #0b1220;
@@ -102,6 +110,222 @@
       .game-wrap { grid-template-columns: 1fr; }
       .controls { position: static; }
     }
+
+
+    /* ===== v13: واجهة ألعاب بلا تمرير + PWA ===== */
+    html, body { height: 100%; overscroll-behavior: none; }
+    body { overflow-x: hidden; }
+    .app {
+      width: min(1380px, calc(100% - 16px));
+      min-height: 100dvh;
+      padding: 10px 0 12px;
+      display: grid;
+      grid-template-rows: auto minmax(0,1fr) auto;
+      align-items: center;
+    }
+    header { margin: 0 0 8px; }
+    header .eyebrow { font-size: 12px; }
+    header h1 { margin: 3px 0 5px; font-size: clamp(25px, 3.4vw, 40px); }
+    header p:last-child { font-size: 13px; line-height: 1.45; }
+    footer { margin-top: 8px; padding-top: 7px; font-size: 11px; line-height: 1.45; }
+
+    .menu-dashboard {
+      width: min(980px, 100%);
+      max-width: none;
+      max-height: calc(100dvh - 125px);
+      margin: 0 auto;
+      padding: 14px;
+      overflow: hidden;
+      align-self: center;
+    }
+    .menu-topline { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:10px; }
+    .menu-title-wrap h2 { margin:0 0 2px; font-size:19px; }
+    .menu-subtitle { margin:0; color:#94a3b8; font-size:12px; }
+    .install-cta {
+      min-width: 190px;
+      border: 1px solid rgba(74,222,128,.55);
+      background: linear-gradient(135deg,#166534,#15803d);
+      color: white;
+      border-radius: 14px;
+      padding: 10px 13px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      font-weight:900;
+      box-shadow: 0 10px 25px rgba(22,101,52,.25);
+    }
+    .install-cta.ready { animation: installPulse 2.2s ease-in-out infinite; }
+    .install-cta.installed { background:#0f172a; border-color:#334155; color:#94a3b8; animation:none; }
+    @keyframes installPulse { 50% { transform:translateY(-2px); box-shadow:0 14px 30px rgba(34,197,94,.32); } }
+
+    .menu-settings-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin-bottom:9px; }
+    .setting-tile, .quick-tile {
+      min-height: 68px;
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:14px;
+      background:#0f172a;
+      padding:9px;
+    }
+    .setting-tile label { display:flex; align-items:center; gap:6px; margin:0 0 5px; font-size:11px; color:#cbd5e1; font-weight:900; }
+    .setting-tile select { width:100%; padding:8px 9px; border-radius:9px; border:1px solid #475569; background:#111c30; color:white; font-weight:800; }
+    .quick-tile {
+      display:flex; align-items:center; justify-content:center; gap:8px;
+      color:#f8fafc; font-weight:900; cursor:pointer;
+      transition: transform .16s ease, border-color .16s ease;
+    }
+    .quick-tile:hover { transform:translateY(-2px); border-color:rgba(251,191,36,.5); }
+    .quick-tile .tile-icon { font-size:22px; }
+    .quick-tile .tile-copy { display:flex; flex-direction:column; line-height:1.25; text-align:right; }
+    .quick-tile small { color:#94a3b8; font-weight:700; font-size:10px; }
+
+    .mode-grid { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; }
+    .mode-card {
+      border:1px solid #475569;
+      border-radius:14px;
+      min-height:82px;
+      padding:9px 7px;
+      background:linear-gradient(180deg,#111c30,#0b1323);
+      color:#fff;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:5px;
+      font-weight:900;
+      transition:transform .15s ease,border-color .15s ease,background .15s ease;
+    }
+    .mode-card:hover { transform:translateY(-2px); border-color:#60a5fa; }
+    .mode-card.primary { border:0; background:linear-gradient(135deg,#fbbf24,#f59e0b); color:#111827; }
+    .mode-icon { font-size:25px; line-height:1; }
+    .mode-label { font-size:12px; text-align:center; line-height:1.25; }
+    .menu-bottom-row { display:grid; grid-template-columns:minmax(0,1.35fr) minmax(0,1fr); gap:8px; margin-top:9px; }
+    .profile-strip.compact-profile { margin:0; grid-template-columns:repeat(4,1fr); gap:6px; }
+    .compact-profile .profile-chip { padding:7px 5px; font-size:10px; }
+    .compact-profile .profile-chip strong { margin-top:2px; font-size:12px; }
+    .compact-note { margin:0; padding:9px 11px; font-size:10px; line-height:1.45; display:flex; align-items:center; }
+
+    body.game-active { overflow:hidden; }
+    body.game-active .app { width:min(1460px,calc(100% - 10px)); height:100dvh; min-height:0; padding:5px 0; display:block; }
+    body.game-active header, body.game-active footer { display:none; }
+    body.game-active #game { height:calc(100dvh - 10px); display:grid; grid-template-rows:auto minmax(0,1fr); gap:5px; overflow:hidden; }
+    .hud { margin:0; grid-template-columns:repeat(4,minmax(105px,1fr)); gap:6px; min-height:48px; }
+    .player-card { padding:6px 8px; border-radius:10px; font-size:12px; line-height:1.25; }
+    .score { margin-top:2px; font-size:11px; }
+    .game-wrap { height:100%; min-height:0; grid-template-columns:minmax(0,1fr) 292px; gap:7px; align-items:stretch; direction:ltr; }
+    .camera-frame { height:100%; min-height:0; aspect-ratio:1/1; width:auto; max-width:100%; justify-self:center; border-radius:16px; }
+    canvas { width:100%; height:100%; border-radius:16px; }
+    .controls { direction:rtl; position:static; min-height:0; height:100%; padding:9px; border-radius:15px; display:grid; grid-template-rows:auto auto auto auto 1fr; gap:6px; overflow:hidden; }
+    .position-control { margin:0; }
+    .position-control label { display:flex; align-items:center; justify-content:space-between; margin:0 0 3px; font-size:10px; }
+    .position-control input { height:20px; }
+    .stats.compact-stats { grid-template-columns:repeat(4,1fr); gap:4px; margin:0; }
+    .compact-stats .stat { padding:5px 2px; font-size:9px; line-height:1.2; }
+    .compact-stats .stat strong { display:block; margin-top:2px; font-size:11px; color:#f8fafc; }
+    .countdown { margin:0; padding:6px 8px; font-size:11px; }
+    .status { margin:0; min-height:32px; max-height:42px; padding:7px 8px; font-size:10px; line-height:1.35; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
+    .actions.icon-actions { grid-template-columns:repeat(3,minmax(0,1fr)); gap:5px; align-content:start; }
+    .icon-control {
+      min-height:55px;
+      padding:5px 3px;
+      border:1px solid #475569;
+      border-radius:11px;
+      background:#0f172a;
+      color:#f8fafc;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:3px;
+      font-weight:900;
+    }
+    .icon-control:hover { border-color:#60a5fa; background:#15213a; }
+    .icon-control .control-icon { font-size:19px; line-height:1; }
+    .icon-control .control-text { font-size:9px; line-height:1.15; text-align:center; }
+    .icon-control.install-control { border-color:rgba(74,222,128,.5); background:rgba(22,101,52,.25); }
+    .help.compact-help { margin:0; font-size:9px; line-height:1.4; color:#64748b; align-self:end; }
+    .slow-badge { top:7px; left:7px; padding:6px 9px; font-size:10px; }
+
+    .pwa-toast {
+      position:fixed; z-index:300; left:50%; bottom:max(18px,env(safe-area-inset-bottom)); transform:translateX(-50%) translateY(20px);
+      background:#052e16; color:#dcfce7; border:1px solid rgba(74,222,128,.45); border-radius:999px; padding:10px 16px;
+      font-weight:800; font-size:12px; opacity:0; pointer-events:none; transition:.25s ease; box-shadow:0 18px 45px rgba(0,0,0,.4);
+    }
+    .pwa-toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+    @media (max-width: 980px) {
+      .app { width:calc(100% - 10px); padding:6px 0; }
+      header h1 { font-size:24px; }
+      header p:last-child { display:none; }
+      footer { display:none; }
+      .menu-dashboard { max-height:calc(100dvh - 66px); padding:10px; }
+      .menu-settings-grid { grid-template-columns:repeat(2,1fr); }
+      .mode-grid { grid-template-columns:repeat(3,1fr); }
+      .mode-card { min-height:70px; }
+      .game-wrap { grid-template-columns:minmax(0,1fr) 250px; }
+      .actions.icon-actions { grid-template-columns:repeat(2,1fr); }
+      .icon-control { min-height:48px; }
+    }
+
+    @media (max-width: 700px) and (orientation: portrait) {
+      body:not(.game-active) { overflow:hidden; }
+      .app { height:100dvh; min-height:0; grid-template-rows:auto minmax(0,1fr); }
+      header { margin-bottom:4px; }
+      header .eyebrow { display:none; }
+      header h1 { font-size:20px; margin:2px 0; }
+      .menu-dashboard { height:100%; max-height:none; padding:8px; display:grid; grid-template-rows:auto auto 1fr auto; gap:6px; }
+      .menu-topline { margin:0; gap:7px; }
+      .menu-title-wrap h2 { font-size:15px; }
+      .menu-subtitle { display:none; }
+      .install-cta { min-width:140px; padding:8px; font-size:11px; border-radius:11px; }
+      .menu-settings-grid { grid-template-columns:1fr 1fr; gap:5px; margin:0; }
+      .setting-tile, .quick-tile { min-height:54px; padding:6px; border-radius:10px; }
+      .setting-tile label { font-size:9px; margin-bottom:3px; }
+      .setting-tile select { padding:5px 6px; font-size:10px; }
+      .quick-tile .tile-icon { font-size:17px; }
+      .quick-tile .tile-copy { font-size:10px; }
+      .quick-tile small { display:none; }
+      .mode-grid { grid-template-columns:repeat(2,1fr); gap:5px; align-content:center; }
+      .mode-card { min-height:55px; padding:5px; border-radius:10px; flex-direction:row; }
+      .mode-icon { font-size:19px; }
+      .mode-label { font-size:10px; }
+      .menu-bottom-row { grid-template-columns:1fr; margin:0; gap:4px; }
+      .compact-note { display:none; }
+      .compact-profile .profile-chip { padding:5px 2px; font-size:8px; }
+      .compact-profile .profile-chip strong { font-size:10px; }
+
+      body.game-active .app { width:100%; padding:3px; }
+      body.game-active #game { height:calc(100dvh - 6px); gap:3px; }
+      .hud { min-height:42px; gap:3px; grid-template-columns:repeat(2,1fr); }
+      .player-card { padding:4px; font-size:9px; }
+      .score { font-size:9px; }
+      .game-wrap { display:flex; flex-direction:column; gap:3px; height:100%; }
+      .camera-frame { width:min(100%,calc(100dvh - 258px)); height:auto; flex:0 0 auto; border-radius:10px; }
+      canvas { border-radius:10px; }
+      .controls { width:100%; height:auto; flex:1 1 auto; padding:5px; grid-template-columns:1fr; grid-template-rows:auto auto auto 1fr; gap:3px; border-radius:10px; }
+      .position-control { display:grid; grid-template-columns:90px 1fr; align-items:center; gap:5px; }
+      .position-control label { margin:0; font-size:8px; }
+      .compact-stats { display:none!important; }
+      .countdown { position:absolute; top:48px; right:8px; z-index:8; padding:4px 7px; font-size:9px; }
+      .status { min-height:25px; max-height:28px; padding:5px 7px; font-size:8px; -webkit-line-clamp:1; }
+      .actions.icon-actions { grid-template-columns:repeat(4,1fr); gap:3px; }
+      .icon-control { min-height:42px; padding:3px 1px; border-radius:8px; }
+      .icon-control .control-icon { font-size:16px; }
+      .icon-control .control-text { font-size:7.5px; }
+      .help.compact-help { display:none; }
+    }
+
+    @media (max-height: 680px) and (min-width: 701px) {
+      header p:last-child, footer { display:none; }
+      header h1 { font-size:22px; }
+      .menu-dashboard { max-height:calc(100dvh - 56px); padding:8px; }
+      .mode-card { min-height:62px; }
+      .setting-tile,.quick-tile { min-height:58px; }
+      .game-wrap { grid-template-columns:minmax(0,1fr) 265px; }
+      .icon-control { min-height:43px; }
+      .controls { padding:6px; }
+    }
+
   </style>
 </head>
 <body>
@@ -112,42 +336,63 @@
       <p>فيزياء محسنة، ذكاء اصطناعي متقدم، زخارف متعددة، متجر يضم 25 مضربًا، وتصنيف وإنجازات محفوظة على الجهاز.</p>
     </header>
 
-    <section id="menu" class="menu panel">
-      <h2>اختر طريقة اللعب</h2>
-      <div class="field">
-        <label for="difficulty">مستوى الذكاء الاصطناعي</label>
-        <select id="difficulty">
-          <option value="hard" selected>متقدم</option>
-          <option value="expert">محترف</option>
-          <option value="legendary">أسطوري</option>
-        </select>
+    <section id="menu" class="menu panel menu-dashboard">
+      <div class="menu-topline">
+        <div class="menu-title-wrap">
+          <h2>اختر أسلوب اللعب</h2>
+          <p class="menu-subtitle">كل الإعدادات الأساسية أمامك في شاشة واحدة.</p>
+        </div>
+        <button id="installAppMenu" class="install-cta" type="button" aria-label="تثبيت اللعبة على أندرويد">
+          <span aria-hidden="true">⬇️</span><span class="install-label">تثبيت على أندرويد</span>
+        </button>
       </div>
-      <div class="field">
-        <label for="theme">ثيم الزخرفة</label>
-        <select id="theme">
-          <option value="arabic" selected>عربي</option>
-          <option value="indian">هندي</option>
-          <option value="royal">ملكي</option>
-          <option value="classic">كلاسيكي</option>
-          <option value="modern">عصري</option>
-        </select>
+
+      <div class="menu-settings-grid">
+        <div class="setting-tile">
+          <label for="difficulty"><span aria-hidden="true">🧠</span> مستوى الذكاء الاصطناعي</label>
+          <select id="difficulty">
+            <option value="hard" selected>متقدم</option>
+            <option value="expert">محترف</option>
+            <option value="legendary">أسطوري</option>
+          </select>
+        </div>
+        <div class="setting-tile">
+          <label for="theme"><span aria-hidden="true">✨</span> ثيم الزخرفة</label>
+          <select id="theme">
+            <option value="arabic" selected>عربي</option>
+            <option value="indian">هندي</option>
+            <option value="royal">ملكي</option>
+            <option value="classic">كلاسيكي</option>
+            <option value="modern">عصري</option>
+          </select>
+        </div>
+        <button id="openShopMenu" class="quick-tile" type="button">
+          <span class="tile-icon" aria-hidden="true">🛍️</span>
+          <span class="tile-copy">متجر المضارب<small>شراء وتجهيز المضرب</small></span>
+        </button>
+        <button id="showAchievementsMenu" class="quick-tile" type="button">
+          <span class="tile-icon" aria-hidden="true">🏆</span>
+          <span class="tile-copy">التصنيف والإنجازات<small>الرتبة والمكافآت</small></span>
+        </button>
       </div>
-      <div class="menu-grid">
-        <button class="btn primary" data-mode="ai" data-count="2">العب ضد الذكاء الاصطناعي</button>
-        <button class="btn" data-mode="local2" data-count="2">لاعبان على نفس الجهاز</button>
-        <button class="btn" data-mode="local4" data-count="4">أربعة لاعبين على نفس الجهاز</button>
-        <button class="btn" data-mode="training" data-count="1">وضع التدريب</button>
-        <button id="onlineMode" class="btn">اللعب عبر الإنترنت</button>
-        <button id="showAchievementsMenu" class="btn">التصنيف والإنجازات</button>
-        <button id="openShopMenu" class="btn">متجر المضارب</button>
+
+      <div class="mode-grid" aria-label="طرق اللعب">
+        <button class="mode-card primary" data-mode="ai" data-count="2"><span class="mode-icon" aria-hidden="true">🤖</span><span class="mode-label">ضد الذكاء الاصطناعي</span></button>
+        <button class="mode-card" data-mode="local2" data-count="2"><span class="mode-icon" aria-hidden="true">👥</span><span class="mode-label">لاعبان محليًا</span></button>
+        <button class="mode-card" data-mode="local4" data-count="4"><span class="mode-icon" aria-hidden="true">👨‍👩‍👧‍👦</span><span class="mode-label">أربعة لاعبين</span></button>
+        <button class="mode-card" data-mode="training" data-count="1"><span class="mode-icon" aria-hidden="true">🎯</span><span class="mode-label">وضع التدريب</span></button>
+        <button id="onlineMode" class="mode-card" type="button"><span class="mode-icon" aria-hidden="true">🌐</span><span class="mode-label">اللعب عبر الإنترنت</span></button>
       </div>
-      <div class="profile-strip">
-        <div class="profile-chip">الرتبة<strong id="menuRank">برونزي</strong></div>
-        <div class="profile-chip">XP<strong id="menuXp">0</strong></div>
-        <div class="profile-chip">الكؤوس<strong id="menuTrophies">0</strong></div>
-        <div class="profile-chip">العملات<strong id="menuCoins">0</strong></div>
+
+      <div class="menu-bottom-row">
+        <div class="profile-strip compact-profile">
+          <div class="profile-chip">الرتبة<strong id="menuRank">برونزي</strong></div>
+          <div class="profile-chip">XP<strong id="menuXp">0</strong></div>
+          <div class="profile-chip">الكؤوس<strong id="menuTrophies">0</strong></div>
+          <div class="profile-chip">العملات<strong id="menuCoins">0</strong></div>
+        </div>
+        <div class="notice compact-note">تعمل اللعبة محليًا دون تسجيل. التثبيت على أندرويد يفتحها كتطبيق مستقل، مع دعم العمل دون اتصال بعد أول زيارة.</div>
       </div>
-      <div class="notice">اللعب المحلي والتدريب يعملان بالكامل. اللعب الحقيقي عبر الإنترنت يحتاج خدمة مزامنة وقاعدة بيانات، لذلك زر الأونلاين يشرح متطلبات التفعيل بدل إظهار اتصال وهمي.</div>
     </section>
 
     <section id="game" class="hidden">
@@ -157,37 +402,33 @@
           <canvas id="board" width="900" height="900" aria-label="لوح لعبة الكيرم"></canvas>
           <div id="slowBadge" class="slow-badge hidden">إعادة بطيئة</div>
         </div>
-        <aside class="controls panel">
-          <div class="field">
-            <label for="strikerPosition">موقع المضرب على خط البداية</label>
+        <aside class="controls panel" aria-label="لوحة التحكم">
+          <div class="field position-control">
+            <label for="strikerPosition"><span>↔️ موقع المضرب</span><small>اسحب لتحديد موضع البداية</small></label>
             <input id="strikerPosition" type="range" min="0" max="100" value="50" />
           </div>
 
-          <div class="stats">
-            <div class="stat">القطع المتبقية<br><strong id="remaining">19</strong></div>
-            <div class="stat">الوقت<br><strong id="timer">جاهز</strong></div>
-            <div class="stat">الرتبة<br><strong id="rankLabel">برونزي</strong></div>
-            <div class="stat">XP<br><strong id="xpLabel">0</strong></div>
+          <div class="stats compact-stats">
+            <div class="stat">القطع<strong id="remaining">19</strong></div>
+            <div class="stat">الوقت<strong id="timer">جاهز</strong></div>
+            <div class="stat">الرتبة<strong id="rankLabel">برونزي</strong></div>
+            <div class="stat">XP<strong id="xpLabel">0</strong></div>
           </div>
 
           <div id="countdown" class="countdown hidden">7</div>
           <div id="status" class="status">جاهز للعب.</div>
 
-          <div class="actions">
-            <button id="toggleAim" class="btn">إخفاء خط التصويب</button>
-            <button id="toggleSound" class="btn">كتم الصوت</button>
-            <button id="replayShot" class="btn" disabled>إعادة بطيئة للتسديدة</button>
-            <button id="showAchievements" class="btn">التصنيف والإنجازات</button>
-            <button id="openShopGame" class="btn">متجر المضارب</button>
-            <button id="restart" class="btn">إعادة المباراة</button>
-            <button id="back" class="btn">العودة للبداية</button>
+          <div class="actions icon-actions">
+            <button id="toggleAim" class="icon-control" type="button" title="إظهار أو إخفاء خط التصويب"><span class="control-icon" aria-hidden="true">🎯</span><span class="control-text">خط التصويب</span></button>
+            <button id="toggleSound" class="icon-control" type="button" title="تشغيل أو كتم الصوت"><span class="control-icon" aria-hidden="true">🔊</span><span class="control-text">الصوت</span></button>
+            <button id="replayShot" class="icon-control" type="button" disabled title="إعادة آخر تسديدة ببطء"><span class="control-icon" aria-hidden="true">⏪</span><span class="control-text">إعادة بطيئة</span></button>
+            <button id="showAchievements" class="icon-control" type="button" title="عرض التصنيف والإنجازات"><span class="control-icon" aria-hidden="true">🏆</span><span class="control-text">الإنجازات</span></button>
+            <button id="openShopGame" class="icon-control" type="button" title="فتح متجر المضارب"><span class="control-icon" aria-hidden="true">🛍️</span><span class="control-text">المتجر</span></button>
+            <button id="restart" class="icon-control" type="button" title="بدء المباراة من جديد"><span class="control-icon" aria-hidden="true">🔄</span><span class="control-text">إعادة المباراة</span></button>
+            <button id="back" class="icon-control" type="button" title="العودة إلى الشاشة الرئيسية"><span class="control-icon" aria-hidden="true">⌂</span><span class="control-text">الرئيسية</span></button>
+            <button id="installAppGame" class="icon-control install-control" type="button" title="تثبيت اللعبة كتطبيق"><span class="control-icon" aria-hidden="true">⬇️</span><span class="control-text install-label">تثبيت التطبيق</span></button>
           </div>
-          <div class="help">
-            1. حرّك المضرب بالشريط.<br>
-            2. اضغط على المضرب نفسه واسحب نحو الهدف.<br>
-            3. اترك زر الفأرة أو إصبعك لتنفيذ الضربة.<br>
-            4. في أربعة لاعبين يكون الترتيب: 1 ثم 2 ثم 3 ثم 4.
-          </div>
+          <div class="help compact-help">حرّك المضرب بالشريط، ثم اضغط عليه واسحب للخلف باتجاه معاكس للضربة واتركه.</div>
         </aside>
       </div>
     </section>
@@ -601,6 +842,7 @@
     placeStriker();
     menuEl.classList.add("hidden");
     gameEl.classList.remove("hidden");
+    document.body.classList.add("game-active");
     setStatus(count === 4 ? "اللاعب 1 يبدأ. الترتيب: 1 ثم 2 ثم 3 ثم 4." : "اللاعب 1 يبدأ. حرّك المضرب ثم اسحب نحو الهدف.");
     renderHud();
     updateRemaining();
@@ -614,6 +856,7 @@
   function backToMenu() {
     clearTimers(); phase = "menu"; mode = "menu"; aiming = false; aimPoint = null; queenPendingPlayer = null;
     gameEl.classList.add("hidden"); menuEl.classList.remove("hidden");
+    document.body.classList.remove("game-active");
   }
 
   function setStatus(text) { statusEl.textContent = text; }
@@ -2590,8 +2833,15 @@ function renderHud() {
   document.querySelectorAll("[data-mode]").forEach(button=>button.addEventListener("click",()=>startGame(button.dataset.mode,Number(button.dataset.count))));
   document.getElementById("restart").addEventListener("click",restart);
   document.getElementById("back").addEventListener("click",backToMenu);
-  toggleAimEl.addEventListener("click",()=>{aimVisible=!aimVisible;toggleAimEl.textContent=aimVisible?"إخفاء خط التصويب":"إظهار خط التصويب";});
-  toggleSoundEl.addEventListener("click",()=>{soundEnabled=!soundEnabled;toggleSoundEl.textContent=soundEnabled?"كتم الصوت":"تشغيل الصوت";if(soundEnabled)sound("ui");});
+  toggleAimEl.addEventListener("click",()=>{
+    aimVisible=!aimVisible;
+    toggleAimEl.innerHTML=`<span class="control-icon" aria-hidden="true">🎯</span><span class="control-text">${aimVisible?"إخفاء التصويب":"إظهار التصويب"}</span>`;
+  });
+  toggleSoundEl.addEventListener("click",()=>{
+    soundEnabled=!soundEnabled;
+    toggleSoundEl.innerHTML=`<span class="control-icon" aria-hidden="true">${soundEnabled?"🔊":"🔇"}</span><span class="control-text">${soundEnabled?"كتم الصوت":"تشغيل الصوت"}</span>`;
+    if(soundEnabled)sound("ui");
+  });
   if (themeEl) themeEl.addEventListener("change",()=>{currentTheme=themeEl.value;localStorage.setItem("carrom-board-theme", currentTheme);drawBoard();});
   replayShotEl.addEventListener("click",()=>startReplay());
   document.getElementById("showAchievements").addEventListener("click", showAchievementsModal);
@@ -2631,5 +2881,114 @@ function renderHud() {
   discs=initialPieces();drawBoard();requestAnimationFrame(loop);
 })();
 </script>
+
+<script>
+(() => {
+  "use strict";
+  const installButtons = [document.getElementById("installAppMenu"), document.getElementById("installAppGame")].filter(Boolean);
+  let deferredInstallPrompt = null;
+  const isStandalone = () => window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+  const isAndroid = /Android/i.test(navigator.userAgent);
+
+  function setInstallState(state) {
+    installButtons.forEach(button => {
+      const label = button.querySelector(".install-label");
+      button.classList.remove("ready", "installed");
+      button.disabled = false;
+      if (state === "installed") {
+        button.classList.add("installed");
+        button.disabled = true;
+        if (label) label.textContent = "اللعبة مثبتة";
+      } else if (state === "ready") {
+        button.classList.add("ready");
+        if (label) label.textContent = "تثبيت على أندرويد";
+      } else {
+        if (label) label.textContent = isAndroid ? "تثبيت على أندرويد" : "تثبيت التطبيق";
+      }
+    });
+  }
+
+  function showInstallHelp() {
+    const modal = document.getElementById("infoModal");
+    const title = document.getElementById("modalTitle");
+    const body = document.getElementById("modalBody");
+    if (!modal || !title || !body) return;
+    title.textContent = "تثبيت اللعبة على أندرويد";
+    body.innerHTML = `
+      <div class="notice" style="line-height:1.9">
+        <strong>الطريقة المباشرة:</strong><br>
+        افتح اللعبة في Google Chrome، ثم اضغط زر <b>تثبيت على أندرويد</b> مرة أخرى عندما يصبح جاهزًا.<br><br>
+        <strong>الطريقة اليدوية:</strong><br>
+        1. اضغط قائمة Chrome ذات النقاط الثلاث ⋮.<br>
+        2. اختر <b>تثبيت التطبيق</b> أو <b>إضافة إلى الشاشة الرئيسية</b>.<br>
+        3. اضغط <b>تثبيت</b>.<br><br>
+        قد يحتاج Chrome إلى إعادة تحميل الصفحة مرة واحدة بعد نشر ملفات التطبيق الجديدة.
+      </div>`;
+    modal.classList.remove("hidden");
+  }
+
+  function toast(message) {
+    let node = document.getElementById("pwaToast");
+    if (!node) {
+      node = document.createElement("div");
+      node.id = "pwaToast";
+      node.className = "pwa-toast";
+      document.body.appendChild(node);
+    }
+    node.textContent = message;
+    node.classList.add("show");
+    clearTimeout(node._timer);
+    node._timer = setTimeout(() => node.classList.remove("show"), 3200);
+  }
+
+  async function requestInstall() {
+    if (isStandalone()) {
+      setInstallState("installed");
+      toast("اللعبة مثبتة بالفعل على جهازك");
+      return;
+    }
+    if (!deferredInstallPrompt) {
+      showInstallHelp();
+      return;
+    }
+    const promptEvent = deferredInstallPrompt;
+    deferredInstallPrompt = null;
+    await promptEvent.prompt();
+    const result = await promptEvent.userChoice;
+    if (result && result.outcome === "accepted") toast("تم قبول تثبيت اللعبة");
+    else toast("يمكنك تثبيت اللعبة لاحقًا من الزر نفسه");
+    setInstallState("idle");
+  }
+
+  installButtons.forEach(button => button.addEventListener("click", requestInstall));
+
+  window.addEventListener("beforeinstallprompt", event => {
+    event.preventDefault();
+    deferredInstallPrompt = event;
+    setInstallState("ready");
+  });
+
+  window.addEventListener("appinstalled", () => {
+    deferredInstallPrompt = null;
+    setInstallState("installed");
+    toast("تم تثبيت لعبة الكيرم بنجاح");
+  });
+
+  if (isStandalone()) setInstallState("installed");
+  else setInstallState("idle");
+
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", async () => {
+      try {
+        const registration = await navigator.serviceWorker.register("./sw.js", { scope: "./" });
+        registration.update().catch(() => {});
+      } catch (error) {
+        console.warn("تعذر تسجيل Service Worker", error);
+      }
+    });
+  }
+})();
+</script>
+
 </body>
 </html>
