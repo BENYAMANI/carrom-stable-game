@@ -370,14 +370,69 @@
       .owned-mini canvas { width:38px; height:38px; }
     }
 
-  </style>
+  
+
+    /* v16: الملف الشخصي والغرف المنفصلة */
+    .profile-quick { position: relative; overflow: hidden; }
+    .profile-quick .mini-avatar { width: 46px; height: 46px; border-radius: 50%; flex: 0 0 46px; border: 2px solid rgba(251,191,36,.68); background: #0f172a; object-fit: cover; display: grid; place-items: center; font-weight: 900; color: #fbbf24; }
+    .profile-quick .tile-copy small { direction: ltr; unicode-bidi: plaintext; }
+    .profile-layout { display: grid; gap: 15px; }
+    .profile-hero { display: grid; grid-template-columns: 104px 1fr; gap: 16px; align-items: center; padding: 16px; border-radius: 18px; background: linear-gradient(145deg,rgba(15,23,42,.94),rgba(30,41,59,.94)); border: 1px solid rgba(251,191,36,.25); }
+    .profile-avatar-wrap { position: relative; width: 104px; height: 104px; }
+    .profile-avatar { width: 104px; height: 104px; border-radius: 50%; object-fit: cover; border: 3px solid #d4af37; background: #0b1220; box-shadow: 0 12px 30px rgba(0,0,0,.32); display: grid; place-items: center; color: #fde68a; font-size: 30px; font-weight: 900; overflow: hidden; }
+    .profile-avatar-upload { position: absolute; inset-inline-end: -4px; bottom: -4px; width: 38px; height: 38px; border-radius: 50%; border: 2px solid #172033; background: #fbbf24; color: #111827; display: grid; place-items: center; cursor: pointer; font-size: 18px; }
+    .profile-avatar-upload input { display: none; }
+    .profile-name { margin: 0 0 5px; font-size: 24px; }
+    .profile-id { direction: ltr; unicode-bidi: plaintext; display: inline-flex; align-items: center; gap: 7px; padding: 6px 9px; border-radius: 999px; background: rgba(255,255,255,.06); color: #cbd5e1; font-family: ui-monospace, Consolas, monospace; letter-spacing: 1px; }
+    .profile-stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-top: 12px; }
+    .profile-stat { background: #0f172a; border: 1px solid rgba(255,255,255,.09); border-radius: 11px; padding: 8px; text-align: center; }
+    .profile-stat small { display: block; color: #94a3b8; }
+    .profile-stat strong { display: block; margin-top: 3px; color: #fde68a; }
+    .profile-section { padding: 15px; border-radius: 16px; background: rgba(15,23,42,.78); border: 1px solid rgba(255,255,255,.1); }
+    .profile-section h3 { margin: 0 0 10px; font-size: 17px; }
+    .profile-form-row { display: grid; grid-template-columns: 1fr auto; gap: 9px; }
+    .profile-form-row input { min-width: 0; padding: 12px; border-radius: 11px; border: 1px solid #64748b; background: #0b1220; color: #fff; }
+    .profile-help { margin-top: 8px; color: #94a3b8; font-size: 13px; line-height: 1.65; }
+    .level-progress { height: 10px; border-radius: 999px; background: rgba(255,255,255,.09); overflow: hidden; margin-top: 9px; }
+    .level-progress > span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg,#f59e0b,#fde68a); }
+    .cloud-badge { display: inline-flex; gap: 6px; align-items: center; border-radius: 999px; padding: 6px 9px; font-size: 12px; background: rgba(37,99,235,.13); border: 1px solid rgba(96,165,250,.24); color: #bfdbfe; }
+    .cloud-badge.offline { background: rgba(148,163,184,.1); border-color: rgba(148,163,184,.22); color: #cbd5e1; }
+    .player-search-result { margin-top: 10px; min-height: 54px; }
+    .search-player-card { display: grid; grid-template-columns: 54px 1fr; gap: 11px; align-items: center; padding: 11px; border-radius: 13px; background: #111b2f; border: 1px solid rgba(255,255,255,.1); }
+    .search-player-card img, .search-avatar-fallback { width: 54px; height: 54px; border-radius: 50%; object-fit: cover; background: #0b1220; display: grid; place-items: center; color: #fbbf24; font-weight: 900; }
+    .search-player-card small { color: #94a3b8; direction: ltr; unicode-bidi: plaintext; }
+    .room-kind-badge { display: inline-flex; align-items: center; gap: 6px; padding: 7px 10px; border-radius: 999px; background: rgba(251,191,36,.12); border: 1px solid rgba(251,191,36,.35); color: #fde68a; font-weight: 800; }
+    .room-player { gap: 10px; }
+    .room-player-main { display: grid; grid-template-columns: 44px 1fr; align-items: center; gap: 10px; min-width: 0; }
+    .room-avatar { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; background: #0f172a; border: 1px solid rgba(255,255,255,.16); display: grid; place-items: center; color: #fbbf24; font-weight: 900; overflow: hidden; }
+    .room-player-copy { min-width: 0; }
+    .room-player-copy strong, .room-player-copy small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .room-player-copy small { direction: ltr; unicode-bidi: plaintext; }
+    .room-player-actions { display: flex; gap: 7px; align-items: center; }
+    .kick-player { border: 1px solid rgba(248,113,113,.45); background: rgba(127,29,29,.28); color: #fecaca; padding: 7px 10px; border-radius: 9px; font-weight: 800; cursor: pointer; }
+    .identity-card { display: grid; grid-template-columns: 48px 1fr; align-items: center; gap: 10px; padding: 10px; background: rgba(255,255,255,.045); border-radius: 12px; margin-bottom: 10px; }
+    .identity-card .room-avatar { width: 48px; height: 48px; }
+    .game-toast { position: fixed; z-index: 200; left: 50%; bottom: 24px; transform: translate(-50%,18px); opacity: 0; pointer-events: none; padding: 12px 17px; border-radius: 999px; background: rgba(15,23,42,.96); color: #f8fafc; border: 1px solid rgba(251,191,36,.42); box-shadow: 0 18px 50px rgba(0,0,0,.35); transition: .22s ease; font-weight: 800; }
+    .game-toast.show { transform: translate(-50%,0); opacity: 1; }
+    @media (max-width: 650px) {
+      .profile-hero { grid-template-columns: 78px 1fr; padding: 12px; }
+      .profile-avatar-wrap, .profile-avatar { width: 78px; height: 78px; }
+      .profile-avatar { font-size: 23px; }
+      .profile-stats-grid { grid-template-columns: repeat(2,1fr); }
+      .profile-form-row { grid-template-columns: 1fr; }
+      .room-player { align-items: center; }
+      .room-player-main { grid-template-columns: 38px 1fr; }
+      .room-avatar { width: 38px; height: 38px; }
+    }
+
+</style>
 </head>
 <body>
   <main class="app">
     <header>
       <p class="eyebrow">لعبة كيرم مستقرة — ملف واحد فقط</p>
       <h1>كيرم محمد عبدالله الجابري</h1>
-      <p>فيزياء محسنة، ذكاء اصطناعي متقدم، زخارف متعددة، متجر يضم 25 مضربًا، وتصنيف وإنجازات محفوظة على الجهاز.</p>
+      <p>فيزياء محسنة، متجر مضارب، ملف شخصي، يوزر فريد، غرف أصدقاء منفصلة، وغرف بطولات تنافسية.</p>
     </header>
 
     <section id="menu" class="menu panel menu-dashboard">
@@ -418,6 +473,10 @@
           <span class="tile-icon" aria-hidden="true">🏆</span>
           <span class="tile-copy">التصنيف والإنجازات<small>الرتبة والمكافآت</small></span>
         </button>
+        <button id="openProfileMenu" class="quick-tile profile-quick" type="button">
+          <span id="menuProfileAvatar" class="mini-avatar" aria-hidden="true">م</span>
+          <span class="tile-copy"><span id="menuProfileName">ملفي الشخصي</span><small id="menuPlayerId">-------------</small></span>
+        </button>
       </div>
 
       <div class="mode-grid" aria-label="طرق اللعب">
@@ -425,7 +484,8 @@
         <button class="mode-card" data-mode="local2" data-count="2"><span class="mode-icon" aria-hidden="true">👥</span><span class="mode-label">لاعبان محليًا</span></button>
         <button class="mode-card" data-mode="local4" data-count="4"><span class="mode-icon" aria-hidden="true">👨‍👩‍👧‍👦</span><span class="mode-label">أربعة لاعبين</span></button>
         <button class="mode-card" data-mode="training" data-count="1"><span class="mode-icon" aria-hidden="true">🎯</span><span class="mode-label">وضع التدريب</span></button>
-        <button id="tournamentMode" class="mode-card tournament-card" type="button"><span class="mode-icon" aria-hidden="true">🏟️</span><span class="mode-label">بطولات الأصدقاء</span></button>
+        <button id="friendsRoomMode" class="mode-card" type="button"><span class="mode-icon" aria-hidden="true">🔗</span><span class="mode-label">غرفة الأصدقاء</span></button>
+        <button id="tournamentMode" class="mode-card tournament-card" type="button"><span class="mode-icon" aria-hidden="true">🏆</span><span class="mode-label">غرفة البطولات</span></button>
       </div>
 
       <div class="menu-bottom-row">
@@ -434,8 +494,9 @@
           <div class="profile-chip">XP<strong id="menuXp">0</strong></div>
           <div class="profile-chip">الكؤوس<strong id="menuTrophies">0</strong></div>
           <div class="profile-chip">العملات<strong id="menuCoins">0</strong></div>
+          <div class="profile-chip">المستوى<strong id="menuLevel">1</strong></div>
         </div>
-        <div class="notice compact-note">اللعب المحلي يعمل دون تسجيل. غرف البطولات تحتاج اتصالًا بالإنترنت، ويبقى جهاز منشئ الغرفة مفتوحًا حتى نهاية المباراة.</div>
+        <div class="notice compact-note">غرفة الأصدقاء للعب السريع، وغرفة البطولات منفصلة للمنافسات. منشئ الغرفة يرى المنضمين ويمكنه إخراج أي لاعب قبل البداية.</div>
       </div>
     </section>
 
@@ -492,6 +553,8 @@
   </main>
 
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./supabase-config.js"></script>
 <script>
 (() => {
   "use strict";
@@ -506,6 +569,9 @@
   const BASELINE_FAR = BOARD_SIZE - 145;
   const SHOT_SECONDS = 7;
   const TURN_SECONDS = 10;
+  const XP_PER_LEVEL = 250;
+  const NAME_CHANGE_COST = 100;
+  const FIRST_DAY_MS = 24 * 60 * 60 * 1000;
   const FIXED_DT = 1 / 120;
   const MAX_FRAME_DT = 0.05;
   const MAX_SUB_STEPS = 10;
@@ -532,6 +598,7 @@
   const timerEl = document.getElementById("timer");
   const remainingEl = document.getElementById("remaining");
   const difficultyEl = document.getElementById("difficulty");
+  const openProfileMenuEl = document.getElementById("openProfileMenu");
   const themeEl = document.getElementById("theme");
   const toggleAimEl = document.getElementById("toggleAim");
   const toggleSoundEl = document.getElementById("toggleSound");
@@ -604,7 +671,7 @@
   if (themeEl) themeEl.value = currentTheme;
   let teamScores = [0, 0];
   const onlineSession = {
-    active:false, isHost:false, started:false, roomCode:"", capacity:4,
+    active:false, isHost:false, started:false, roomCode:"", capacity:4, roomType:"friends",
     peer:null, hostConnection:null, connections:new Map(), players:[],
     localSlot:0, syncTimer:null, stateSequence:0, lastAppliedSequence:0,
     lobbyMessage:"", resultShown:false
@@ -657,10 +724,37 @@
     strikerPositionEl.disabled = !canLocalControl();
   }
 
+  function randomIndex(max) {
+    const values = new Uint32Array(1);
+    crypto.getRandomValues(values);
+    return values[0] % max;
+  }
+
+  function generatePlayerId() {
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const digits = "0123456789";
+    const parts = [];
+    for (let i = 0; i < 8; i++) parts.push(letters[randomIndex(letters.length)]);
+    for (let i = 0; i < 5; i++) parts.push(digits[randomIndex(digits.length)]);
+    for (let i = parts.length - 1; i > 0; i--) {
+      const j = randomIndex(i + 1);
+      [parts[i], parts[j]] = [parts[j], parts[i]];
+    }
+    return parts.join("");
+  }
+
+  function levelFromXp(xp) {
+    return Math.max(1, Math.floor(Math.max(0, Number(xp) || 0) / XP_PER_LEVEL) + 1);
+  }
+
   function loadProfile() {
+    const legacyName = localStorage.getItem("carrom-player-name") || "";
+    const now = new Date().toISOString();
     const fallback = {
       xp: 0, coins: 0, trophies: 0, shots: 0, pockets: 0, queens: 0, wins: 0,
-      achievements: [], ownedStrikers: ["classic"], equippedStriker: "classic", lastDailyReward: ""
+      achievements: [], ownedStrikers: ["classic"], equippedStriker: "classic", lastDailyReward: "",
+      displayName: legacyName || "لاعب جديد", playerId: generatePlayerId(), avatarDataUrl: "", avatarUrl: "",
+      createdAt: now, freeNameChangeUsed: false, level: 1, lastRewardedLevel: 1
     };
     try {
       const loaded = { ...fallback, ...JSON.parse(localStorage.getItem("carrom-pro-profile") || "{}") };
@@ -669,13 +763,62 @@
       if (!loaded.ownedStrikers.includes("classic")) loaded.ownedStrikers.unshift("classic");
       if (!loaded.ownedStrikers.includes(loaded.equippedStriker)) loaded.equippedStriker = "classic";
       loaded.coins = Math.max(0, Number(loaded.coins) || 0);
+      loaded.xp = Math.max(0, Number(loaded.xp) || 0);
+      loaded.displayName = String(loaded.displayName || legacyName || "لاعب جديد").trim().slice(0,18) || "لاعب جديد";
+      if (!/^(?=(?:.*[A-Z]){8})(?=(?:.*\d){5})[A-Z0-9]{13}$/.test(String(loaded.playerId || ""))) loaded.playerId = generatePlayerId();
+      if (!loaded.createdAt) loaded.createdAt = now;
+      loaded.level = levelFromXp(loaded.xp);
+      if (!Number.isFinite(Number(loaded.lastRewardedLevel))) loaded.lastRewardedLevel = loaded.level;
+      loaded.lastRewardedLevel = Math.max(1, Number(loaded.lastRewardedLevel) || loaded.level);
       return loaded;
     } catch (_) { return fallback; }
   }
 
+  let cloudClient = null;
+  let cloudUser = null;
+  let cloudReady = false;
+  let cloudStatusText = "الحفظ السحابي غير مفعّل";
+  let cloudSyncTimer = null;
+
+  function gameToast(message) {
+    let node = document.getElementById("gameToast");
+    if (!node) {
+      node = document.createElement("div");
+      node.id = "gameToast";
+      node.className = "game-toast";
+      document.body.appendChild(node);
+    }
+    node.textContent = message;
+    node.classList.add("show");
+    clearTimeout(node._timer);
+    node._timer = setTimeout(() => node.classList.remove("show"), 3200);
+  }
+
+  function applyLevelReward() {
+    const currentLevel = levelFromXp(profile.xp);
+    const previousRewarded = Math.max(1, Number(profile.lastRewardedLevel) || currentLevel);
+    profile.level = currentLevel;
+    if (currentLevel > previousRewarded) {
+      const gainedLevels = currentLevel - previousRewarded;
+      profile.coins += gainedLevels * 50;
+      profile.lastRewardedLevel = currentLevel;
+      gameToast(`ارتقيت إلى المستوى ${currentLevel} وحصلت على ${gainedLevels * 50} عملة`);
+      sound("queen", .7);
+    }
+  }
+
+  function scheduleCloudProfileSync() {
+    if (!cloudReady) return;
+    clearTimeout(cloudSyncTimer);
+    cloudSyncTimer = setTimeout(syncCloudProfileNow, 900);
+  }
+
   function saveProfile() {
+    applyLevelReward();
     localStorage.setItem("carrom-pro-profile", JSON.stringify(profile));
+    localStorage.setItem("carrom-player-name", profile.displayName);
     updateProfileUI();
+    scheduleCloudProfileSync();
   }
 
   function rankName(trophies) {
@@ -708,13 +851,36 @@
     if (unlocked) sound("queen", .55);
   }
 
+  function escapeHtml(value) {
+    return String(value ?? "").replace(/[&<>'"]/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[char]));
+  }
+
+  function initials(name) {
+    const parts = String(name || "م").trim().split(/\s+/).filter(Boolean);
+    return (parts.slice(0,2).map(part => part[0]).join("") || "م").toUpperCase();
+  }
+
+  function profileAvatarSource(person = profile) {
+    return person.avatarUrl || person.avatarDataUrl || person.avatar_url || "";
+  }
+
+  function avatarMarkup(person, className = "room-avatar") {
+    const source = profileAvatarSource(person);
+    const label = escapeHtml(person.displayName || person.name || "لاعب");
+    return source
+      ? `<img class="${className}" src="${escapeHtml(source)}" alt="صورة ${label}">`
+      : `<span class="${className}" aria-label="صورة افتراضية">${escapeHtml(initials(label))}</span>`;
+  }
+
   function updateProfileUI() {
     const rank = rankName(profile.trophies);
+    profile.level = levelFromXp(profile.xp);
     const fields = {
       menuRank: rank,
       menuXp: profile.xp,
       menuTrophies: profile.trophies,
       menuCoins: profile.coins,
+      menuLevel: profile.level,
     };
     Object.entries(fields).forEach(([id, value]) => {
       const el = document.getElementById(id);
@@ -722,6 +888,219 @@
     });
     if (rankLabelEl) rankLabelEl.textContent = rank;
     if (xpLabelEl) xpLabelEl.textContent = String(profile.xp);
+    const nameEl = document.getElementById("menuProfileName");
+    const idEl = document.getElementById("menuPlayerId");
+    const avatarEl = document.getElementById("menuProfileAvatar");
+    if (nameEl) nameEl.textContent = profile.displayName;
+    if (idEl) idEl.textContent = profile.playerId;
+    if (avatarEl) {
+      const source = profileAvatarSource();
+      if (source) avatarEl.innerHTML = `<img src="${escapeHtml(source)}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+      else avatarEl.textContent = initials(profile.displayName);
+    }
+  }
+
+  function firstDayFreeNameChangeAvailable() {
+    const created = Date.parse(profile.createdAt || "");
+    return !profile.freeNameChangeUsed && Number.isFinite(created) && (Date.now() - created) <= FIRST_DAY_MS;
+  }
+
+  function renderPlayerProfile(message = "") {
+    const level = levelFromXp(profile.xp);
+    const levelStart = (level - 1) * XP_PER_LEVEL;
+    const progress = Math.max(0, Math.min(100, ((profile.xp - levelStart) / XP_PER_LEVEL) * 100));
+    const freeChange = firstDayFreeNameChangeAvailable();
+    const avatar = profileAvatarSource();
+    modalTitleEl.textContent = "الملف الشخصي";
+    modalBodyEl.innerHTML = `<div class="profile-layout">
+      ${message ? `<div class="notice">${escapeHtml(message)}</div>` : ""}
+      <section class="profile-hero">
+        <div class="profile-avatar-wrap">
+          ${avatar ? `<img class="profile-avatar" src="${escapeHtml(avatar)}" alt="الصورة الشخصية">` : `<div class="profile-avatar">${escapeHtml(initials(profile.displayName))}</div>`}
+          <label class="profile-avatar-upload" title="اختيار صورة من الجهاز">📷<input id="profileAvatarInput" type="file" accept="image/*"></label>
+        </div>
+        <div>
+          <h3 class="profile-name">${escapeHtml(profile.displayName)}</h3>
+          <button class="profile-id" type="button" data-copy-player-id title="نسخ اليوزر">${escapeHtml(profile.playerId)} 📋</button>
+          <div style="margin-top:8px"><span class="cloud-badge ${cloudReady ? "" : "offline"}">${cloudReady ? "☁️" : "💾"} ${escapeHtml(cloudStatusText)}</span></div>
+          <div class="profile-stats-grid">
+            <div class="profile-stat"><small>المستوى</small><strong>${level}</strong></div>
+            <div class="profile-stat"><small>XP</small><strong>${profile.xp}</strong></div>
+            <div class="profile-stat"><small>العملات</small><strong>${profile.coins}</strong></div>
+            <div class="profile-stat"><small>الكؤوس</small><strong>${profile.trophies}</strong></div>
+          </div>
+          <div class="level-progress"><span style="width:${progress}%"></span></div>
+          <div class="profile-help">يتبقى ${Math.max(0, XP_PER_LEVEL - (profile.xp - levelStart))} XP للمستوى التالي. كل مستوى جديد يمنحك 50 عملة.</div>
+        </div>
+      </section>
+      <section class="profile-section">
+        <h3>تغيير الاسم</h3>
+        <div class="profile-form-row"><input id="profileNameInput" maxlength="18" value="${escapeHtml(profile.displayName)}"><button class="btn primary" data-save-profile-name>حفظ الاسم</button></div>
+        <div class="profile-help">${freeChange ? "لديك تغيير مجاني واحد خلال أول 24 ساعة." : `تكلفة كل تغيير جديد: ${NAME_CHANGE_COST} عملة.`}</div>
+      </section>
+      <section class="profile-section">
+        <h3>البحث عن لاعب باليوزر</h3>
+        <div class="profile-form-row"><input id="playerSearchInput" maxlength="13" dir="ltr" placeholder="مثال: A1BC23D4E5FG6"><button class="btn" data-search-player>بحث</button></div>
+        <div id="playerSearchResult" class="player-search-result"><div class="profile-help">${cloudReady ? "اكتب اليوزر المكوّن من 13 خانة." : "البحث بين الأجهزة يحتاج تفعيل Supabase من ملف الإعدادات."}</div></div>
+      </section>
+    </div>`;
+    infoModalEl.classList.remove("hidden");
+  }
+
+  function showPlayerProfile() {
+    renderPlayerProfile();
+  }
+
+  async function compressAvatarFile(file) {
+    if (!file || !file.type.startsWith("image/")) throw new Error("اختر ملف صورة صحيحًا.");
+    if (file.size > 8 * 1024 * 1024) throw new Error("حجم الصورة كبير جدًا. الحد الأقصى 8MB.");
+    const dataUrl = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = () => reject(new Error("تعذر قراءة الصورة."));
+      reader.readAsDataURL(file);
+    });
+    const image = await new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = () => reject(new Error("تعذر فتح الصورة."));
+      img.src = dataUrl;
+    });
+    const size = 192;
+    const canvas = document.createElement("canvas");
+    canvas.width = canvas.height = size;
+    const c = canvas.getContext("2d");
+    const scale = Math.max(size / image.width, size / image.height);
+    const width = image.width * scale;
+    const height = image.height * scale;
+    c.drawImage(image, (size - width) / 2, (size - height) / 2, width, height);
+    return canvas.toDataURL("image/jpeg", .76);
+  }
+
+  function dataUrlToBlob(dataUrl) {
+    const [meta, content] = dataUrl.split(",");
+    const mime = /data:([^;]+)/.exec(meta)?.[1] || "image/jpeg";
+    const binary = atob(content);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+    return new Blob([bytes], {type:mime});
+  }
+
+  async function changeProfileAvatar(file) {
+    try {
+      const compressed = await compressAvatarFile(file);
+      profile.avatarDataUrl = compressed;
+      profile.avatarUrl = "";
+      saveProfile();
+      renderPlayerProfile("تم تحديث الصورة على هذا الجهاز.");
+      if (cloudReady) {
+        const path = `${cloudUser.id}/${profile.playerId}.jpg`;
+        const { error } = await cloudClient.storage.from("avatars").upload(path, dataUrlToBlob(compressed), {contentType:"image/jpeg", upsert:true, cacheControl:"3600"});
+        if (error) throw error;
+        const { data } = cloudClient.storage.from("avatars").getPublicUrl(path);
+        profile.avatarUrl = `${data.publicUrl}?v=${Date.now()}`;
+        saveProfile();
+        renderPlayerProfile("تم تحديث الصورة ومزامنتها عبر الإنترنت.");
+      }
+    } catch (error) {
+      renderPlayerProfile(error.message || "تعذر تحديث الصورة.");
+    }
+  }
+
+  function changeDisplayName() {
+    const input = document.getElementById("profileNameInput");
+    const nextName = String(input?.value || "").trim().replace(/\s+/g," ").slice(0,18);
+    if (nextName.length < 2) return renderPlayerProfile("الاسم يجب أن يتكون من حرفين على الأقل.");
+    if (nextName === profile.displayName) return renderPlayerProfile("لم يتغير الاسم.");
+    const free = firstDayFreeNameChangeAvailable();
+    if (!free && profile.coins < NAME_CHANGE_COST) return renderPlayerProfile(`تحتاج إلى ${NAME_CHANGE_COST} عملة لتغيير الاسم.`);
+    if (free) profile.freeNameChangeUsed = true;
+    else profile.coins -= NAME_CHANGE_COST;
+    profile.displayName = nextName;
+    saveProfile();
+    renderPlayerProfile(free ? "تم تغيير الاسم مجانًا." : `تم تغيير الاسم وخصم ${NAME_CHANGE_COST} عملة.`);
+  }
+
+  async function searchPlayerDirectory() {
+    const input = document.getElementById("playerSearchInput");
+    const result = document.getElementById("playerSearchResult");
+    const playerId = String(input?.value || "").toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,13);
+    if (input) input.value = playerId;
+    if (playerId.length !== 13) { if (result) result.innerHTML = '<div class="notice">اليوزر يجب أن يكون 13 خانة.</div>'; return; }
+    if (!cloudReady) { if (result) result.innerHTML = '<div class="notice">فعّل Supabase أولًا ليعمل البحث بين الأجهزة.</div>'; return; }
+    if (result) result.innerHTML = '<div class="profile-help">جاري البحث...</div>';
+    const { data, error } = await cloudClient.from("player_profiles").select("player_id,display_name,avatar_url,level,xp,trophies").eq("player_id",playerId).maybeSingle();
+    if (error) { result.innerHTML = `<div class="notice">${escapeHtml(error.message)}</div>`; return; }
+    if (!data) { result.innerHTML = '<div class="notice">لم يتم العثور على لاعب بهذا اليوزر.</div>'; return; }
+    result.innerHTML = `<div class="search-player-card">${data.avatar_url ? `<img src="${escapeHtml(data.avatar_url)}" alt="">` : `<span class="search-avatar-fallback">${escapeHtml(initials(data.display_name))}</span>`}<div><strong>${escapeHtml(data.display_name)}</strong><small>${escapeHtml(data.player_id)}</small><div class="profile-help">المستوى ${Number(data.level)||1} · ${Number(data.trophies)||0} كأس</div></div></div>`;
+  }
+
+  function cloudConfigurationReady() {
+    const config = window.CARROM_SUPABASE || {};
+    return typeof config.url === "string" && /^https:\/\//.test(config.url) && typeof config.anonKey === "string" && config.anonKey.length > 40 && !config.url.includes("YOUR_") && !config.anonKey.includes("YOUR_");
+  }
+
+  async function ensureUniqueCloudPlayerId() {
+    for (let attempt = 0; attempt < 6; attempt++) {
+      const { data, error } = await cloudClient.from("player_profiles").select("user_id").eq("player_id",profile.playerId).maybeSingle();
+      if (error) throw error;
+      if (!data || data.user_id === cloudUser.id) return;
+      profile.playerId = generatePlayerId();
+    }
+    throw new Error("تعذر إنشاء يوزر فريد. حاول تحديث الصفحة.");
+  }
+
+  async function syncCloudProfileNow() {
+    if (!cloudReady || !cloudUser) return;
+    try {
+      await ensureUniqueCloudPlayerId();
+      const payload = {
+        user_id: cloudUser.id,
+        player_id: profile.playerId,
+        display_name: profile.displayName,
+        avatar_url: profile.avatarUrl || null,
+        level: levelFromXp(profile.xp),
+        xp: profile.xp,
+        trophies: profile.trophies,
+        updated_at: new Date().toISOString()
+      };
+      const { error } = await cloudClient.from("player_profiles").upsert(payload,{onConflict:"user_id"});
+      if (error) throw error;
+      cloudStatusText = "متصل بالدليل العالمي";
+      updateProfileUI();
+    } catch (error) {
+      cloudStatusText = "تعذر مزامنة الملف";
+      console.warn("Cloud profile sync failed", error);
+    }
+  }
+
+  async function initializeCloudDirectory() {
+    if (!cloudConfigurationReady() || !window.supabase?.createClient) {
+      cloudStatusText = "الحفظ المحلي يعمل";
+      updateProfileUI();
+      return;
+    }
+    try {
+      const config = window.CARROM_SUPABASE;
+      cloudClient = window.supabase.createClient(config.url, config.anonKey, {auth:{persistSession:true,autoRefreshToken:true}});
+      let { data: sessionData } = await cloudClient.auth.getSession();
+      if (!sessionData.session) {
+        const { data, error } = await cloudClient.auth.signInAnonymously();
+        if (error) throw error;
+        sessionData = {session:data.session};
+      }
+      cloudUser = sessionData.session?.user;
+      if (!cloudUser) throw new Error("تعذر إنشاء هوية سحابية.");
+      cloudReady = true;
+      cloudStatusText = "متصل بالدليل العالمي";
+      await syncCloudProfileNow();
+      updateProfileUI();
+    } catch (error) {
+      cloudReady = false;
+      cloudStatusText = "الحفظ المحلي يعمل";
+      console.warn("Supabase initialization failed", error);
+      updateProfileUI();
+    }
   }
 
   function showModal(title, html) {
@@ -743,6 +1122,7 @@
         <div class="profile-chip">XP<strong>${profile.xp}</strong></div>
         <div class="profile-chip">الكؤوس<strong>${profile.trophies}</strong></div>
         <div class="profile-chip">العملات<strong>${profile.coins}</strong></div>
+        <div class="profile-chip">المستوى<strong>${levelFromXp(profile.xp)}</strong></div>
       </div>
       <div class="achievement-grid">${cards}</div>
       <p class="notice">التصنيف محفوظ على هذا الجهاز. الترتيب العالمي الحقيقي يحتاج خادمًا وحسابات مستخدمين.</p>
@@ -3056,10 +3436,23 @@ function renderHud() {
     crypto.getRandomValues(new Uint32Array(6)).forEach(value => code += chars[value % chars.length]);
     return code;
   }
-  function roomPeerId(code) { return `carrom-${String(code).toLowerCase()}`; }
+  function roomPeerId(code, type = onlineSession.roomType) {
+    const prefix = type === "tournament" ? "carrom-t" : "carrom-f";
+    return `${prefix}-${String(code).toLowerCase()}`;
+  }
   function onlinePlayerTeam(slot) { return onlineSession.capacity === 4 ? `الفريق ${teamIndexForPlayer(slot)+1}` : "مواجهة فردية"; }
-  function currentPlayerProfileName() { return localStorage.getItem("carrom-player-name") || ""; }
-  function setCurrentPlayerProfileName(name) { localStorage.setItem("carrom-player-name", name); }
+  function currentPlayerProfileName() { return profile.displayName || "لاعب جديد"; }
+  function currentOnlineIdentity(slot = 0) {
+    return {
+      slot,
+      name: profile.displayName,
+      playerId: profile.playerId,
+      avatar: profileAvatarSource(),
+      level: levelFromXp(profile.xp),
+      skin: profile.equippedStriker || "classic",
+      connected: true
+    };
+  }
 
   function destroyOnlinePeer() {
     if (onlineSession.syncTimer) clearInterval(onlineSession.syncTimer);
@@ -3073,87 +3466,98 @@ function renderHud() {
   }
 
   function leaveOnlineRoom(showHub = true) {
+    const previousType = onlineSession.roomType || "friends";
     if (onlineSession.active && !onlineSession.isHost && onlineSession.hostConnection?.open) {
       try { onlineSession.hostConnection.send({type:"leave", slot:onlineSession.localSlot}); } catch (_) {}
     }
+    if (onlineSession.active && onlineSession.isHost) broadcastOnlineMessage({type:"room-closed"});
     destroyOnlinePeer();
     Object.assign(onlineSession, {
-      active:false,isHost:false,started:false,roomCode:"",capacity:4,players:[],localSlot:0,
+      active:false,isHost:false,started:false,roomCode:"",capacity:4,players:[],localSlot:0,roomType:previousType,
       stateSequence:0,lastAppliedSequence:0,lobbyMessage:"",resultShown:false
     });
-    if (showHub) showTournamentHub();
+    if (showHub) showRoomHub(previousType);
   }
 
-  function showTournamentHub() {
+  function roomTitle(type = onlineSession.roomType) { return type === "tournament" ? "غرفة البطولات" : "غرفة الأصدقاء"; }
+  function showFriendsRoomHub() { showRoomHub("friends"); }
+  function showTournamentHub() { showRoomHub("tournament"); }
+
+  function showRoomHub(type) {
     if (modalCardEl) modalCardEl.classList.remove("shop-modal-card");
-    modalTitleEl.textContent = "بطولات الأصدقاء";
+    if (onlineSession.active && onlineSession.roomType !== type) leaveOnlineRoom(false);
+    onlineSession.roomType = type;
+    modalTitleEl.textContent = roomTitle(type);
     if (!onlineSession.active) {
-      const savedName = currentPlayerProfileName();
+      const isTournament = type === "tournament";
       modalBodyEl.innerHTML = `<div class="tournament-hub">
-        <div class="room-status">أنشئ غرفة وشارك الرمز مع أصدقائك. الاتصال مباشر بين الأجهزة؛ يجب أن يبقى جهاز منشئ الغرفة مفتوحًا حتى نهاية المباراة.</div>
+        <div class="room-status">${isTournament ? "غرفة تنافسية منفصلة لأربعة لاعبين بنظام فريقين." : "غرفة لعب سريعة مع الأصدقاء من جهازين أو أربعة أجهزة."} منشئ الغرفة يرى جميع المنضمين ويمكنه طرد أي لاعب قبل البداية.</div>
+        <div class="identity-card">${avatarMarkup(profile)}<div><strong>${escapeHtml(profile.displayName)}</strong><small class="profile-id">${escapeHtml(profile.playerId)}</small></div></div>
         <div class="room-choice-grid">
-          <section class="room-choice"><h3>إنشاء بطولة</h3><p>أنشئ مواجهة ثنائية أو بطولة فرق من أربعة لاعبين.</p>
-            <div class="room-field"><label>اسمك</label><input id="hostPlayerName" maxlength="18" value="${savedName}" placeholder="اكتب اسم اللاعب"></div>
-            <div class="room-field"><label>نوع الغرفة</label><select id="roomCapacity"><option value="4" selected>بطولة فرق — 4 لاعبين</option><option value="2">مواجهة ثنائية — لاعبان</option></select></div>
-            <button class="btn primary" data-create-room>إنشاء الغرفة</button>
+          <section class="room-choice"><h3>${isTournament ? "إنشاء بطولة" : "إنشاء غرفة أصدقاء"}</h3><p>${isTournament ? "بطولة فرق: اللاعبان 1 و3 ضد 2 و4." : "اختر مواجهة ثنائية أو أربعة لاعبين."}</p>
+            ${isTournament ? `<input id="roomCapacity" type="hidden" value="4">` : `<div class="room-field"><label>عدد اللاعبين</label><select id="roomCapacity"><option value="2" selected>لاعبان</option><option value="4">أربعة لاعبين</option></select></div>`}
+            <button class="btn primary" data-create-room data-room-type="${type}">إنشاء الغرفة</button>
           </section>
-          <section class="room-choice"><h3>الانضمام برمز</h3><p>اكتب اسمك ورمز الغرفة الذي أرسله لك منشئ البطولة.</p>
-            <div class="room-field"><label>اسمك</label><input id="joinPlayerName" maxlength="18" value="${savedName}" placeholder="اكتب اسم اللاعب"></div>
+          <section class="room-choice"><h3>الدخول برمز</h3><p>أدخل الرمز الذي أرسله منشئ الغرفة.</p>
             <div class="room-field"><label>رمز الغرفة</label><input id="joinRoomCode" maxlength="6" dir="ltr" placeholder="ABC123"></div>
-            <button class="btn" data-join-room>دخول الغرفة</button>
+            <button class="btn" data-join-room data-room-type="${type}">دخول الغرفة</button>
           </section>
         </div>
       </div>`;
-    } else renderTournamentLobby();
+    } else renderOnlineLobby();
     infoModalEl.classList.remove("hidden");
   }
 
-  function renderTournamentLobby() {
-    if (!onlineSession.active) return showTournamentHub();
+  function renderOnlineLobby() {
+    if (!onlineSession.active) return showRoomHub(onlineSession.roomType || "friends");
+    modalTitleEl.textContent = roomTitle();
     const required = onlineSession.capacity;
     const players = Array.from({length:required}, (_,slot) => onlineSession.players[slot] || null);
     const connectedCount = players.filter(Boolean).length;
-    const rows = players.map((player,slot) => `<div class="room-player ${player?"connected":""}">
-      <div><strong>${player ? player.name : `المقعد ${slot+1}`}</strong><small>${required===4?onlinePlayerTeam(slot):slot===0?"المضيف":"المنافس"} — ${["أسفل","يمين","أعلى","يسار"][slot] || "أعلى"}</small></div>
-      <span>${player ? (slot===onlineSession.localSlot?"أنت":"متصل") : "بانتظار لاعب"}</span>
-    </div>`).join("");
+    const rows = players.map((player,slot) => {
+      if (!player) return `<div class="room-player"><div class="room-player-main"><span class="room-avatar">${slot+1}</span><div class="room-player-copy"><strong>المقعد ${slot+1}</strong><small>بانتظار لاعب</small></div></div><span>فارغ</span></div>`;
+      const status = slot === onlineSession.localSlot ? "أنت" : slot === 0 ? "المضيف" : "متصل";
+      const kick = onlineSession.isHost && slot !== 0 && !onlineSession.started ? `<button class="kick-player" data-kick-slot="${slot}">طرد</button>` : "";
+      return `<div class="room-player connected"><div class="room-player-main">${avatarMarkup(player)}<div class="room-player-copy"><strong>${escapeHtml(player.name)}</strong><small>${escapeHtml(player.playerId || "بدون يوزر")} · مستوى ${Number(player.level)||1}</small><small>${required===4?onlinePlayerTeam(slot):slot===0?"المضيف":"المنافس"} — ${["أسفل","يمين","أعلى","يسار"][slot] || "أعلى"}</small></div></div><div class="room-player-actions"><span>${status}</span>${kick}</div></div>`;
+    }).join("");
     const canStart = onlineSession.isHost && connectedCount === required && !onlineSession.started;
     modalBodyEl.innerHTML = `<div class="tournament-hub">
-      <div class="room-code-box"><div><small>رمز الغرفة</small><strong>${onlineSession.roomCode}</strong></div><button class="btn" data-copy-room>نسخ الرمز</button></div>
+      <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap"><span class="room-kind-badge">${onlineSession.roomType === "tournament" ? "🏆 بطولة" : "🔗 أصدقاء"}</span><div class="room-code-box"><div><small>رمز الغرفة</small><strong>${onlineSession.roomCode}</strong></div><button class="btn" data-copy-room>نسخ الرمز</button></div></div>
       <div class="room-status">${onlineSession.lobbyMessage || (onlineSession.started?"المباراة بدأت.":`متصل ${connectedCount} من ${required}.`)}</div>
       <div class="room-players">${rows}</div>
       <div class="room-actions">
-        ${onlineSession.isHost ? `<button class="btn primary" data-start-online ${canStart?"":"disabled"}>${connectedCount===required?"بدء البطولة":"انتظار اكتمال اللاعبين"}</button>` : `<button class="btn" disabled>بانتظار منشئ الغرفة</button>`}
+        ${onlineSession.isHost ? `<button class="btn primary" data-start-online ${canStart?"":"disabled"}>${connectedCount===required?(onlineSession.roomType==="tournament"?"بدء البطولة":"بدء المباراة"):"انتظار اكتمال اللاعبين"}</button>` : `<button class="btn" disabled>بانتظار منشئ الغرفة</button>`}
         <button class="btn" data-leave-room>مغادرة الغرفة</button>
       </div>
     </div>`;
   }
+  function renderTournamentLobby() { renderOnlineLobby(); }
 
   function peerErrorMessage(err) {
     if (!err) return "تعذر الاتصال بالغرفة.";
     if (err.type === "unavailable-id") return "رمز الغرفة مستخدم حاليًا. حاول إنشاء غرفة جديدة.";
-    if (err.type === "peer-unavailable") return "الغرفة غير موجودة أو أن منشئها أغلق الصفحة.";
+    if (err.type === "peer-unavailable") return "الغرفة غير موجودة، أو اخترت نوع الغرفة الخطأ، أو أن منشئها أغلق الصفحة.";
     if (err.type === "browser-incompatible") return "هذا المتصفح لا يدعم الاتصال المباشر. استخدم Chrome حديثًا.";
     return `تعذر الاتصال: ${err.type || err.message || "خطأ في الشبكة"}`;
   }
 
-  function createTournamentRoom(name, capacity) {
-    name = String(name || "").trim().slice(0,18);
-    if (!name) return showModal("الاسم مطلوب", '<p class="notice">اكتب اسم اللاعب أولًا.</p>');
+  function createOnlineRoom(type, capacity) {
     if (typeof Peer === "undefined") return showModal("تعذر تحميل الاتصال", '<p class="notice">تحقق من اتصال الإنترنت ثم حدّث الصفحة.</p>');
     leaveOnlineRoom(false);
-    setCurrentPlayerProfileName(name);
+    const selectedCapacity = type === "tournament" ? 4 : (Number(capacity) === 4 ? 4 : 2);
     const code = generateRoomCode();
-    Object.assign(onlineSession,{active:true,isHost:true,started:false,roomCode:code,capacity:Number(capacity)===2?2:4,players:[],localSlot:0,lobbyMessage:"جاري فتح الغرفة..."});
-    onlineSession.players[0] = {slot:0,name,skin:profile.equippedStriker || "classic",connected:true};
-    const peer = new Peer(roomPeerId(code), {debug:1});
+    Object.assign(onlineSession,{active:true,isHost:true,started:false,roomCode:code,capacity:selectedCapacity,players:[],localSlot:0,lobbyMessage:"جاري فتح الغرفة...",roomType:type});
+    onlineSession.players[0] = currentOnlineIdentity(0);
+    const peer = new Peer(roomPeerId(code,type), {debug:1});
     onlineSession.peer = peer;
-    peer.on("open", () => { onlineSession.lobbyMessage="الغرفة جاهزة. شارك الرمز مع أصدقائك."; renderTournamentLobby(); });
+    peer.on("open", () => { onlineSession.lobbyMessage="الغرفة جاهزة. شارك الرمز مع أصدقائك."; renderOnlineLobby(); });
     peer.on("connection", connection => setupHostConnection(connection));
-    peer.on("error", err => { onlineSession.lobbyMessage=peerErrorMessage(err); renderTournamentLobby(); });
-    peer.on("disconnected", () => { onlineSession.lobbyMessage="انقطع الاتصال بخدمة الغرف. جاري إعادة الاتصال..."; try{peer.reconnect();}catch(_){} renderTournamentLobby(); });
-    showTournamentHub();
+    peer.on("error", err => { onlineSession.lobbyMessage=peerErrorMessage(err); renderOnlineLobby(); });
+    peer.on("disconnected", () => { onlineSession.lobbyMessage="انقطع الاتصال بخدمة الغرف. جاري إعادة الاتصال..."; try{peer.reconnect();}catch(_){} renderOnlineLobby(); });
+    showRoomHub(type);
   }
+  function createTournamentRoom(_name, capacity) { createOnlineRoom("tournament", capacity || 4); }
+  function createFriendsRoom(capacity) { createOnlineRoom("friends", capacity); }
 
   function setupHostConnection(connection) {
     connection.on("data", message => {
@@ -3161,13 +3565,22 @@ function renderHud() {
       if (message.type === "join" && connection.__slot === undefined) {
         const freeSlot = Array.from({length:onlineSession.capacity},(_,i)=>i).find(slot=>!onlineSession.players[slot]);
         if (freeSlot === undefined) { connection.send({type:"rejected",reason:"الغرفة مكتملة."}); connection.close(); return; }
+        if (message.roomType && message.roomType !== onlineSession.roomType) { connection.send({type:"rejected",reason:"نوع الغرفة غير مطابق."}); connection.close(); return; }
         connection.__slot = freeSlot;
         onlineSession.connections.set(freeSlot, connection);
-        onlineSession.players[freeSlot] = {slot:freeSlot,name:String(message.name||`اللاعب ${freeSlot+1}`).slice(0,18),skin:message.skin||"classic",connected:true};
-        connection.send({type:"joined",slot:freeSlot,roomCode:onlineSession.roomCode,capacity:onlineSession.capacity,players:onlineSession.players});
-        broadcastOnlineMessage({type:"lobby",players:onlineSession.players,capacity:onlineSession.capacity,roomCode:onlineSession.roomCode});
+        onlineSession.players[freeSlot] = {
+          slot:freeSlot,
+          name:String(message.name||`اللاعب ${freeSlot+1}`).slice(0,18),
+          playerId:String(message.playerId||"").slice(0,13),
+          avatar:String(message.avatar||"").slice(0,180000),
+          level:Number(message.level)||1,
+          skin:message.skin||"classic",
+          connected:true
+        };
+        connection.send({type:"joined",slot:freeSlot,roomCode:onlineSession.roomCode,capacity:onlineSession.capacity,players:onlineSession.players,roomType:onlineSession.roomType});
+        broadcastOnlineMessage({type:"lobby",players:onlineSession.players,capacity:onlineSession.capacity,roomCode:onlineSession.roomCode,roomType:onlineSession.roomType});
         onlineSession.lobbyMessage=`انضم ${onlineSession.players[freeSlot].name}.`;
-        renderTournamentLobby();
+        renderOnlineLobby();
       } else if (message.type === "command") handleOnlineCommand(connection.__slot, message);
       else if (message.type === "leave") removeOnlinePlayer(connection.__slot);
     });
@@ -3177,42 +3590,63 @@ function renderHud() {
 
   function removeOnlinePlayer(slot) {
     if (slot === undefined || slot === 0) return;
+    const connection = onlineSession.connections.get(slot);
+    if (connection) { try { connection.close(); } catch (_) {} }
     onlineSession.connections.delete(slot);
     const departed = onlineSession.players[slot]?.name;
     onlineSession.players[slot] = null;
     onlineSession.lobbyMessage = departed ? `غادر ${departed} الغرفة.` : "غادر أحد اللاعبين.";
-    broadcastOnlineMessage({type:"lobby",players:onlineSession.players,capacity:onlineSession.capacity,roomCode:onlineSession.roomCode});
-    if (!onlineSession.started) renderTournamentLobby();
+    broadcastOnlineMessage({type:"lobby",players:onlineSession.players,capacity:onlineSession.capacity,roomCode:onlineSession.roomCode,roomType:onlineSession.roomType});
+    if (!onlineSession.started) renderOnlineLobby();
   }
 
-  function joinTournamentRoom(name, code) {
-    name=String(name||"").trim().slice(0,18); code=normalizeRoomCode(code);
-    if (!name || code.length !== 6) return showModal("بيانات غير مكتملة", '<p class="notice">اكتب اسمًا ورمز غرفة مكونًا من 6 خانات.</p>');
+  function kickOnlinePlayer(slot) {
+    if (!onlineSession.isHost || onlineSession.started || slot === 0) return;
+    const player = onlineSession.players[slot];
+    const connection = onlineSession.connections.get(slot);
+    if (connection?.open) { try { connection.send({type:"kicked",reason:"قام منشئ الغرفة بإخراجك."}); } catch (_) {} }
+    setTimeout(() => { try { connection?.close(); } catch (_) {} }, 80);
+    onlineSession.connections.delete(slot);
+    onlineSession.players[slot] = null;
+    onlineSession.lobbyMessage = player ? `تم إخراج ${player.name} من الغرفة.` : "تم إخلاء المقعد.";
+    broadcastOnlineMessage({type:"lobby",players:onlineSession.players,capacity:onlineSession.capacity,roomCode:onlineSession.roomCode,roomType:onlineSession.roomType});
+    renderOnlineLobby();
+  }
+
+  function joinOnlineRoom(type, code) {
+    code=normalizeRoomCode(code);
+    if (code.length !== 6) return showModal("بيانات غير مكتملة", '<p class="notice">اكتب رمز غرفة مكونًا من 6 خانات.</p>');
     if (typeof Peer === "undefined") return showModal("تعذر تحميل الاتصال", '<p class="notice">تحقق من اتصال الإنترنت ثم حدّث الصفحة.</p>');
-    leaveOnlineRoom(false); setCurrentPlayerProfileName(name);
-    Object.assign(onlineSession,{active:true,isHost:false,started:false,roomCode:code,players:[],localSlot:-1,lobbyMessage:"جاري الاتصال بالغرفة..."});
+    leaveOnlineRoom(false);
+    Object.assign(onlineSession,{active:true,isHost:false,started:false,roomCode:code,players:[],localSlot:-1,lobbyMessage:"جاري الاتصال بالغرفة...",roomType:type});
     const peer = new Peer(undefined,{debug:1}); onlineSession.peer=peer;
     peer.on("open",()=>{
-      const conn=peer.connect(roomPeerId(code),{serialization:"json",reliable:true,metadata:{name}});
+      const conn=peer.connect(roomPeerId(code,type),{serialization:"json",reliable:true,metadata:{playerId:profile.playerId}});
       onlineSession.hostConnection=conn;
-      conn.on("open",()=>conn.send({type:"join",name,skin:profile.equippedStriker||"classic"}));
+      conn.on("open",()=>conn.send({type:"join",roomType:type,name:profile.displayName,playerId:profile.playerId,avatar:profileAvatarSource(),level:levelFromXp(profile.xp),skin:profile.equippedStriker||"classic"}));
       conn.on("data",handleClientOnlineMessage);
       conn.on("close",()=>onlineConnectionLost());
       conn.on("error",()=>onlineConnectionLost());
     });
-    peer.on("error",err=>{onlineSession.lobbyMessage=peerErrorMessage(err);renderTournamentLobby();});
-    showTournamentHub();
+    peer.on("error",err=>{onlineSession.lobbyMessage=peerErrorMessage(err);renderOnlineLobby();});
+    showRoomHub(type);
   }
+  function joinTournamentRoom(_name, code) { joinOnlineRoom("tournament", code); }
+  function joinFriendsRoom(code) { joinOnlineRoom("friends", code); }
 
   function handleClientOnlineMessage(message) {
     if (!message || typeof message !== "object") return;
     if (message.type === "joined") {
-      onlineSession.localSlot=message.slot; onlineSession.capacity=message.capacity; onlineSession.players=message.players||[];
-      onlineSession.lobbyMessage="تم الاتصال بالغرفة بنجاح."; renderTournamentLobby();
+      onlineSession.localSlot=message.slot; onlineSession.capacity=message.capacity; onlineSession.players=message.players||[]; onlineSession.roomType=message.roomType||onlineSession.roomType;
+      onlineSession.lobbyMessage="تم الاتصال بالغرفة بنجاح."; renderOnlineLobby();
     } else if (message.type === "rejected") {
-      onlineSession.lobbyMessage=message.reason||"تعذر دخول الغرفة."; renderTournamentLobby();
+      onlineSession.lobbyMessage=message.reason||"تعذر دخول الغرفة."; renderOnlineLobby();
     } else if (message.type === "lobby") {
-      onlineSession.players=message.players||onlineSession.players; onlineSession.capacity=message.capacity||onlineSession.capacity; renderTournamentLobby();
+      onlineSession.players=message.players||onlineSession.players; onlineSession.capacity=message.capacity||onlineSession.capacity; onlineSession.roomType=message.roomType||onlineSession.roomType; renderOnlineLobby();
+    } else if (message.type === "kicked") {
+      const reason = message.reason || "تم إخراجك من الغرفة.";
+      destroyOnlinePeer(); onlineSession.active=false; onlineSession.started=false;
+      showModal("تم إخراجك من الغرفة", `<p class="notice">${escapeHtml(reason)}</p>`);
     } else if (message.type === "start") startOnlineClientMatch(message);
     else if (message.type === "state") applyOnlineState(message);
     else if (message.type === "result") showModal(message.title||"انتهت المباراة", message.html||"");
@@ -3236,13 +3670,13 @@ function renderHud() {
     onlineSession.started=true; onlineSession.resultShown=false;
     infoModalEl.classList.add("hidden");
     startGame("online", onlineSession.capacity);
-    broadcastOnlineMessage({type:"start",capacity:onlineSession.capacity,players:onlineSession.players,roomCode:onlineSession.roomCode,theme:currentTheme});
+    broadcastOnlineMessage({type:"start",capacity:onlineSession.capacity,players:onlineSession.players,roomCode:onlineSession.roomCode,roomType:onlineSession.roomType,theme:currentTheme});
     broadcastOnlineState(true);
   }
 
   function startOnlineClientMatch(message) {
     clearTimers();
-    onlineSession.started=true; onlineSession.capacity=message.capacity; onlineSession.players=message.players||onlineSession.players;
+    onlineSession.started=true; onlineSession.capacity=message.capacity; onlineSession.players=message.players||onlineSession.players; onlineSession.roomType=message.roomType||onlineSession.roomType;
     mode="online"; playerCount=message.capacity; currentPlayer=0; scores=Array(playerCount).fill(0); teamScores=[0,0];
     queenPendingPlayer=null; finalQueenReady=false; finalQueenPocketedThisShot=false; queenReturnedForEndgameThisShot=false; lastNormalPocketedThisShot=false;
     discs=initialPieces(); phase="ready"; strikerOffset=50; currentTheme=message.theme||currentTheme; if(themeEl)themeEl.value=currentTheme;
@@ -3341,6 +3775,8 @@ function renderHud() {
   document.getElementById("showAchievementsMenu").addEventListener("click", showAchievementsModal);
   document.getElementById("openShopMenu").addEventListener("click", showShop);
   document.getElementById("openShopGame").addEventListener("click", showShop);
+  if (openProfileMenuEl) openProfileMenuEl.addEventListener("click", showPlayerProfile);
+  document.getElementById("friendsRoomMode").addEventListener("click", showFriendsRoomHub);
   document.getElementById("tournamentMode").addEventListener("click", showTournamentHub);
   document.getElementById("closeModal").addEventListener("click", closeInfoModal);
   modalBodyEl.addEventListener("click", event => {
@@ -3353,17 +3789,32 @@ function renderHud() {
     const startOnline = event.target.closest("[data-start-online]");
     const leaveRoom = event.target.closest("[data-leave-room]");
     const copyRoom = event.target.closest("[data-copy-room]");
+    const kickPlayer = event.target.closest("[data-kick-slot]");
+    const saveProfileName = event.target.closest("[data-save-profile-name]");
+    const copyPlayerId = event.target.closest("[data-copy-player-id]");
+    const searchPlayer = event.target.closest("[data-search-player]");
     const resultBack = event.target.closest("[data-result-back]");
     if (category) { activeShopCategory = category.dataset.shopCategory; renderShopContent(); startShopPreviewAnimation(); }
     else if (buy) buySkin(buy.dataset.buySkin);
     else if (equip) equipSkin(equip.dataset.equipSkin);
     else if (daily) claimDailyReward();
-    else if (createRoom) createTournamentRoom(document.getElementById("hostPlayerName")?.value, document.getElementById("roomCapacity")?.value);
-    else if (joinRoom) joinTournamentRoom(document.getElementById("joinPlayerName")?.value, document.getElementById("joinRoomCode")?.value);
+    else if (createRoom) createOnlineRoom(createRoom.dataset.roomType || "friends", document.getElementById("roomCapacity")?.value);
+    else if (joinRoom) joinOnlineRoom(joinRoom.dataset.roomType || "friends", document.getElementById("joinRoomCode")?.value);
     else if (startOnline) startOnlineTournament();
     else if (leaveRoom) leaveOnlineRoom(true);
-    else if (copyRoom) { navigator.clipboard?.writeText(onlineSession.roomCode); onlineSession.lobbyMessage="تم نسخ رمز الغرفة."; renderTournamentLobby(); }
+    else if (copyRoom) { navigator.clipboard?.writeText(onlineSession.roomCode); onlineSession.lobbyMessage="تم نسخ رمز الغرفة."; renderOnlineLobby(); }
+    else if (kickPlayer) kickOnlinePlayer(Number(kickPlayer.dataset.kickSlot));
+    else if (saveProfileName) changeDisplayName();
+    else if (copyPlayerId) { navigator.clipboard?.writeText(profile.playerId); gameToast("تم نسخ اليوزر"); }
+    else if (searchPlayer) searchPlayerDirectory();
     else if (resultBack) { closeInfoModal(); backToMenu(); }
+  });
+  modalBodyEl.addEventListener("change", event => {
+    if (event.target?.id === "profileAvatarInput" && event.target.files?.[0]) changeProfileAvatar(event.target.files[0]);
+  });
+  modalBodyEl.addEventListener("keydown", event => {
+    if (event.key === "Enter" && event.target?.id === "playerSearchInput") searchPlayerDirectory();
+    if (event.key === "Enter" && event.target?.id === "profileNameInput") changeDisplayName();
   });
 
   function loop(now){
@@ -3384,6 +3835,7 @@ function renderHud() {
   }
   updateAchievements(); saveProfile();
   discs=initialPieces();drawBoard();requestAnimationFrame(loop);
+  initializeCloudDirectory();
 })();
 </script>
 
