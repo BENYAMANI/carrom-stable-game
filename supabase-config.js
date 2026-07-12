@@ -1,6 +1,4 @@
-// ضع بيانات مشروع Supabase هنا لتفعيل البحث بين المستخدمين ومزامنة الصور.
-// اترك القيم فارغة وستعمل اللعبة محليًا والغرف المباشرة عبر PeerJS بشكل طبيعي.
 window.CARROM_SUPABASE = {
-  url: "",
-  anonKey: ""
+  url: "https://fzzdijwosopjhlfklcia.supabase.co",
+  anonKey: sb_publishable_IdxvDU9MNrFONqMVW2xL4Q_WAnCkM5h
 };
