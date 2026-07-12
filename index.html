@@ -88,11 +88,9 @@
       <div class="field">
         <label for="difficulty">مستوى الذكاء الاصطناعي</label>
         <select id="difficulty">
-          <option value="rookie">تجريبي</option>
-          <option value="easy">مبتدئ</option>
-          <option value="medium" selected>متوسط</option>
-          <option value="hard">متقدم</option>
+          <option value="hard" selected>متقدم</option>
           <option value="expert">محترف</option>
+          <option value="legendary">أسطوري</option>
         </select>
       </div>
       <div class="menu-grid">
@@ -669,52 +667,85 @@
 
   function scheduleAI() {
     if (phase !== "ready") return;
-    setStatus("الذكاء الاصطناعي يحدد الضربة...");
+    const levelName = difficulty === "legendary" ? "الأسطوري" : difficulty === "expert" ? "المحترف" : "المتقدم";
+    setStatus(`الذكاء الاصطناعي ${levelName} يحلل أفضل ضربة...`);
+
     aiTimer = setTimeout(() => {
       if (phase !== "ready" || currentPlayer !== 1) return;
       const striker = getStriker();
       const targets = discs.filter(d => d.active && d.kind !== "striker");
       if (!striker || !targets.length) return;
+
       const settings = {
-        rookie: { spread: .55, speed: 650 },
-        easy: { spread: .34, speed: 820 },
-        medium: { spread: .16, speed: 1080 },
-        hard: { spread: .075, speed: 1320 },
-        expert: { spread: .025, speed: 1520 },
-      }[difficulty] || { spread: .16, speed: 1080 };
+        hard: { spread: .075, speed: 1320, planning: 1 },
+        expert: { spread: .028, speed: 1500, planning: 2 },
+        legendary: { spread: .008, speed: 1640, planning: 3 },
+      }[difficulty] || { spread: .075, speed: 1320, planning: 1 };
 
-      let target;
-      if (difficulty === "rookie") {
-        target = targets[Math.floor(Math.random() * targets.length)];
-      } else if (difficulty === "hard" || difficulty === "expert") {
-        target = targets.reduce((best, disc) => {
-          const discPocket = Math.min(...pocketCenters.map(p => distance(disc, p)));
-          const bestPocket = Math.min(...pocketCenters.map(p => distance(best, p)));
-          const discScore = discPocket + distance(striker, disc) * .28;
-          const bestScore = bestPocket + distance(striker, best) * .28;
-          return discScore < bestScore ? disc : best;
-        });
+      function pointToSegmentDistance(point, a, b) {
+        const abx = b.x - a.x, aby = b.y - a.y;
+        const apx = point.x - a.x, apy = point.y - a.y;
+        const lengthSquared = abx * abx + aby * aby || 1;
+        const t = clamp((apx * abx + apy * aby) / lengthSquared, 0, 1);
+        const cx = a.x + abx * t, cy = a.y + aby * t;
+        return Math.hypot(point.x - cx, point.y - cy);
+      }
+
+      function pathPenalty(from, to, ignoredId) {
+        let penalty = 0;
+        for (const obstacle of targets) {
+          if (obstacle.id === ignoredId || !obstacle.active) continue;
+          const d = pointToSegmentDistance(obstacle, from, to);
+          if (d < obstacle.r * 2.25) penalty += (obstacle.r * 2.25 - d) * 18;
+        }
+        return penalty;
+      }
+
+      const candidateShots = [];
+      for (const target of targets) {
+        for (const pocket of pocketCenters) {
+          const pdx = pocket.x - target.x;
+          const pdy = pocket.y - target.y;
+          const pocketDistance = Math.max(1, Math.hypot(pdx, pdy));
+          const aimX = target.x - (pdx / pocketDistance) * (target.r + STRIKER_RADIUS * .72);
+          const aimY = target.y - (pdy / pocketDistance) * (target.r + STRIKER_RADIUS * .72);
+          const aimPoint = { x: aimX, y: aimY };
+
+          const strikerDistance = distance(striker, aimPoint);
+          const entryAnglePenalty = Math.abs((target.x - aimX) * (pocket.y - target.y) - (target.y - aimY) * (pocket.x - target.x)) * .001;
+          const valueBonus = target.kind === "queen" ? 115 : target.kind === "white" ? 28 : 16;
+          const obstruction = pathPenalty(striker, aimPoint, target.id) + pathPenalty(target, pocket, target.id) * .8;
+          const edgePenalty = Math.min(target.x, target.y, BOARD_SIZE - target.x, BOARD_SIZE - target.y) < 92 ? 35 : 0;
+
+          const score = pocketDistance * .66 + strikerDistance * .31 + obstruction + entryAnglePenalty + edgePenalty - valueBonus;
+          candidateShots.push({ target, pocket, aimX, aimY, score, pocketDistance, strikerDistance });
+        }
+      }
+
+      candidateShots.sort((a, b) => a.score - b.score);
+      let shot;
+      if (settings.planning === 1) {
+        const pool = candidateShots.slice(0, Math.min(5, candidateShots.length));
+        shot = pool[Math.floor(Math.random() * pool.length)] || candidateShots[0];
+      } else if (settings.planning === 2) {
+        shot = candidateShots[Math.random() < .84 ? 0 : Math.min(1, candidateShots.length - 1)];
       } else {
-        target = targets.reduce((best, d) => distance(striker, d) < distance(striker, best) ? d : best);
+        shot = candidateShots[0];
       }
 
-      let aimX = target.x;
-      let aimY = target.y;
-      if (difficulty === "hard" || difficulty === "expert") {
-        const pocket = pocketCenters.reduce((best, p) => distance(target, p) < distance(target, best) ? p : best);
-        const pdx = pocket.x - target.x, pdy = pocket.y - target.y;
-        const plen = Math.max(1, Math.hypot(pdx, pdy));
-        aimX = target.x - (pdx / plen) * (target.r + STRIKER_RADIUS * .65);
-        aimY = target.y - (pdy / plen) * (target.r + STRIKER_RADIUS * .65);
-      }
-
-      const dx = aimX - striker.x, dy = aimY - striker.y, len = Math.max(1, Math.hypot(dx, dy));
+      if (!shot) return;
+      const dx = shot.aimX - striker.x;
+      const dy = shot.aimY - striker.y;
+      const len = Math.max(1, Math.hypot(dx, dy));
       const error = (Math.random() - .5) * settings.spread;
       const cos = Math.cos(error), sin = Math.sin(error);
       const nx = (dx / len) * cos - (dy / len) * sin;
       const ny = (dx / len) * sin + (dy / len) * cos;
-      beginShot(nx * settings.speed, ny * settings.speed);
-    }, 900);
+
+      const distanceFactor = clamp((shot.strikerDistance + shot.pocketDistance) / 780, .82, 1.12);
+      const speed = clamp(settings.speed * distanceFactor, 1080, 1700);
+      beginShot(nx * speed, ny * speed);
+    }, difficulty === "legendary" ? 620 : difficulty === "expert" ? 760 : 900);
   }
 
   function pocketDisc(disc) {
@@ -1060,11 +1091,34 @@
     ctx.restore();
   }
 
-  function drawDisc(d) {
+  function drawSoftDiscShadow(d) {
+    const lightX = 430;
+    const lightY = 110;
+    const dx = (d.x - lightX) / BOARD_SIZE;
+    const dy = (d.y - lightY) / BOARD_SIZE;
+    const offsetX = clamp(dx * 7, -5, 7);
+    const offsetY = clamp(4 + dy * 7, 3, 11);
+
     ctx.save();
-    ctx.shadowColor = d.kind === "queen" ? "rgba(124,20,20,.16)" : "rgba(0,0,0,.24)";
-    ctx.shadowBlur = d.kind === "striker" ? 20 : 13;
-    ctx.shadowOffsetY = 6;
+    ctx.translate(d.x + offsetX, d.y + offsetY);
+    ctx.scale(1, .48);
+    const shadow = ctx.createRadialGradient(0, 0, d.r * .18, 0, 0, d.r * 1.38);
+    shadow.addColorStop(0, "rgba(18,12,8,.27)");
+    shadow.addColorStop(.58, "rgba(18,12,8,.15)");
+    shadow.addColorStop(1, "rgba(18,12,8,0)");
+    ctx.beginPath();
+    ctx.arc(0, 0, d.r * 1.38, 0, Math.PI * 2);
+    ctx.fillStyle = shadow;
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function drawDisc(d) {
+    drawSoftDiscShadow(d);
+    ctx.save();
+    ctx.shadowColor = d.kind === "queen" ? "rgba(124,20,20,.12)" : "rgba(0,0,0,.16)";
+    ctx.shadowBlur = d.kind === "striker" ? 15 : 10;
+    ctx.shadowOffsetY = 3;
     ctx.beginPath();
     ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
     ctx.fillStyle = woodGradient(d);
@@ -1105,11 +1159,20 @@
     }
     ctx.restore();
 
-    const highlight = ctx.createRadialGradient(d.x - d.r*.35, d.y - d.r*.4, 1, d.x - d.r*.3, d.y - d.r*.3, d.r*.72);
-    highlight.addColorStop(0, d.kind === "black" ? "rgba(255,255,255,.18)" : "rgba(255,255,255,.35)");
+    const highlight = ctx.createRadialGradient(
+      d.x - d.r * .42,
+      d.y - d.r * .46,
+      1,
+      d.x - d.r * .25,
+      d.y - d.r * .25,
+      d.r * .86
+    );
+    const highlightStrength = d.kind === "black" ? .12 : d.kind === "queen" ? .24 : d.kind === "striker" ? .22 : .19;
+    highlight.addColorStop(0, `rgba(255,255,255,${highlightStrength})`);
+    highlight.addColorStop(.38, `rgba(255,255,255,${highlightStrength * .42})`);
     highlight.addColorStop(1, "rgba(255,255,255,0)");
     ctx.beginPath();
-    ctx.arc(d.x - d.r*.18, d.y - d.r*.2, d.r*.34, 0, Math.PI*2);
+    ctx.arc(d.x - d.r * .16, d.y - d.r * .2, d.r * .42, 0, Math.PI * 2);
     ctx.fillStyle = highlight;
     ctx.fill();
 
@@ -1135,6 +1198,24 @@
     ctx.save();ctx.shadowColor="rgba(0,0,0,.38)";ctx.shadowBlur=28;ctx.shadowOffsetY=12;const surface=ctx.createLinearGradient(50,50,850,850);surface.addColorStop(0,"#f9e9c5");surface.addColorStop(.45,"#edcf94");surface.addColorStop(1,"#d7af71");ctx.fillStyle=surface;ctx.fillRect(52,52,796,796);ctx.restore();
     ctx.strokeStyle="#4d2813";ctx.lineWidth=12;ctx.strokeRect(52,52,796,796);ctx.strokeStyle="rgba(255,244,220,.38)";ctx.lineWidth=2;ctx.strokeRect(66,66,768,768);
     ctx.strokeStyle="rgba(115,73,32,.18)";ctx.lineWidth=1;for(let i=0;i<11;i++){const y=105+i*64;ctx.beginPath();ctx.moveTo(74,y);ctx.bezierCurveTo(250,y-12,620,y+10,825,y-4);ctx.stroke();}
+
+    // مصدر إضاءة علوي ناعم مع انعكاس خفيف على سطح اللوحة.
+    ctx.save();
+    const overheadLight = ctx.createRadialGradient(430, 120, 30, 450, 330, 650);
+    overheadLight.addColorStop(0, "rgba(255,250,232,.19)");
+    overheadLight.addColorStop(.42, "rgba(255,246,220,.075)");
+    overheadLight.addColorStop(1, "rgba(255,255,255,0)");
+    ctx.fillStyle = overheadLight;
+    ctx.fillRect(52, 52, 796, 796);
+
+    const boardSheen = ctx.createLinearGradient(80, 80, 820, 820);
+    boardSheen.addColorStop(0, "rgba(255,255,255,.055)");
+    boardSheen.addColorStop(.36, "rgba(255,255,255,.012)");
+    boardSheen.addColorStop(.7, "rgba(255,255,255,0)");
+    boardSheen.addColorStop(1, "rgba(74,42,18,.025)");
+    ctx.fillStyle = boardSheen;
+    ctx.fillRect(66, 66, 768, 768);
+    ctx.restore();
     for(const p of pocketCenters){const g=ctx.createRadialGradient(p.x-8,p.y-8,4,p.x,p.y,POCKET_RADIUS);g.addColorStop(0,"#342116");g.addColorStop(.6,"#1c120c");g.addColorStop(1,"#080503");ctx.beginPath();ctx.arc(p.x,p.y,POCKET_RADIUS,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();ctx.beginPath();ctx.arc(p.x,p.y,POCKET_RADIUS+12,0,Math.PI*2);ctx.strokeStyle="rgba(99,56,28,.58)";ctx.lineWidth=8;ctx.stroke();}
     ctx.strokeStyle="#8d3823";ctx.lineWidth=3.5;ctx.beginPath();ctx.arc(450,450,116,0,Math.PI*2);ctx.stroke();ctx.beginPath();ctx.arc(450,450,48,0,Math.PI*2);ctx.stroke();
     const lines=[[250,BASELINE_NEAR,650,BASELINE_NEAR],[250,BASELINE_FAR,650,BASELINE_FAR],[BASELINE_NEAR,250,BASELINE_NEAR,650],[BASELINE_FAR,250,BASELINE_FAR,650]];for(const l of lines){ctx.beginPath();ctx.moveTo(l[0],l[1]);ctx.lineTo(l[2],l[3]);ctx.stroke();}
