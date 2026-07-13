@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#0f172a" />
-  <title>كيرم محمد عبدالله الجابري — v21</title>
+  <title>كيرم محمد عبدالله الجابري — v22</title>
   <meta name="description" content="لعبة كيرم عربية أون لاين بملفات شخصية وصداقات ودردشة خاصة وغرف أون لاين ومهام يومية." />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -714,7 +714,7 @@
     }
 
 
-    /* ===== v21: professional match HUD and 20 premium boards ===== */
+    /* ===== v21/v22: professional HUD and full premium boards ===== */
     .match-hud-v21{display:grid;grid-template-columns:minmax(0,1fr) auto 82px;gap:10px;align-items:center;width:100%;padding:8px 10px;border-radius:16px;background:linear-gradient(135deg,rgba(15,23,42,.98),rgba(23,32,51,.96));border:1px solid rgba(255,255,255,.12);box-shadow:0 10px 28px rgba(0,0,0,.28);direction:rtl}
     .hud-players-v21{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;min-width:0}
     .hud-player-v21{position:relative;display:flex;align-items:center;gap:8px;min-width:0;padding:6px 8px;border-radius:12px;background:#0b1323;border:1px solid rgba(255,255,255,.08);transition:.15s ease}
@@ -727,6 +727,31 @@
     @media(max-width:900px){.match-hud-v21{grid-template-columns:minmax(0,1fr) 92px 58px;padding:5px 6px;gap:5px;border-radius:0}.hud-players-v21{grid-template-columns:repeat(2,minmax(0,1fr));gap:3px}.hud-player-v21{padding:3px 4px;gap:4px;border-radius:8px}.hud-avatar{width:25px;height:25px;flex-basis:25px;border-radius:7px;font-size:9px}.hud-player-copy strong{font-size:8px}.hud-player-copy small{font-size:7px}.hud-score-v21{min-width:0;padding:2px 5px}.hud-score-v21 strong{font-size:18px}.hud-score-v21 span{font-size:7px;max-width:90px;overflow:hidden;text-overflow:ellipsis}.turn-ring-v21{width:50px;height:50px;padding:4px}.turn-ring-v21 strong{font-size:14px}.controls .actions.icon-actions{grid-template-columns:repeat(5,minmax(0,1fr))!important}.controls .icon-control{min-height:46px!important}.controls .icon-control .control-text{font-size:7px!important}}
     @media(max-width:430px){.match-hud-v21{grid-template-columns:minmax(0,1fr) 78px 48px}.hud-player-v21:nth-child(n+3){display:none}.hud-score-v21 strong{font-size:16px}.turn-ring-v21{width:44px;height:44px}.turn-ring-v21 strong{font-size:13px}}
 
+
+    /* ===== v22: full board store + Android/iPhone installation ===== */
+    .install-platform-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 9px}
+    .platform-install{min-height:52px;border-radius:14px;border:1px solid rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;gap:9px;font-weight:900;color:#fff;padding:9px 12px;box-shadow:0 10px 24px rgba(0,0,0,.18)}
+    .platform-install.android{background:linear-gradient(135deg,#166534,#15803d);border-color:rgba(74,222,128,.52)}
+    .platform-install.ios{background:linear-gradient(135deg,#111827,#334155);border-color:rgba(203,213,225,.35)}
+    .platform-install .platform-icon{font-size:23px;line-height:1}.platform-install .platform-copy{display:flex;flex-direction:column;text-align:right;line-height:1.25}.platform-install small{font-size:9px;color:rgba(255,255,255,.72)}
+    .platform-install.ready{animation:installPulse 2.2s ease-in-out infinite}.platform-install.installed{opacity:.68;animation:none;cursor:default}
+    .shop-type-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0 14px;padding:5px;border-radius:14px;background:#0b1323;border:1px solid rgba(255,255,255,.08)}
+    .shop-type-tab{border:0;border-radius:10px;padding:11px;background:transparent;color:#cbd5e1;font-weight:900}.shop-type-tab.active{background:linear-gradient(135deg,#2563eb,#1d4ed8);color:white;box-shadow:0 8px 20px rgba(37,99,235,.25)}
+    .board-owned-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:9px;margin:10px 0 15px}
+    .board-owned-mini{display:grid;grid-template-columns:86px minmax(0,1fr);align-items:center;gap:9px;padding:9px;border-radius:13px;background:#0b1323;border:1px solid rgba(255,255,255,.08)}
+    .board-owned-mini.equipped{border-color:rgba(251,191,36,.72);box-shadow:0 0 0 1px rgba(251,191,36,.13)}
+    .board-owned-mini canvas{width:82px;height:70px;border-radius:9px;cursor:default;transform:none!important}.board-owned-mini strong{display:block;font-size:12px;margin-bottom:7px}.board-owned-mini button{border:0;border-radius:8px;padding:7px 9px;background:#2563eb;color:#fff;font-weight:900;font-size:10px}
+    .board-shop-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:12px;margin-top:14px}
+    .board-shop-card{position:relative;overflow:hidden;padding:13px;border-radius:17px;background:linear-gradient(180deg,rgba(15,23,42,.99),rgba(5,10,20,.99));border:1px solid rgba(255,255,255,.1);box-shadow:0 14px 30px rgba(0,0,0,.24)}
+    .board-shop-card.owned{border-color:rgba(94,234,212,.4)}.board-shop-card.equipped{border-color:rgba(251,191,36,.8);box-shadow:0 0 0 1px rgba(251,191,36,.18),0 15px 35px rgba(0,0,0,.31)}
+    .board-preview{display:grid;place-items:center;height:155px;border-radius:14px;background:radial-gradient(circle at 50% 35%,rgba(255,255,255,.08),rgba(0,0,0,.18));border:1px solid rgba(255,255,255,.07);overflow:hidden}
+    .board-preview canvas{width:190px;height:150px;border-radius:10px;cursor:default;transform:none!important;box-shadow:0 9px 20px rgba(0,0,0,.34)}
+    .board-shop-card h3{margin:11px 0 5px;font-size:16px}.board-shop-card p{min-height:44px;margin:0 0 10px;color:#94a3b8;font-size:12px;line-height:1.65}
+    .board-construction-badge{position:absolute;top:10px;left:10px;padding:5px 8px;border-radius:999px;background:rgba(2,6,23,.86);border:1px solid rgba(255,255,255,.12);color:#fde68a;font-size:9px;font-weight:900}
+    .board-current-summary{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 13px;border-radius:13px;background:linear-gradient(135deg,rgba(251,191,36,.12),rgba(37,99,235,.10));border:1px solid rgba(251,191,36,.28);margin-bottom:11px}.board-current-summary strong{color:#fde68a}
+    .ios-steps{display:grid;gap:10px;margin-top:12px}.ios-step{display:grid;grid-template-columns:34px minmax(0,1fr);gap:10px;align-items:center;padding:11px;border-radius:12px;background:#0f172a;border:1px solid rgba(255,255,255,.08)}.ios-step b{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:#2563eb;color:#fff}.ios-step span{color:#e2e8f0;line-height:1.7}
+    @media(max-width:600px){.install-platform-grid{grid-template-columns:1fr}.platform-install{min-height:46px}.board-shop-grid{grid-template-columns:1fr}.board-preview{height:145px}.board-owned-strip{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -734,7 +759,7 @@
     <header>
       <p class="eyebrow">لعبة كيرم مستقرة — ملف واحد فقط</p>
       <h1>كيرم محمد عبدالله الجابري</h1>
-      <p>واجهة مباراة احترافية بنتيجة واضحة، صور اللاعبين ومؤقت دائري، مع 20 لوحًا فاخرًا محسّنًا للأداء.</p>
+      <p>متجر متكامل للمضارب والألواح الخشبية الكاملة، مع تثبيت اللعبة على أندرويد وآيفون.</p>
     </header>
 
     <section id="menu" class="menu panel menu-dashboard">
@@ -752,7 +777,10 @@
           <span class="profile-head-copy"><strong id="menuProfileName">ملفي الشخصي</strong><small id="menuPlayerId">-------------</small></span>
         </button>
       </div>
-      <button id="installAppMenu" class="btn install-cta" type="button" style="width:100%;margin:0 0 7px;background:#166534;border-color:#22c55e">⬇️ تثبيت على أندرويد</button>
+      <div class="install-platform-grid" aria-label="تثبيت اللعبة على الجوال">
+        <button id="installAndroidMenu" class="platform-install android" type="button"><span class="platform-icon" aria-hidden="true">🤖</span><span class="platform-copy"><strong class="install-label">تثبيت على أندرويد</strong><small>Chrome أو متصفح يدعم التثبيت</small></span></button>
+        <button id="installIosMenu" class="platform-install ios" type="button"><span class="platform-icon" aria-hidden="true"></span><span class="platform-copy"><strong>تثبيت على آيفون</strong><small>من Safari إلى الشاشة الرئيسية</small></span></button>
+      </div>
 
       <div class="menu-heading-row"><div><h2>اختر أسلوب اللعب</h2><p>اللعب المحلي أو عبر الإنترنت من شاشة واحدة.</p></div></div>
 
@@ -762,7 +790,7 @@
       </div>
 
       <div class="menu-tools-grid">
-        <button id="openShopMenu" class="quick-tile" type="button"><span class="tile-icon" aria-hidden="true">🛍️</span><span class="tile-copy">متجر المضارب<small>شراء وتجهيز المضرب</small></span></button>
+        <button id="openShopMenu" class="quick-tile" type="button"><span class="tile-icon" aria-hidden="true">🛍️</span><span class="tile-copy">متجر المضارب والألواح<small>شراء وتجهيز المضرب واللوح الكامل</small></span></button>
         <button id="showAchievementsMenu" class="quick-tile" type="button"><span class="tile-icon" aria-hidden="true">🏆</span><span class="tile-copy">التصنيف والإنجازات<small>الرتبة والمكافآت</small></span></button>
       </div>
 
@@ -960,8 +988,11 @@
   let shopPreviewTimer = null;
   let strikerImpactUntil = 0;
   let legendVictoryUntil = 0;
-  let currentTheme = localStorage.getItem("carrom-board-theme") || "maple";
+  let currentTheme = profile.equippedBoard || localStorage.getItem("carrom-board-theme") || "maple";
   currentTheme = ({classic:"maple",royal:"mahogany",modern:"carbon"}[currentTheme] || currentTheme);
+  if (!["maple","mahogany","walnut","oak","rosewood","arabic","islamic","royal_gold","japanese","indian","pharaonic","moroccan","andalusian","marble","black_luxury","carbon","crystal","forest","galaxy","legendary"].includes(currentTheme)) currentTheme = "maple";
+  profile.equippedBoard = currentTheme;
+  if (!profile.ownedBoards.includes(currentTheme)) profile.ownedBoards.push(currentTheme);
   if (themeEl) themeEl.value = currentTheme;
   if (difficultyEl) difficultyEl.value = difficulty;
   let teamScores = [0, 0];
@@ -1068,7 +1099,7 @@
     const now = new Date().toISOString();
     const fallback = {
       xp: 0, coins: 0, trophies: 0, shots: 0, pockets: 0, queens: 0, wins: 0,
-      achievements: [], ownedStrikers: ["classic"], equippedStriker: "classic", lastDailyReward: "",
+      achievements: [], ownedStrikers: ["classic"], equippedStriker: "classic", ownedBoards: ["maple"], equippedBoard: "maple", lastDailyReward: "",
       displayName: legacyName || "لاعب جديد", playerId: generatePlayerId(), avatarDataUrl: "", avatarUrl: "",
       createdAt: now, freeNameChangeUsed: false, level: 0, lastRewardedLevel: 0, levelModelVersion: 2
     };
@@ -1078,6 +1109,11 @@
       if (!Array.isArray(loaded.ownedStrikers)) loaded.ownedStrikers = ["classic"];
       if (!loaded.ownedStrikers.includes("classic")) loaded.ownedStrikers.unshift("classic");
       if (!loaded.ownedStrikers.includes(loaded.equippedStriker)) loaded.equippedStriker = "classic";
+      if (!Array.isArray(loaded.ownedBoards)) loaded.ownedBoards = ["maple"];
+      if (!loaded.ownedBoards.includes("maple")) loaded.ownedBoards.unshift("maple");
+      const legacyBoard = ({classic:"maple",royal:"mahogany",modern:"carbon"}[localStorage.getItem("carrom-board-theme")] || localStorage.getItem("carrom-board-theme"));
+      if (legacyBoard && ["maple","mahogany","walnut","oak","rosewood","arabic","islamic","royal_gold","japanese","indian","pharaonic","moroccan","andalusian","marble","black_luxury","carbon","crystal","forest","galaxy","legendary"].includes(legacyBoard) && !loaded.ownedBoards.includes(legacyBoard)) loaded.ownedBoards.push(legacyBoard);
+      if (!loaded.equippedBoard || !loaded.ownedBoards.includes(loaded.equippedBoard)) loaded.equippedBoard = legacyBoard && loaded.ownedBoards.includes(legacyBoard) ? legacyBoard : "maple";
       loaded.coins = Math.max(0, Number(loaded.coins) || 0);
       loaded.xp = Math.max(0, Number(loaded.xp) || 0);
       loaded.displayName = String(loaded.displayName || legacyName || "لاعب جديد").trim().slice(0,18) || "لاعب جديد";
@@ -1511,7 +1547,7 @@
     modalBodyEl.innerHTML = `<div class="settings-grid">
       ${message?`<div class="notice" style="grid-column:1/-1">${escapeHtml(message)}</div>`:""}
       <section class="settings-card"><label for="settingsDifficulty">🧠 مستوى الذكاء الاصطناعي</label><select id="settingsDifficulty"><option value="hard" ${difficulty==="hard"?"selected":""}>متقدم</option><option value="expert" ${difficulty==="expert"?"selected":""}>محترف</option><option value="legendary" ${difficulty==="legendary"?"selected":""}>أسطوري</option></select></section>
-      <section class="settings-card" style="grid-column:1/-1"><label for="settingsTheme">🪵 شكل اللوح — 20 تصميمًا</label><select id="settingsTheme">${boardThemeOptions()}</select><small>يُطبّق التصميم فورًا ويحفظ على هذا الجهاز، ويُنقل تلقائيًا إلى غرفة اللعب الأون لاين.</small></section>
+      <section class="settings-card" style="grid-column:1/-1"><label>🪵 اللوح الخشبي المجهز</label><div class="board-current-summary"><span>اللوح الحالي: <strong>${escapeHtml(boardById(currentTheme).name)}</strong></span><button class="btn" type="button" data-open-board-shop>فتح متجر الألواح</button></div><small>الألواح تغيّر هيكل اللوح وإطاره وزخارفه بالكامل، وليس اللون فقط.</small></section>
       <section class="settings-card"><label for="settingsVolume">🔊 مستوى الصوت: <span id="settingsVolumeValue" class="volume-value">${Math.round(masterVolume*100)}%</span></label><input id="settingsVolume" type="range" min="0" max="100" value="${Math.round(masterVolume*100)}"></section>
       <section class="settings-card"><label>🌓 مظهر الصفحة</label><div class="appearance-options"><label class="appearance-option"><input type="radio" name="appearanceMode" value="dark" ${appearanceMode==="dark"?"checked":""}> داكن</label><label class="appearance-option"><input type="radio" name="appearanceMode" value="light" ${appearanceMode==="light"?"checked":""}> فاتح</label></div></section>
       <section class="settings-card" style="grid-column:1/-1"><label class="appearance-option" style="justify-content:flex-start"><input id="settingsOnlineVisibility" type="checkbox" ${onlineVisibility?"checked":""}> إظهار العلامة الخضراء للأصدقاء عند اتصالي</label></section>
@@ -1522,7 +1558,6 @@
 
   async function saveGameSettings() {
     difficulty = document.getElementById("settingsDifficulty")?.value || difficulty;
-    currentTheme = document.getElementById("settingsTheme")?.value || currentTheme;
     masterVolume = Math.max(0,Math.min(1,Number(document.getElementById("settingsVolume")?.value || 0)/100));
     soundEnabled = masterVolume > 0;
     appearanceMode = document.querySelector('input[name="appearanceMode"]:checked')?.value || appearanceMode;
@@ -2720,6 +2755,34 @@
     legendary:{name:"الأسطوري النادر",rarity:"أسطوري نادر",frame:["#6d2517","#49140d","#280905","#120301"],surface:["#ecd0a0","#bd7b4b","#7f3b29"],line:"#8f2018",dark:"rgba(69,17,12,.76)",mid:"rgba(127,48,26,.48)",light:"rgba(255,226,177,.43)",gold:"#f5cf59",center:"arabic",pattern:"legendary",pocket:"#020202"}
   };
 
+
+  const BOARD_SHOP = [
+    {id:"maple",name:"اللوح الكلاسيكي الاحترافي",price:0,category:"professional",construction:"بطولات",model:"tournament",description:"خشب قيقب كامل بعروق طبيعية، حواف مصقولة وخطوط رسمية للبطولات."},
+    {id:"mahogany",name:"لوح الماهوجني الملكي",price:650,category:"luxury",construction:"إطار ملكي",model:"royal",description:"هيكل ماهوجني داكن كامل، إطار ذهبي ونقوش محفورة في الحواف."},
+    {id:"walnut",name:"لوح الجوز الأمريكي",price:380,category:"woods",construction:"Walnut",model:"walnut",description:"لوح كامل من الجوز بعروق عميقة، زوايا قوية ولمعان فاخر."},
+    {id:"oak",name:"لوح البلوط الأوروبي",price:320,category:"woods",construction:"إطار عريض",model:"wide-oak",description:"بناء بلوط طبيعي بإطار عريض ووصلات معدنية صغيرة."},
+    {id:"rosewood",name:"لوح الورد الهندي",price:520,category:"woods",construction:"Rosewood",model:"rosewood",description:"خشب بني محمر كامل مع مسارات تطعيم منحنية ولمعان طبيعي."},
+    {id:"arabic",name:"اللوح العربي المزخرف",price:600,category:"heritage",construction:"حفر عربي",model:"arabic",description:"إطار كامل محفور بزخارف هندسية عربية وتطعيمات ذهبية."},
+    {id:"islamic",name:"اللوح الإسلامي",price:620,category:"heritage",construction:"نجمة ثمانية",model:"islamic",description:"بناء هادئ بزخارف إسلامية دقيقة ونجمة ثمانية في المركز."},
+    {id:"royal_gold",name:"اللوح الملكي الذهبي",price:1100,category:"legendary",construction:"ذهب ملكي",model:"gold-royal",description:"حواف ذهبية سميكة، تيجان زاوية ومركز خشبي فاخر."},
+    {id:"japanese",name:"اللوح الياباني",price:420,category:"heritage",construction:"ساكورا",model:"japanese",description:"خشب فاتح بهيكل بسيط، حواف رفيعة وتفاصيل ساكورا أنيقة."},
+    {id:"indian",name:"اللوح الهندي التقليدي",price:560,category:"heritage",construction:"ماندالا",model:"mandala",description:"إطار مزخرف ملون وبناء كامل مستوحى من الماندالا الهندية."},
+    {id:"pharaonic",name:"اللوح الفرعوني",price:900,category:"legendary",construction:"نقوش مصرية",model:"pharaonic",description:"ألواح جانبية ذهبية ورموز مصرية قديمة محفورة حول الملعب."},
+    {id:"moroccan",name:"اللوح المغربي",price:580,category:"heritage",construction:"زليج",model:"zellige",description:"إطار خشبي محفور تتخلله وحدات زليج بألوان ترابية."},
+    {id:"andalusian",name:"اللوح الأندلسي",price:680,category:"heritage",construction:"أقواس أندلسية",model:"andalusian",description:"خشب داكن، أقواس زخرفية ولمسات ذهبية على جميع الجوانب."},
+    {id:"marble",name:"لوح الرخام والخشب",price:760,category:"luxury",construction:"رخام مركزي",model:"marble",description:"إطار خشبي حقيقي مع سطح رخامي كامل وعروق مختلفة."},
+    {id:"black_luxury",name:"اللوح الأسود الفاخر",price:820,category:"modern",construction:"أسود مطفي",model:"black",description:"هيكل أسود مطفي كامل وخطوط ذهبية رفيعة بلمسة عصرية."},
+    {id:"carbon",name:"لوح الكربون الحديث",price:950,category:"modern",construction:"كربون ومعدن",model:"carbon",description:"إطار ألياف كربون كامل مع أغطية زوايا معدنية وتصميم مستقبلي."},
+    {id:"crystal",name:"اللوح البلوري",price:1050,category:"modern",construction:"زجاج مضيء",model:"crystal",description:"حواف شبه زجاجية وإضاءة زرقاء خفيفة مع طبقات شفافة."},
+    {id:"forest",name:"لوح الغابة",price:700,category:"nature",construction:"خشب طبيعي",model:"forest",description:"خشب طبيعي كامل مع أوراق وفروع محفورة حول الإطار."},
+    {id:"galaxy",name:"لوح المجرة",price:1250,category:"legendary",construction:"إضاءة مجرية",model:"galaxy",description:"هيكل أسود بعمق فضائي، نجوم مضيئة وحواف بنفسجية متوهجة."},
+    {id:"legendary",name:"اللوح الأسطوري",price:2200,category:"legendary",construction:"أسطوري نادر",model:"legendary",description:"ماهوجني فائق الجودة، إطار ذهبي محفور، زخارف عربية وجيوب بجلد أسود."}
+  ];
+  const BOARD_CATEGORY_NAMES = {all:"كل الألواح",professional:"احترافية",woods:"أخشاب",luxury:"فاخرة",heritage:"حضارية",modern:"حديثة",nature:"طبيعة",legendary:"أسطورية"};
+  let activeShopSection = "strikers";
+  let activeBoardCategory = "all";
+  function boardById(id){ return BOARD_SHOP.find(item=>item.id===id) || BOARD_SHOP[0]; }
+
   function getThemeStyle() {
     return THEME_STYLES[currentTheme] || THEME_STYLES.maple;
   }
@@ -3291,56 +3354,47 @@
       shopPausedTurn = true;
     }
     if (modalCardEl) modalCardEl.classList.add("shop-modal-card");
-    modalTitleEl.textContent = "متجر المضارب";
+    modalTitleEl.textContent = "متجر المضارب والألواح";
     renderShopContent();
     infoModalEl.classList.remove("hidden");
     startShopPreviewAnimation();
   }
 
   function renderShopContent() {
-    const categories = Object.entries(SHOP_CATEGORY_NAMES).map(([id,label]) =>
-      `<button class="shop-filter ${activeShopCategory===id?"active":""}" data-shop-category="${id}">${label}</button>`
-    ).join("");
-    const ownedSkins = STRIKER_SKINS.filter(s => profile.ownedStrikers.includes(s.id));
-    const ownedCards = ownedSkins.map(skin => {
-      const equipped = profile.equippedStriker === skin.id;
-      return `<div class="owned-mini ${equipped?"equipped":""}">
-        <canvas width="56" height="56" data-skin-preview="${skin.id}"></canvas>
-        <div><strong>${skin.name}</strong><button ${equipped?"disabled":""} data-equip-skin="${skin.id}">${equipped?"مجهّز":"تجهيز"}</button></div>
-      </div>`;
-    }).join("");
-    const visible = activeShopCategory === "all" ? STRIKER_SKINS : STRIKER_SKINS.filter(s=>s.category===activeShopCategory);
-    const cards = visible.map(skin => {
-      const owned = profile.ownedStrikers.includes(skin.id);
-      const equipped = profile.equippedStriker === skin.id;
-      let button;
-      if (equipped) button = `<button class="shop-action equipped" disabled>مجهّز الآن</button>`;
-      else if (owned) button = `<button class="shop-action" data-equip-skin="${skin.id}">تجهيز</button>`;
-      else button = `<button class="shop-action buy" data-buy-skin="${skin.id}" ${profile.coins<skin.price?"disabled":""}>شراء</button>`;
-      return `<article class="shop-card ${owned?"owned":""} ${equipped?"equipped":""}">
-        <span class="shop-tag">${SHOP_CATEGORY_NAMES[skin.category]}</span>
-        <div class="shop-preview"><canvas width="112" height="112" data-skin-preview="${skin.id}"></canvas></div>
-        <h3>${skin.name}</h3><p>${skin.description}</p>
-        <div class="shop-card-footer"><span class="shop-price">${skin.price===0?"مجاني":skin.price+" عملة"}</span>${button}</div>
-      </article>`;
-    }).join("");
+    const typeTabs = `<div class="shop-type-tabs"><button class="shop-type-tab ${activeShopSection==="strikers"?"active":""}" data-shop-section="strikers">🎯 المضارب</button><button class="shop-type-tab ${activeShopSection==="boards"?"active":""}" data-shop-section="boards">🪵 الألواح الكاملة</button></div>`;
     const dailyAvailable = isDailyRewardAvailable();
-    modalBodyEl.innerHTML = `
-      <div class="shop-toolbar">
-        <div class="shop-balance">رصيدك: <strong id="shopCoins">${profile.coins}</strong> عملة</div>
-        <div>المضرب الحالي: <span class="current-striker">${skinById(profile.equippedStriker).name}</span></div>
-      </div>
-      <section class="owned-section">
-        <div class="owned-section-head"><h3>مضاربي المملوكة</h3><span>${ownedSkins.length} من ${STRIKER_SKINS.length}</span></div>
-        <div class="owned-strip">${ownedCards}</div>
-      </section>
-      <div class="daily-reward">
-        <div><strong>المكافأة اليومية: 5 عملات</strong><span>${dailyAvailable?"متاحة اليوم — استلمها الآن.":"تم استلام مكافأة اليوم."}</span></div>
-        <button class="shop-action buy" data-claim-daily ${dailyAvailable?"":"disabled"}>${dailyAvailable?"استلام":"تم الاستلام"}</button>
-      </div>
-      <div class="shop-categories">${categories}</div>
-      <div class="shop-grid">${cards}</div>`;
+    const commonTop = `<div class="shop-toolbar"><div class="shop-balance">رصيدك: <strong id="shopCoins">${profile.coins}</strong> عملة</div><div>${activeShopSection==="boards"?`اللوح الحالي: <span class="current-striker">${escapeHtml(boardById(currentTheme).name)}</span>`:`المضرب الحالي: <span class="current-striker">${escapeHtml(skinById(profile.equippedStriker).name)}</span>`}</div></div>${typeTabs}<div class="daily-reward"><div><strong>المكافأة اليومية: 5 عملات</strong><span>${dailyAvailable?"متاحة اليوم — استلمها الآن.":"تم استلام مكافأة اليوم."}</span></div><button class="shop-action buy" data-claim-daily ${dailyAvailable?"":"disabled"}>${dailyAvailable?"استلام":"تم الاستلام"}</button></div>`;
+
+    if(activeShopSection === "boards"){
+      const categories = Object.entries(BOARD_CATEGORY_NAMES).map(([id,label])=>`<button class="shop-filter ${activeBoardCategory===id?"active":""}" data-board-category="${id}">${label}</button>`).join("");
+      const ownedBoards = BOARD_SHOP.filter(board=>profile.ownedBoards.includes(board.id));
+      const ownedCards = ownedBoards.map(board=>{const equipped=currentTheme===board.id;return `<div class="board-owned-mini ${equipped?"equipped":""}"><canvas width="190" height="150" data-board-preview="${board.id}"></canvas><div><strong>${escapeHtml(board.name)}</strong><button ${equipped?"disabled":""} data-equip-board="${board.id}">${equipped?"مجهز":"تجهيز"}</button></div></div>`;}).join("");
+      const visible = activeBoardCategory==="all"?BOARD_SHOP:BOARD_SHOP.filter(board=>board.category===activeBoardCategory);
+      const cards = visible.map(board=>{const owned=profile.ownedBoards.includes(board.id),equipped=currentTheme===board.id;let button;if(equipped)button='<button class="shop-action equipped" disabled>مجهز الآن</button>';else if(owned)button=`<button class="shop-action" data-equip-board="${board.id}">تجهيز اللوح</button>`;else button=`<button class="shop-action buy" data-buy-board="${board.id}" ${profile.coins<board.price?"disabled":""}>شراء اللوح</button>`;return `<article class="board-shop-card ${owned?"owned":""} ${equipped?"equipped":""}"><span class="board-construction-badge">${escapeHtml(board.construction)}</span><div class="board-preview"><canvas width="190" height="150" data-board-preview="${board.id}"></canvas></div><h3>${escapeHtml(board.name)}</h3><p>${escapeHtml(board.description)}</p><div class="shop-card-footer"><span class="shop-price">${board.price===0?"مجاني":board.price+" عملة"}</span>${button}</div></article>`;}).join("");
+      modalBodyEl.innerHTML = `${commonTop}<section class="owned-section"><div class="owned-section-head"><h3>ألواحي المملوكة</h3><span>${ownedBoards.length} من ${BOARD_SHOP.length}</span></div><div class="board-owned-strip">${ownedCards}</div></section><div class="shop-categories">${categories}</div><div class="board-shop-grid">${cards}</div>`;
+    }else{
+      const categories = Object.entries(SHOP_CATEGORY_NAMES).map(([id,label])=>`<button class="shop-filter ${activeShopCategory===id?"active":""}" data-shop-category="${id}">${label}</button>`).join("");
+      const ownedSkins = STRIKER_SKINS.filter(s=>profile.ownedStrikers.includes(s.id));
+      const ownedCards = ownedSkins.map(skin=>{const equipped=profile.equippedStriker===skin.id;return `<div class="owned-mini ${equipped?"equipped":""}"><canvas width="56" height="56" data-skin-preview="${skin.id}"></canvas><div><strong>${escapeHtml(skin.name)}</strong><button ${equipped?"disabled":""} data-equip-skin="${skin.id}">${equipped?"مجهّز":"تجهيز"}</button></div></div>`;}).join("");
+      const visible=activeShopCategory==="all"?STRIKER_SKINS:STRIKER_SKINS.filter(s=>s.category===activeShopCategory);
+      const cards=visible.map(skin=>{const owned=profile.ownedStrikers.includes(skin.id),equipped=profile.equippedStriker===skin.id;let button;if(equipped)button='<button class="shop-action equipped" disabled>مجهّز الآن</button>';else if(owned)button=`<button class="shop-action" data-equip-skin="${skin.id}">تجهيز</button>`;else button=`<button class="shop-action buy" data-buy-skin="${skin.id}" ${profile.coins<skin.price?"disabled":""}>شراء</button>`;return `<article class="shop-card ${owned?"owned":""} ${equipped?"equipped":""}"><span class="shop-tag">${SHOP_CATEGORY_NAMES[skin.category]}</span><div class="shop-preview"><canvas width="112" height="112" data-skin-preview="${skin.id}"></canvas></div><h3>${escapeHtml(skin.name)}</h3><p>${escapeHtml(skin.description)}</p><div class="shop-card-footer"><span class="shop-price">${skin.price===0?"مجاني":skin.price+" عملة"}</span>${button}</div></article>`;}).join("");
+      modalBodyEl.innerHTML = `${commonTop}<section class="owned-section"><div class="owned-section-head"><h3>مضاربي المملوكة</h3><span>${ownedSkins.length} من ${STRIKER_SKINS.length}</span></div><div class="owned-strip">${ownedCards}</div></section><div class="shop-categories">${categories}</div><div class="shop-grid">${cards}</div>`;
+    }
     renderShopPreviews();
+  }
+
+  function renderBoardPreview(previewCanvas, themeId){
+    const c=previewCanvas.getContext("2d"),style=THEME_STYLES[themeId]||THEME_STYLES.maple,board=boardById(themeId),w=previewCanvas.width,h=previewCanvas.height;
+    c.clearRect(0,0,w,h);c.save();c.scale(w/900,h/900);
+    const fs=style.frame||["#c98a4a","#a96531","#7c421f","#4f2813"],ss=style.surface||["#fff0cf","#efd29a","#d9b277"];
+    const frame=c.createLinearGradient(0,0,900,900);frame.addColorStop(0,fs[0]);frame.addColorStop(.35,fs[1]);frame.addColorStop(.7,fs[2]);frame.addColorStop(1,fs[3]);c.fillStyle=frame;c.fillRect(0,0,900,900);
+    const surface=c.createLinearGradient(70,70,830,830);surface.addColorStop(0,ss[0]);surface.addColorStop(.5,ss[1]);surface.addColorStop(1,ss[2]);c.fillStyle=surface;c.fillRect(80,80,740,740);
+    c.strokeStyle=style.line||"#8f3d2b";c.lineWidth=5;c.strokeRect(125,125,650,650);c.beginPath();c.arc(450,450,115,0,Math.PI*2);c.stroke();
+    c.strokeStyle=style.gold||"#d4af37";c.lineWidth=9;if(["royal","gold-royal","legendary"].includes(board.model)){c.strokeRect(28,28,844,844);c.strokeRect(56,56,788,788);}else if(board.model==="wide-oak"){c.lineWidth=25;c.strokeRect(25,25,850,850);}else if(board.model==="carbon"){c.strokeStyle="#80909a";c.lineWidth=14;c.strokeRect(28,28,844,844);}else if(board.model==="crystal"){c.strokeStyle="rgba(160,226,255,.85)";c.lineWidth=18;c.strokeRect(28,28,844,844);}else{c.lineWidth=5;c.strokeRect(45,45,810,810);}
+    if(["arabic","islamic","andalusian","mandala","pharaonic","zellige","galaxy","legendary"].includes(board.model)){c.save();c.translate(450,450);c.rotate(Math.PI/8);c.strokeStyle=style.gold||"#d4af37";c.lineWidth=8;c.beginPath();for(let i=0;i<16;i++){const a=i*Math.PI/8,r=i%2?70:120,x=Math.cos(a)*r,y=Math.sin(a)*r;i?c.lineTo(x,y):c.moveTo(x,y);}c.closePath();c.stroke();c.restore();}
+    if(board.model==="galaxy"){for(let i=0;i<45;i++){c.fillStyle=i%5?"#fff":"#b6a4ff";c.beginPath();c.arc(100+(i*137)%700,100+(i*83)%700,i%7?3:7,0,Math.PI*2);c.fill();}}
+    if(board.model==="forest"){c.strokeStyle="#426b37";c.lineWidth=8;for(let i=0;i<8;i++){c.beginPath();c.arc(450,450,180+i*28,i*.2,Math.PI+i*.2);c.stroke();}}
+    const pockets=[[60,60],[840,60],[60,840],[840,840]];pockets.forEach(([x,y])=>{c.beginPath();c.arc(x,y,45,0,Math.PI*2);c.fillStyle=style.pocket||"#050505";c.fill();c.strokeStyle=style.gold||"#d4af37";c.lineWidth=8;c.stroke();});c.restore();
   }
 
   function renderShopPreviews() {
@@ -3349,12 +3403,13 @@
       pc.clearRect(0,0,previewCanvas.width,previewCanvas.height);
       renderStrikerSkin(pc,56,54,36,previewCanvas.dataset.skinPreview,true);
     });
+    document.querySelectorAll("canvas[data-board-preview]").forEach(previewCanvas => renderBoardPreview(previewCanvas, previewCanvas.dataset.boardPreview));
   }
 
   function startShopPreviewAnimation() {
     if (shopPreviewTimer) clearInterval(shopPreviewTimer);
     shopPreviewTimer = setInterval(() => {
-      if (infoModalEl.classList.contains("hidden") || modalTitleEl.textContent !== "متجر المضارب") {
+      if (infoModalEl.classList.contains("hidden") || modalTitleEl.textContent !== "متجر المضارب والألواح") {
         clearInterval(shopPreviewTimer); shopPreviewTimer=null; return;
       }
       renderShopPreviews();
@@ -3383,6 +3438,15 @@
     sound("ui");
     drawBoard();
     showShop();
+  }
+
+  function buyBoard(id){
+    const board=boardById(id);if(!board||profile.ownedBoards.includes(id))return;
+    if(profile.coins<board.price){showModal("الرصيد غير كافٍ",`<p class="notice">تحتاج إلى ${board.price-profile.coins} عملة إضافية لشراء ${escapeHtml(board.name)}.</p>`);return;}
+    profile.coins-=board.price;profile.ownedBoards.push(id);profile.equippedBoard=id;currentTheme=id;localStorage.setItem("carrom-board-theme",id);staticBoardCacheKey="";saveProfile();sound("queen",.7);drawBoard();showShop();
+  }
+  function equipBoard(id){
+    if(!profile.ownedBoards.includes(id))return;profile.equippedBoard=id;currentTheme=id;localStorage.setItem("carrom-board-theme",id);staticBoardCacheKey="";saveProfile();sound("ui");drawBoard();showShop();
   }
 
   function claimDailyReward() {
@@ -3606,6 +3670,61 @@
     ctx.restore();
   }
 
+
+  function drawFullBoardConstruction(style, board) {
+    const model = board?.model || "tournament";
+    ctx.save();
+    ctx.lineJoin="round"; ctx.lineCap="round";
+    const gold=style.gold||"#d4af37", dark=(style.frame||[])[3]||"#2b160c", light=(style.frame||[])[0]||"#c98a4a";
+    const rail=(inset,width,color,alpha=1)=>{ctx.globalAlpha=alpha;ctx.strokeStyle=color;ctx.lineWidth=width;ctx.strokeRect(inset,inset,900-inset*2,900-inset*2);ctx.globalAlpha=1;};
+    if(model==="tournament"){
+      rail(24,10,dark);rail(39,3,"rgba(255,245,218,.48)");rail(77,5,"rgba(118,70,30,.42)");
+      [[105,105],[795,105],[105,795],[795,795]].forEach(([x,y])=>{ctx.beginPath();ctx.arc(x,y,5,0,Math.PI*2);ctx.fillStyle="#d9b36d";ctx.fill();ctx.strokeStyle="#6a421f";ctx.lineWidth=1.5;ctx.stroke();});
+    }else if(model==="royal"||model==="gold-royal"){
+      rail(18,14,dark);rail(31,5,gold);rail(44,2,"rgba(255,247,202,.8)");rail(76,6,gold,.75);
+      [[72,72,0],[828,72,Math.PI/2],[828,828,Math.PI],[72,828,-Math.PI/2]].forEach(([x,y,r])=>{ctx.save();ctx.translate(x,y);ctx.rotate(r);ctx.fillStyle=gold;ctx.beginPath();ctx.moveTo(-18,13);ctx.lineTo(0,-22);ctx.lineTo(18,13);ctx.lineTo(8,8);ctx.lineTo(0,18);ctx.lineTo(-8,8);ctx.closePath();ctx.fill();ctx.restore();});
+    }else if(model==="walnut"||model==="rosewood"){
+      rail(22,17,dark);rail(43,4,light,.7);rail(69,7,model==="rosewood"?"#8f3b2b":"#5a321e",.8);
+      ctx.strokeStyle="rgba(255,221,176,.35)";ctx.lineWidth=2;for(let i=0;i<4;i++){ctx.beginPath();ctx.arc(450,450,365-i*9,0,Math.PI*2);ctx.stroke();}
+    }else if(model==="wide-oak"){
+      rail(18,27,light);rail(49,8,dark);rail(78,5,"rgba(99,70,38,.55)");
+      for(let p=120;p<=780;p+=110){[[p,34],[p,866],[34,p],[866,p]].forEach(([x,y])=>{ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fillStyle="#5d6470";ctx.fill();ctx.strokeStyle="#d4d8dd";ctx.lineWidth=1;ctx.stroke();});}
+    }else if(model==="arabic"||model==="islamic"||model==="andalusian"){
+      rail(20,15,dark);rail(40,4,gold,.8);rail(73,8,"rgba(72,39,18,.55)");
+      for(let p=120;p<820;p+=70){drawEightPointTile(p,48,10,style);drawEightPointTile(p,852,10,style);drawEightPointTile(48,p,10,style);drawEightPointTile(852,p,10,style);}
+    }else if(model==="japanese"){
+      rail(23,12,light);rail(42,2,"#a95b68",.65);rail(75,3,"rgba(91,64,50,.4)");
+      [[145,48],[755,48],[145,852],[755,852]].forEach(([x,y],idx)=>{ctx.fillStyle=idx%2?"rgba(244,150,171,.72)":"rgba(255,208,220,.78)";for(let k=0;k<5;k++){ctx.save();ctx.translate(x,y);ctx.rotate(k*Math.PI*2/5);ctx.beginPath();ctx.ellipse(0,-8,4,9,0,0,Math.PI*2);ctx.fill();ctx.restore();}});
+    }else if(model==="mandala"){
+      rail(18,15,dark);rail(40,5,"#e9a23b");for(let p=90;p<=810;p+=72){ctx.fillStyle=["#d9465f","#2563eb","#f59e0b","#16a34a"][Math.floor(p/72)%4];ctx.beginPath();ctx.arc(p,48,8,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(p,852,8,0,Math.PI*2);ctx.fill();}
+    }else if(model==="pharaonic"){
+      rail(18,16,dark);rail(39,5,gold);rail(73,4,"#8b5b10");
+      [[450,38,0],[862,450,Math.PI/2],[450,862,Math.PI],[38,450,-Math.PI/2]].forEach(([x,y,r])=>{ctx.save();ctx.translate(x,y);ctx.rotate(r);ctx.fillStyle=gold;ctx.beginPath();ctx.moveTo(-42,10);ctx.lineTo(-28,-10);ctx.lineTo(28,-10);ctx.lineTo(42,10);ctx.closePath();ctx.fill();ctx.fillStyle=dark;ctx.fillRect(-20,-5,40,10);ctx.restore();});
+    }else if(model==="zellige"){
+      rail(18,14,dark);for(let i=0;i<28;i++){const c=["#386b69","#d79a3c","#7b3e2d","#e5d2a5"][i%4];ctx.fillStyle=c;ctx.save();ctx.translate(38+i*30,39);ctx.rotate(Math.PI/4);ctx.fillRect(-8,-8,16,16);ctx.restore();ctx.save();ctx.translate(38+i*30,861);ctx.rotate(Math.PI/4);ctx.fillRect(-8,-8,16,16);ctx.restore();}
+    }else if(model==="marble"){
+      rail(18,17,dark);rail(43,5,"#d8d5cf");rail(74,3,"rgba(94,79,70,.55)");
+      ctx.strokeStyle="rgba(102,95,92,.34)";ctx.lineWidth=3;for(let i=0;i<12;i++){ctx.beginPath();ctx.moveTo(70+i*66,62);ctx.bezierCurveTo(130+i*52,210,40+i*73,500,130+i*59,840);ctx.stroke();}
+    }else if(model==="black"){
+      rail(15,24,"#050505");rail(43,4,gold);rail(73,5,"#111");
+    }else if(model==="carbon"){
+      rail(15,22,"#10161c");rail(43,5,"#77828b");rail(74,4,"#263d47");
+      ctx.globalAlpha=.42;for(let x=10;x<890;x+=18){ctx.strokeStyle=x%36?"#3d4a53":"#161e24";ctx.lineWidth=7;ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x+130,130);ctx.stroke();ctx.beginPath();ctx.moveTo(x,900);ctx.lineTo(x+130,770);ctx.stroke();}ctx.globalAlpha=1;
+      [[56,56],[844,56],[56,844],[844,844]].forEach(([x,y])=>{ctx.fillStyle="#7f8a92";ctx.fillRect(x-18,y-18,36,36);ctx.strokeStyle="#d6dde2";ctx.lineWidth=2;ctx.strokeRect(x-18,y-18,36,36);});
+    }else if(model==="crystal"){
+      ctx.save();ctx.shadowColor="#7dd3fc";ctx.shadowBlur=20;rail(18,18,"rgba(160,226,255,.5)");rail(42,5,"rgba(255,255,255,.75)");rail(72,4,"rgba(65,136,169,.7)");ctx.restore();
+    }else if(model==="forest"){
+      rail(18,18,dark);rail(43,4,"#728a4e");rail(74,5,"#3d5b31");
+      ctx.strokeStyle="rgba(90,125,72,.75)";ctx.lineWidth=3;for(let p=110;p<810;p+=75){ctx.beginPath();ctx.moveTo(p,38);ctx.quadraticCurveTo(p+12,55,p,72);ctx.stroke();ctx.beginPath();ctx.ellipse(p+10,52,5,12,.7,0,Math.PI*2);ctx.fillStyle="rgba(106,140,73,.58)";ctx.fill();}
+    }else if(model==="galaxy"){
+      ctx.save();ctx.shadowColor="#8b7cf6";ctx.shadowBlur=23;rail(15,20,"#080916");rail(41,5,"#8b7cf6");rail(73,3,"rgba(169,151,255,.7)");ctx.restore();for(let i=0;i<55;i++){const a=i*2.399,x=450+Math.cos(a)*(380+(i%4)*7),y=450+Math.sin(a)*(380+(i%4)*7);ctx.beginPath();ctx.arc(x,y,i%7===0?2.2:1,0,Math.PI*2);ctx.fillStyle=i%5===0?"#c4b5fd":"#fff";ctx.fill();}
+    }else if(model==="legendary"){
+      ctx.save();ctx.shadowColor="#f5cf59";ctx.shadowBlur=18;rail(11,28,"#2a0704");rail(37,7,gold);rail(51,2,"#fff2a8");rail(73,8,"#5b170f");ctx.restore();
+      for(const p of pocketCenters){ctx.beginPath();ctx.arc(p.x,p.y,POCKET_RADIUS+16,0,Math.PI*2);ctx.strokeStyle="#050505";ctx.lineWidth=13;ctx.stroke();ctx.beginPath();ctx.arc(p.x,p.y,POCKET_RADIUS+24,0,Math.PI*2);ctx.strokeStyle=gold;ctx.lineWidth=4;ctx.stroke();}
+    }
+    ctx.restore();
+  }
+
   function renderStaticBoard(style) {
     ctx.clearRect(0,0,BOARD_SIZE,BOARD_SIZE);
     const frame=ctx.createLinearGradient(0,0,900,900);
@@ -3624,6 +3743,7 @@
     ctx.save();const overheadLight=ctx.createRadialGradient(430,120,30,450,330,650);overheadLight.addColorStop(0,"rgba(255,250,232,.16)");overheadLight.addColorStop(.42,"rgba(255,246,220,.055)");overheadLight.addColorStop(1,"rgba(255,255,255,0)");ctx.fillStyle=overheadLight;ctx.fillRect(52,52,796,796);ctx.restore();
     drawThemeSpecial(style);
     drawEngravedTheme(style);
+    drawFullBoardConstruction(style, boardById(currentTheme));
     for(const p of pocketCenters){const g=ctx.createRadialGradient(p.x-8,p.y-8,4,p.x,p.y,POCKET_RADIUS);g.addColorStop(0,"#342116");g.addColorStop(.6,style.pocket||"#1c120c");g.addColorStop(1,"#020202");ctx.beginPath();ctx.arc(p.x,p.y,POCKET_RADIUS,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();ctx.beginPath();ctx.arc(p.x,p.y,POCKET_RADIUS+12,0,Math.PI*2);ctx.strokeStyle=style.gold||"rgba(99,56,28,.58)";ctx.globalAlpha=.55;ctx.lineWidth=8;ctx.stroke();ctx.globalAlpha=1;}
     ctx.strokeStyle=style.line||"#8d3823";ctx.lineWidth=3.5;ctx.beginPath();ctx.arc(450,450,116,0,Math.PI*2);ctx.stroke();ctx.beginPath();ctx.arc(450,450,48,0,Math.PI*2);ctx.stroke();
     const lines=[[250,BASELINE_NEAR,650,BASELINE_NEAR],[250,BASELINE_FAR,650,BASELINE_FAR],[BASELINE_NEAR,250,BASELINE_NEAR,650],[BASELINE_FAR,250,BASELINE_FAR,650]];for(const l of lines){ctx.beginPath();ctx.moveTo(l[0],l[1]);ctx.lineTo(l[2],l[3]);ctx.stroke();}
@@ -4711,7 +4831,7 @@ function hudAvatarMarkup(index) {
     if(soundEnabled)sound("ui");
   });
   toggleVoiceEl?.addEventListener("click",toggleOppositeVoice);
-  if (themeEl) themeEl.addEventListener("change",()=>{currentTheme=themeEl.value;localStorage.setItem("carrom-board-theme", currentTheme);drawBoard();});
+  if (themeEl) themeEl.addEventListener("change",()=>{const next=themeEl.value;if(profile.ownedBoards.includes(next)){currentTheme=next;profile.equippedBoard=next;localStorage.setItem("carrom-board-theme",currentTheme);staticBoardCacheKey="";saveProfile();drawBoard();}});
   replayShotEl.addEventListener("click",()=>startReplay());
   document.getElementById("showAchievements").addEventListener("click", showAchievementsModal);
   document.getElementById("showAchievementsMenu").addEventListener("click", showAchievementsModal);
@@ -4726,9 +4846,14 @@ function hudAvatarMarkup(index) {
   document.getElementById("tournamentMode").addEventListener("click", showTournamentHub);
   document.getElementById("closeModal").addEventListener("click", closeInfoModal);
   modalBodyEl.addEventListener("click", event => {
+    const shopSection = event.target.closest("[data-shop-section]");
     const category = event.target.closest("[data-shop-category]");
+    const boardCategory = event.target.closest("[data-board-category]");
     const buy = event.target.closest("[data-buy-skin]");
     const equip = event.target.closest("[data-equip-skin]");
+    const buyBoardButton = event.target.closest("[data-buy-board]");
+    const equipBoardButton = event.target.closest("[data-equip-board]");
+    const openBoardShop = event.target.closest("[data-open-board-shop]");
     const daily = event.target.closest("[data-claim-daily]");
     const createRoom = event.target.closest("[data-create-room]");
     const joinRoom = event.target.closest("[data-join-room]");
@@ -4755,9 +4880,14 @@ function hudAvatarMarkup(index) {
     const joinFoundRoom = event.target.closest("[data-join-found-room]");
     const resultBack = event.target.closest("[data-result-back]");
     const enableMessageNotifications = event.target.closest("[data-enable-message-notifications]");
-    if (category) { activeShopCategory = category.dataset.shopCategory; renderShopContent(); startShopPreviewAnimation(); }
+    if (shopSection) { activeShopSection=shopSection.dataset.shopSection; renderShopContent(); startShopPreviewAnimation(); }
+    else if (category) { activeShopCategory = category.dataset.shopCategory; renderShopContent(); startShopPreviewAnimation(); }
+    else if (boardCategory) { activeBoardCategory=boardCategory.dataset.boardCategory; renderShopContent(); startShopPreviewAnimation(); }
     else if (buy) buySkin(buy.dataset.buySkin);
     else if (equip) equipSkin(equip.dataset.equipSkin);
+    else if (buyBoardButton) buyBoard(buyBoardButton.dataset.buyBoard);
+    else if (equipBoardButton) equipBoard(equipBoardButton.dataset.equipBoard);
+    else if (openBoardShop) { activeShopSection="boards"; closeInfoModal(); showShop(); }
     else if (daily) claimDailyReward();
     else if (createRoom) createOnlineRoom(createRoom.dataset.roomType || "friends", document.getElementById("roomCapacity")?.value, document.getElementById("roomNameInput")?.value);
     else if (joinRoom) joinOnlineRoom(joinRoom.dataset.roomType || "friends", document.getElementById("joinRoomCode")?.value);
@@ -4837,108 +4967,30 @@ function hudAvatarMarkup(index) {
 <script>
 (() => {
   "use strict";
-  const installButtons = [document.getElementById("installAppMenu"), document.getElementById("installAppGame")].filter(Boolean);
+  const androidButton = document.getElementById("installAndroidMenu");
+  const iosButton = document.getElementById("installIosMenu");
+  const gameInstallButton = document.getElementById("installAppGame");
   let deferredInstallPrompt = null;
   const isStandalone = () => window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
   const isAndroid = /Android/i.test(navigator.userAgent);
+  const isIOS = /iPad|iPhone|iPod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const isSafari = /Safari/i.test(navigator.userAgent) && !/(CriOS|FxiOS|EdgiOS|OPiOS|Chrome|Chromium)/i.test(navigator.userAgent);
 
-  function setInstallState(state) {
-    installButtons.forEach(button => {
-      const label = button.querySelector(".install-label");
-      button.classList.remove("ready", "installed");
-      button.disabled = false;
-      if (state === "installed") {
-        button.classList.add("installed");
-        button.disabled = true;
-        if (label) label.textContent = "اللعبة مثبتة";
-      } else if (state === "ready") {
-        button.classList.add("ready");
-        if (label) label.textContent = "تثبيت على أندرويد";
-      } else {
-        if (label) label.textContent = isAndroid ? "تثبيت على أندرويد" : "تثبيت التطبيق";
-      }
-    });
+  function setInstalledState(){
+    [androidButton,iosButton,gameInstallButton].filter(Boolean).forEach(button=>{button.classList.add("installed");button.disabled=true;const label=button.querySelector(".install-label");if(label)label.textContent="اللعبة مثبتة";});
   }
-
-  function showInstallHelp() {
-    const modal = document.getElementById("infoModal");
-    const title = document.getElementById("modalTitle");
-    const body = document.getElementById("modalBody");
-    if (!modal || !title || !body) return;
-    title.textContent = "تثبيت اللعبة على أندرويد";
-    body.innerHTML = `
-      <div class="notice" style="line-height:1.9">
-        <strong>الطريقة المباشرة:</strong><br>
-        افتح اللعبة في Google Chrome، ثم اضغط زر <b>تثبيت على أندرويد</b> مرة أخرى عندما يصبح جاهزًا.<br><br>
-        <strong>الطريقة اليدوية:</strong><br>
-        1. اضغط قائمة Chrome ذات النقاط الثلاث ⋮.<br>
-        2. اختر <b>تثبيت التطبيق</b> أو <b>إضافة إلى الشاشة الرئيسية</b>.<br>
-        3. اضغط <b>تثبيت</b>.<br><br>
-        قد يحتاج Chrome إلى إعادة تحميل الصفحة مرة واحدة بعد نشر ملفات التطبيق الجديدة.
-      </div>`;
-    modal.classList.remove("hidden");
-  }
-
-  function toast(message) {
-    let node = document.getElementById("pwaToast");
-    if (!node) {
-      node = document.createElement("div");
-      node.id = "pwaToast";
-      node.className = "pwa-toast";
-      document.body.appendChild(node);
-    }
-    node.textContent = message;
-    node.classList.add("show");
-    clearTimeout(node._timer);
-    node._timer = setTimeout(() => node.classList.remove("show"), 3200);
-  }
-
-  async function requestInstall() {
-    if (isStandalone()) {
-      setInstallState("installed");
-      toast("اللعبة مثبتة بالفعل على جهازك");
-      return;
-    }
-    if (!deferredInstallPrompt) {
-      showInstallHelp();
-      return;
-    }
-    const promptEvent = deferredInstallPrompt;
-    deferredInstallPrompt = null;
-    await promptEvent.prompt();
-    const result = await promptEvent.userChoice;
-    if (result && result.outcome === "accepted") toast("تم قبول تثبيت اللعبة");
-    else toast("يمكنك تثبيت اللعبة لاحقًا من الزر نفسه");
-    setInstallState("idle");
-  }
-
-  installButtons.forEach(button => button.addEventListener("click", requestInstall));
-
-  window.addEventListener("beforeinstallprompt", event => {
-    event.preventDefault();
-    deferredInstallPrompt = event;
-    setInstallState("ready");
-  });
-
-  window.addEventListener("appinstalled", () => {
-    deferredInstallPrompt = null;
-    setInstallState("installed");
-    toast("تم تثبيت لعبة الكيرم بنجاح");
-  });
-
-  if (isStandalone()) setInstallState("installed");
-  else setInstallState("idle");
-
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", async () => {
-      try {
-        const registration = await navigator.serviceWorker.register("./sw.js", { scope: "./" });
-        registration.update().catch(() => {});
-      } catch (error) {
-        console.warn("تعذر تسجيل Service Worker", error);
-      }
-    });
-  }
+  function setAndroidReady(ready){if(!androidButton||isStandalone())return;androidButton.classList.toggle("ready",ready);const label=androidButton.querySelector(".install-label");if(label)label.textContent=ready?"تثبيت الآن على أندرويد":"تثبيت على أندرويد";}
+  function openInstallModal(titleText,html){const modal=document.getElementById("infoModal"),title=document.getElementById("modalTitle"),body=document.getElementById("modalBody");if(!modal||!title||!body)return;title.textContent=titleText;body.innerHTML=html;modal.classList.remove("hidden");}
+  function androidHelp(){openInstallModal("تثبيت اللعبة على أندرويد",`<div class="notice" style="line-height:1.9"><strong>باستخدام Chrome:</strong><br>1. افتح اللعبة من Chrome على الهاتف.<br>2. اضغط زر تثبيت أندرويد مرة أخرى عند توفر نافذة التثبيت.<br>3. أو افتح قائمة ⋮ واختر <b>تثبيت التطبيق</b> أو <b>إضافة إلى الشاشة الرئيسية</b>.</div>`);}
+  function iosHelp(){openInstallModal("تثبيت اللعبة على آيفون",`<div class="notice" style="line-height:1.8"><strong>${isIOS&&!isSafari?"افتح هذا الرابط أولًا في Safari.":"اتبع الخطوات من Safari:"}</strong></div><div class="ios-steps"><div class="ios-step"><b>1</b><span>افتح اللعبة في <strong>Safari</strong>.</span></div><div class="ios-step"><b>2</b><span>اضغط زر <strong>المشاركة</strong> ⎋ في شريط Safari.</span></div><div class="ios-step"><b>3</b><span>اختر <strong>إضافة إلى الشاشة الرئيسية</strong>.</span></div><div class="ios-step"><b>4</b><span>فعّل <strong>فتح كتطبيق ويب</strong> ثم اضغط <strong>إضافة</strong>.</span></div></div>`);}
+  function toast(message){let node=document.getElementById("pwaToast");if(!node){node=document.createElement("div");node.id="pwaToast";node.className="pwa-toast";document.body.appendChild(node);}node.textContent=message;node.classList.add("show");clearTimeout(node._timer);node._timer=setTimeout(()=>node.classList.remove("show"),3200);}
+  async function installAndroid(){if(isStandalone()){setInstalledState();toast("اللعبة مثبتة بالفعل");return;}if(!deferredInstallPrompt){androidHelp();return;}const event=deferredInstallPrompt;deferredInstallPrompt=null;await event.prompt();const choice=await event.userChoice;if(choice?.outcome==="accepted")toast("تم قبول تثبيت اللعبة على أندرويد");else toast("يمكنك التثبيت لاحقًا");setAndroidReady(false);}
+  function installIOS(){if(isStandalone()){setInstalledState();toast("اللعبة مثبتة بالفعل");return;}iosHelp();}
+  androidButton?.addEventListener("click",installAndroid);iosButton?.addEventListener("click",installIOS);gameInstallButton?.addEventListener("click",isIOS?installIOS:installAndroid);
+  window.addEventListener("beforeinstallprompt",event=>{event.preventDefault();deferredInstallPrompt=event;setAndroidReady(true);});
+  window.addEventListener("appinstalled",()=>{deferredInstallPrompt=null;setInstalledState();toast("تم تثبيت لعبة الكيرم بنجاح");});
+  if(isStandalone())setInstalledState();else setAndroidReady(Boolean(deferredInstallPrompt));
+  if("serviceWorker" in navigator){window.addEventListener("load",async()=>{try{const registration=await navigator.serviceWorker.register("./sw.js",{scope:"./"});registration.update().catch(()=>{});}catch(error){console.warn("تعذر تسجيل Service Worker",error);}});}
 })();
 </script>
 

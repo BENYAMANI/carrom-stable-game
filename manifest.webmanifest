@@ -1,11 +1,11 @@
 {
   "id": "./",
-  "name": "كيرم محمد عبدالله الجابري v21",
-  "short_name": "كيرم v21",
-  "description": "لعبة كيرم عربية بواجهة مباراة احترافية و20 لوحًا فاخرًا.",
+  "name": "كيرم محمد عبدالله الجابري v22",
+  "short_name": "كيرم v22",
+  "description": "لعبة كيرم عربية بمتجر ألواح خشبية كاملة وتثبيت على أندرويد وآيفون.",
   "lang": "ar",
   "dir": "rtl",
-  "start_url": "./?source=pwa&v=20",
+  "start_url": "./?source=pwa&v=22",
   "scope": "./",
   "display": "standalone",
   "display_override": [
