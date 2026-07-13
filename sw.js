@@ -1,4 +1,4 @@
-const CACHE_NAME = "carrom-v19-message-voice";
+const CACHE_NAME = "carrom-v20-mobile-game-ui";
 const APP_SHELL = [
   "./",
   "./index.html",

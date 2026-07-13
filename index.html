@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#0f172a" />
-  <title>كيرم محمد عبدالله الجابري</title>
+  <title>كيرم محمد عبدالله الجابري — v20</title>
   <meta name="description" content="لعبة كيرم عربية أون لاين بملفات شخصية وصداقات ودردشة خاصة وغرف أون لاين ومهام يومية." />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -615,6 +615,104 @@
     body.game-active.online-voice-ready .voice-note{display:block}
     @media(max-width:900px){.message-toast-v19{top:8px;padding:9px 12px;font-size:11px}.voice-note{font-size:8px;padding:4px}}
 
+
+
+    /* ===== v20: simplified match HUD, exponential XP, and mobile-width board ===== */
+    .match-extra-hidden,
+    #slowBadge { display:none!important; }
+    .menu-note-only { grid-template-columns:1fr!important; }
+    .menu-note-only .compact-note { justify-content:center; text-align:center; }
+    .game-essential-stats { grid-template-columns:repeat(2,minmax(0,1fr))!important; }
+    .profile-stats-v20 { grid-template-columns:repeat(5,minmax(0,1fr)); }
+    .exit-match-control { border-color:rgba(248,113,113,.65)!important; background:rgba(127,29,29,.34)!important; }
+    .exit-match-control:hover { border-color:#fb7185!important; background:rgba(159,18,57,.45)!important; }
+
+    @media (max-width:900px) {
+      html,body { min-height:100%; overflow-x:hidden; }
+      body.game-active { overflow-y:auto!important; overscroll-behavior-y:auto; }
+      body.game-active .app {
+        width:100%!important;
+        height:auto!important;
+        min-height:100dvh!important;
+        padding:0!important;
+        display:block!important;
+      }
+      body.game-active #game {
+        width:100%!important;
+        height:auto!important;
+        min-height:100dvh!important;
+        overflow:visible!important;
+        display:flex!important;
+        flex-direction:column!important;
+        gap:4px!important;
+      }
+      body.game-active .hud {
+        width:100%;
+        padding:4px;
+        margin:0!important;
+        grid-template-columns:repeat(2,minmax(0,1fr))!important;
+      }
+      body.game-active .game-wrap {
+        width:100%!important;
+        height:auto!important;
+        min-height:0!important;
+        display:flex!important;
+        flex-direction:column!important;
+        gap:0!important;
+        overflow:visible!important;
+      }
+      body.game-active .camera-frame {
+        order:1;
+        width:100vw!important;
+        max-width:100vw!important;
+        height:auto!important;
+        min-height:0!important;
+        aspect-ratio:1/1!important;
+        margin:0 calc(50% - 50vw)!important;
+        border-radius:0!important;
+        box-shadow:none!important;
+      }
+      body.game-active #board {
+        width:100%!important;
+        height:auto!important;
+        aspect-ratio:1/1!important;
+        border-radius:0!important;
+        object-fit:contain!important;
+      }
+      body.game-active .controls {
+        order:2;
+        width:100%!important;
+        height:auto!important;
+        min-height:0!important;
+        max-height:none!important;
+        overflow:visible!important;
+        position:static!important;
+        padding:8px!important;
+        border-radius:0 0 16px 16px!important;
+        display:flex!important;
+        flex-direction:column!important;
+        gap:7px!important;
+      }
+      body.game-active .position-control { order:1; margin:0!important; }
+      body.game-active .actions.icon-actions {
+        order:2;
+        display:grid!important;
+        grid-template-columns:repeat(4,minmax(0,1fr))!important;
+        gap:6px!important;
+      }
+      body.game-active .actions.icon-actions .icon-control:not(.match-extra-hidden) {
+        display:flex!important;
+        min-height:52px!important;
+        padding:5px 2px!important;
+      }
+      body.game-active .game-essential-stats { order:3; margin:0!important; }
+      body.game-active #countdown { order:4; }
+      body.game-active #status { order:5; max-height:none!important; min-height:34px!important; }
+      body.game-active #voiceNote { order:6; }
+      body.game-active .compact-help { display:none!important; }
+      .profile-stats-v20 { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    }
+
 </style>
 </head>
 <body>
@@ -622,7 +720,7 @@
     <header>
       <p class="eyebrow">لعبة كيرم مستقرة — ملف واحد فقط</p>
       <h1>كيرم محمد عبدالله الجابري</h1>
-      <p>فيزياء محسنة، رسائل خاصة فورية، إشعارات وكتابة مباشرة، وصوت خاص مع اللاعب المقابل داخل المباراة.</p>
+      <p>فيزياء محسنة، واجهة لعب مبسطة، لوحة متجاوبة مع عرض الجوال، مستويات XP متدرجة، وصوت خاص مع اللاعب المقابل.</p>
     </header>
 
     <section id="menu" class="menu panel menu-dashboard">
@@ -669,15 +767,8 @@
       </div>
 
       <div id="dailyTasksMenu" class="daily-tasks-card"></div>
-      <div class="menu-bottom-row">
-        <div class="profile-strip compact-profile">
-          <div class="profile-chip">الرتبة<strong id="menuRank">برونزي</strong></div>
-          <div class="profile-chip">XP<strong id="menuXp">0</strong></div>
-          <div class="profile-chip">الكؤوس<strong id="menuTrophies">0</strong></div>
-          <div class="profile-chip">العملات<strong id="menuCoins">0</strong></div>
-          <div class="profile-chip">المستوى<strong id="menuLevel">1</strong></div>
-        </div>
-        <div class="notice compact-note">يمكنك إنشاء غرفة باسم واضح، مشاركة رمزها، أو البحث عنها بالاسم. حالة الاتصال الخضراء تظهر للأصدقاء المتصلين.</div>
+      <div class="menu-bottom-row menu-note-only">
+        <div class="notice compact-note">بيانات الرتبة وXP والكؤوس والعملات والمستوى موجودة داخل الملف الشخصي.</div>
       </div>
     </section>
 
@@ -686,7 +777,7 @@
       <div class="game-wrap">
         <div id="cameraFrame" class="camera-frame">
           <canvas id="board" width="900" height="900" aria-label="لوح لعبة الكيرم"></canvas>
-          <div id="slowBadge" class="slow-badge hidden">إعادة بطيئة</div>
+          <div id="slowBadge" class="slow-badge hidden" aria-hidden="true">إعادة بطيئة</div>
         </div>
         <aside class="controls panel" aria-label="لوحة التحكم">
           <div class="field position-control">
@@ -694,11 +785,9 @@
             <input id="strikerPosition" type="range" min="0" max="100" value="50" />
           </div>
 
-          <div class="stats compact-stats">
+          <div class="stats compact-stats game-essential-stats">
             <div class="stat">القطع<strong id="remaining">19</strong></div>
             <div class="stat">الوقت<strong id="timer">جاهز</strong></div>
-            <div class="stat">الرتبة<strong id="rankLabel">برونزي</strong></div>
-            <div class="stat">XP<strong id="xpLabel">0</strong></div>
           </div>
 
           <div id="countdown" class="countdown hidden">7</div>
@@ -708,12 +797,13 @@
             <button id="toggleAim" class="icon-control" type="button" title="إظهار أو إخفاء خط التصويب"><span class="control-icon" aria-hidden="true">🎯</span><span class="control-text">خط التصويب</span></button>
             <button id="toggleSound" class="icon-control" type="button" title="تشغيل أو كتم الصوت"><span class="control-icon" aria-hidden="true">🔊</span><span class="control-text">الصوت</span></button>
             <button id="toggleVoice" class="icon-control voice-control" type="button" disabled title="تحدث فقط مع اللاعب المقابل"><span class="control-icon" aria-hidden="true">🎙️</span><span class="control-text">مايك المقابل</span></button>
-            <button id="replayShot" class="icon-control" type="button" disabled title="إعادة آخر تسديدة ببطء"><span class="control-icon" aria-hidden="true">⏪</span><span class="control-text">إعادة بطيئة</span></button>
-            <button id="showAchievements" class="icon-control" type="button" title="عرض التصنيف والإنجازات"><span class="control-icon" aria-hidden="true">🏆</span><span class="control-text">الإنجازات</span></button>
-            <button id="openShopGame" class="icon-control" type="button" title="فتح متجر المضارب"><span class="control-icon" aria-hidden="true">🛍️</span><span class="control-text">المتجر</span></button>
-            <button id="restart" class="icon-control" type="button" title="بدء المباراة من جديد"><span class="control-icon" aria-hidden="true">🔄</span><span class="control-text">إعادة المباراة</span></button>
-            <button id="back" class="icon-control" type="button" title="العودة إلى الشاشة الرئيسية"><span class="control-icon" aria-hidden="true">⌂</span><span class="control-text">الرئيسية</span></button>
-            <button id="installAppGame" class="icon-control install-control" type="button" title="تثبيت اللعبة كتطبيق"><span class="control-icon" aria-hidden="true">⬇️</span><span class="control-text install-label">تثبيت التطبيق</span></button>
+            <button id="back" class="icon-control exit-match-control" type="button" title="الخروج من المباراة"><span class="control-icon" aria-hidden="true">🚪</span><span class="control-text">الخروج من المباراة</span></button>
+            <button id="replayShot" class="icon-control match-extra-hidden" type="button" disabled title="إعادة آخر تسديدة ببطء"><span class="control-icon" aria-hidden="true">⏪</span><span class="control-text">إعادة بطيئة</span></button>
+            <button id="showAchievements" class="icon-control match-extra-hidden" type="button" title="عرض التصنيف والإنجازات"><span class="control-icon" aria-hidden="true">🏆</span><span class="control-text">الإنجازات</span></button>
+            <button id="openShopGame" class="icon-control match-extra-hidden" type="button" title="فتح متجر المضارب"><span class="control-icon" aria-hidden="true">🛍️</span><span class="control-text">المتجر</span></button>
+            <button id="restart" class="icon-control match-extra-hidden" type="button" title="بدء المباراة من جديد"><span class="control-icon" aria-hidden="true">🔄</span><span class="control-text">إعادة المباراة</span></button>
+            
+            <button id="installAppGame" class="icon-control install-control match-extra-hidden" type="button" title="تثبيت اللعبة كتطبيق"><span class="control-icon" aria-hidden="true">⬇️</span><span class="control-text install-label">تثبيت التطبيق</span></button>
           </div>
           <div id="voiceNote" class="voice-note">الصوت خاص بينك وبين اللاعب المقابل فقط. اللاعبان المجاوران لا يسمعان المحادثة.</div>
           <div class="help compact-help">حرّك المضرب بالشريط، ثم اضغط عليه واسحب للخلف باتجاه معاكس للضربة واتركه.</div>
@@ -752,7 +842,7 @@
   const BASELINE_FAR = BOARD_SIZE - 145;
   const SHOT_SECONDS = 7;
   const TURN_SECONDS = 10;
-  const XP_PER_LEVEL = 250;
+  const BASE_LEVEL_XP = 100;
   const NAME_CHANGE_COST = 100;
   const FIRST_DAY_MS = 24 * 60 * 60 * 1000;
   const FIXED_DT = 1 / 120;
@@ -943,7 +1033,18 @@
   }
 
   function levelFromXp(xp) {
-    return Math.max(1, Math.floor(Math.max(0, Number(xp) || 0) / XP_PER_LEVEL) + 1);
+    const safeXp = Math.max(0, Number(xp) || 0);
+    return Math.max(0, Math.floor(Math.log2((safeXp / BASE_LEVEL_XP) + 1)));
+  }
+
+  function levelStartXp(level) {
+    const safeLevel = Math.max(0, Math.min(40, Number(level) || 0));
+    return safeLevel === 0 ? 0 : BASE_LEVEL_XP * (Math.pow(2, safeLevel) - 1);
+  }
+
+  function xpNeededForNextLevel(level) {
+    const safeLevel = Math.max(0, Math.min(40, Number(level) || 0));
+    return BASE_LEVEL_XP * Math.pow(2, safeLevel);
   }
 
   function loadProfile() {
@@ -953,7 +1054,7 @@
       xp: 0, coins: 0, trophies: 0, shots: 0, pockets: 0, queens: 0, wins: 0,
       achievements: [], ownedStrikers: ["classic"], equippedStriker: "classic", lastDailyReward: "",
       displayName: legacyName || "لاعب جديد", playerId: generatePlayerId(), avatarDataUrl: "", avatarUrl: "",
-      createdAt: now, freeNameChangeUsed: false, level: 1, lastRewardedLevel: 1
+      createdAt: now, freeNameChangeUsed: false, level: 0, lastRewardedLevel: 0, levelModelVersion: 2
     };
     try {
       const loaded = { ...fallback, ...JSON.parse(localStorage.getItem("carrom-pro-profile") || "{}") };
@@ -967,8 +1068,12 @@
       if (!/^(?=(?:.*[A-Z]){8})(?=(?:.*\d){5})[A-Z0-9]{13}$/.test(String(loaded.playerId || ""))) loaded.playerId = generatePlayerId();
       if (!loaded.createdAt) loaded.createdAt = now;
       loaded.level = levelFromXp(loaded.xp);
+      if (Number(loaded.levelModelVersion) !== 2) {
+        loaded.lastRewardedLevel = loaded.level;
+        loaded.levelModelVersion = 2;
+      }
       if (!Number.isFinite(Number(loaded.lastRewardedLevel))) loaded.lastRewardedLevel = loaded.level;
-      loaded.lastRewardedLevel = Math.max(1, Number(loaded.lastRewardedLevel) || loaded.level);
+      loaded.lastRewardedLevel = Math.max(0, Number(loaded.lastRewardedLevel) || 0);
       return loaded;
     } catch (_) { return fallback; }
   }
@@ -1317,7 +1422,7 @@
           ? '<button class="btn primary" data-open-friend-center>لديك طلب وارد</button>'
           : `<button class="btn primary" data-send-friend="${person.user_id}">طلب صداقة</button>`;
     modalTitleEl.textContent = "ملف اللاعب";
-    modalBodyEl.innerHTML = `<div class="profile-layout"><section class="profile-hero"><div class="profile-avatar-wrap">${person.avatar_url?`<img class="profile-avatar" src="${escapeHtml(person.avatar_url)}" alt="الصورة الشخصية">`:`<div class="profile-avatar">${escapeHtml(initials(person.display_name))}</div>`}</div><div><h3 class="profile-name">${escapeHtml(person.display_name)}</h3><button class="profile-id" type="button" data-copy-remote-id="${escapeHtml(person.player_id)}">${escapeHtml(person.player_id)} 📋</button><div style="margin-top:9px">${presenceMarkup(person.user_id)}</div><div class="profile-stats-grid"><div class="profile-stat"><small>المستوى</small><strong>${Number(person.level)||1}</strong></div><div class="profile-stat"><small>XP</small><strong>${Number(person.xp)||0}</strong></div><div class="profile-stat"><small>الكؤوس</small><strong>${Number(person.trophies)||0}</strong></div></div><div class="remote-profile-actions">${action}<button class="btn" data-open-friend-center>الطلبات والأصدقاء</button></div></div></section></div>`;
+    modalBodyEl.innerHTML = `<div class="profile-layout"><section class="profile-hero"><div class="profile-avatar-wrap">${person.avatar_url?`<img class="profile-avatar" src="${escapeHtml(person.avatar_url)}" alt="الصورة الشخصية">`:`<div class="profile-avatar">${escapeHtml(initials(person.display_name))}</div>`}</div><div><h3 class="profile-name">${escapeHtml(person.display_name)}</h3><button class="profile-id" type="button" data-copy-remote-id="${escapeHtml(person.player_id)}">${escapeHtml(person.player_id)} 📋</button><div style="margin-top:9px">${presenceMarkup(person.user_id)}</div><div class="profile-stats-grid"><div class="profile-stat"><small>المستوى</small><strong>${Number.isFinite(Number(person.level)) ? Number(person.level) : 0}</strong></div><div class="profile-stat"><small>XP</small><strong>${Number(person.xp)||0}</strong></div><div class="profile-stat"><small>الكؤوس</small><strong>${Number(person.trophies)||0}</strong></div></div><div class="remote-profile-actions">${action}<button class="btn" data-open-friend-center>الطلبات والأصدقاء</button></div></div></section></div>`;
     infoModalEl.classList.remove("hidden");
   }
 
@@ -1422,7 +1527,7 @@
 
   function applyLevelReward() {
     const currentLevel = levelFromXp(profile.xp);
-    const previousRewarded = Math.max(1, Number(profile.lastRewardedLevel) || currentLevel);
+    const previousRewarded = Math.max(0, Number(profile.lastRewardedLevel) || 0);
     profile.level = currentLevel;
     if (currentLevel > previousRewarded) {
       const gainedLevels = currentLevel - previousRewarded;
@@ -1536,8 +1641,9 @@
 
   function renderPlayerProfile(message = "") {
     const level = levelFromXp(profile.xp);
-    const levelStart = (level - 1) * XP_PER_LEVEL;
-    const progress = Math.max(0, Math.min(100, ((profile.xp - levelStart) / XP_PER_LEVEL) * 100));
+    const levelStart = levelStartXp(level);
+    const levelRequirement = xpNeededForNextLevel(level);
+    const progress = Math.max(0, Math.min(100, ((profile.xp - levelStart) / levelRequirement) * 100));
     const freeChange = firstDayFreeNameChangeAvailable();
     const avatar = profileAvatarSource();
     modalTitleEl.textContent = "الملف الشخصي";
@@ -1552,14 +1658,15 @@
           <h3 class="profile-name">${escapeHtml(profile.displayName)}</h3>
           <button class="profile-id" type="button" data-copy-player-id title="نسخ اليوزر">${escapeHtml(profile.playerId)} 📋</button>
           <div style="margin-top:8px;display:flex;gap:7px;align-items:center;flex-wrap:wrap"><span class="cloud-badge ${cloudReady ? "" : "offline"}">${cloudReady ? "☁️" : "💾"} ${escapeHtml(cloudStatusText)}</span>${presenceMarkup(cloudUser?.id)}</div>
-          <div class="profile-stats-grid">
+          <div class="profile-stats-grid profile-stats-v20">
+            <div class="profile-stat"><small>الرتبة</small><strong>${rankName(profile.trophies)}</strong></div>
             <div class="profile-stat"><small>المستوى</small><strong>${level}</strong></div>
             <div class="profile-stat"><small>XP</small><strong>${profile.xp}</strong></div>
             <div class="profile-stat"><small>العملات</small><strong>${profile.coins}</strong></div>
             <div class="profile-stat"><small>الكؤوس</small><strong>${profile.trophies}</strong></div>
           </div>
           <div class="level-progress"><span style="width:${progress}%"></span></div>
-          <div class="profile-help">يتبقى ${Math.max(0, XP_PER_LEVEL - (profile.xp - levelStart))} XP للمستوى التالي. كل مستوى جديد يمنحك 50 عملة.</div>
+          <div class="profile-help">يتبقى ${Math.max(0, levelRequirement - (profile.xp - levelStart))} XP للمستوى التالي. متطلبات المستويات: 100 ثم 200 ثم 400 ثم 800 XP.</div>
         </div>
       </section>
       <section class="profile-section">
@@ -4308,7 +4415,7 @@ function renderHud() {
       if (!player) return `<div class="room-player"><div class="room-player-main"><span class="room-avatar">${slot+1}</span><div class="room-player-copy"><strong>المقعد ${slot+1}</strong><small>بانتظار لاعب</small></div></div><span>فارغ</span></div>`;
       const status = slot === onlineSession.localSlot ? "أنت" : slot === 0 ? "المضيف" : "متصل";
       const kick = onlineSession.isHost && slot !== 0 && !onlineSession.started ? `<button class="kick-player" data-kick-slot="${slot}">طرد</button>` : "";
-      return `<div class="room-player connected"><div class="room-player-main">${avatarMarkup(player)}<div class="room-player-copy"><strong>${escapeHtml(player.name)}</strong><small>${escapeHtml(player.playerId || "بدون يوزر")} · مستوى ${Number(player.level)||1}</small><small>${required===4?onlinePlayerTeam(slot):slot===0?"المضيف":"المنافس"} — ${["أسفل","يمين","أعلى","يسار"][slot] || "أعلى"}</small></div></div><div class="room-player-actions"><span>${status}</span>${kick}</div></div>`;
+      return `<div class="room-player connected"><div class="room-player-main">${avatarMarkup(player)}<div class="room-player-copy"><strong>${escapeHtml(player.name)}</strong><small>${escapeHtml(player.playerId || "بدون يوزر")} · مستوى ${Number.isFinite(Number(player.level)) ? Number(player.level) : 0}</small><small>${required===4?onlinePlayerTeam(slot):slot===0?"المضيف":"المنافس"} — ${["أسفل","يمين","أعلى","يسار"][slot] || "أعلى"}</small></div></div><div class="room-player-actions"><span>${status}</span>${kick}</div></div>`;
     }).join("");
     const canStart = onlineSession.isHost && connectedCount === required && !onlineSession.started;
     modalBodyEl.innerHTML = `<div class="tournament-hub">
