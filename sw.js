@@ -1,4 +1,4 @@
-const CACHE_NAME = "carrom-v16-profiles-rooms";
+const CACHE_NAME = "carrom-v17-social-online";
 const APP_SHELL = [
   "./",
   "./index.html",
