@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#0f172a" />
-  <title>كيرم محمد عبدالله الجابري — v20</title>
+  <title>كيرم محمد عبدالله الجابري — v21</title>
   <meta name="description" content="لعبة كيرم عربية أون لاين بملفات شخصية وصداقات ودردشة خاصة وغرف أون لاين ومهام يومية." />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -713,6 +713,20 @@
       .profile-stats-v20 { grid-template-columns:repeat(2,minmax(0,1fr)); }
     }
 
+
+    /* ===== v21: professional match HUD and 20 premium boards ===== */
+    .match-hud-v21{display:grid;grid-template-columns:minmax(0,1fr) auto 82px;gap:10px;align-items:center;width:100%;padding:8px 10px;border-radius:16px;background:linear-gradient(135deg,rgba(15,23,42,.98),rgba(23,32,51,.96));border:1px solid rgba(255,255,255,.12);box-shadow:0 10px 28px rgba(0,0,0,.28);direction:rtl}
+    .hud-players-v21{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;min-width:0}
+    .hud-player-v21{position:relative;display:flex;align-items:center;gap:8px;min-width:0;padding:6px 8px;border-radius:12px;background:#0b1323;border:1px solid rgba(255,255,255,.08);transition:.15s ease}
+    .hud-player-v21.active{border-color:#60a5fa;background:linear-gradient(135deg,rgba(37,99,235,.34),rgba(15,23,42,.95));box-shadow:0 0 0 2px rgba(96,165,250,.12)}
+    .hud-avatar{width:36px;height:36px;flex:0 0 36px;border-radius:10px;object-fit:cover;display:grid;place-items:center;background:linear-gradient(135deg,#24324b,#0b1220);border:2px solid rgba(255,255,255,.13);color:#fde68a;font-weight:1000;font-size:13px}
+    .hud-avatar-bot{font-size:20px}.hud-player-copy{display:flex;flex-direction:column;min-width:0}.hud-player-copy strong{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.hud-player-copy small{font-size:9px;color:#94a3b8;margin-top:2px}.turn-indicator-v21{position:absolute;inset-inline-end:6px;top:6px;width:7px;height:7px;border-radius:50%;background:#334155}.hud-player-v21.active .turn-indicator-v21{background:#4ade80;box-shadow:0 0 10px #4ade80}
+    .hud-score-v21{text-align:center;min-width:120px;padding:4px 12px;border-inline:1px solid rgba(255,255,255,.09)}.hud-score-v21 small,.hud-score-v21 span{display:block;color:#94a3b8;font-size:9px}.hud-score-v21 strong{display:block;color:#fff;font-size:26px;line-height:1.05;letter-spacing:2px;margin:2px 0}.hud-score-v21 span{color:#fde68a;font-weight:800;white-space:nowrap}
+    .turn-ring-v21{--turn-deg:360deg;width:66px;height:66px;border-radius:50%;padding:5px;background:conic-gradient(#22c55e var(--turn-deg),rgba(255,255,255,.10) 0);transition:background .12s linear;box-shadow:0 0 0 1px rgba(255,255,255,.08)}.turn-ring-v21.danger{background:conic-gradient(#ef4444 var(--turn-deg),rgba(255,255,255,.10) 0)}.turn-ring-v21>div{width:100%;height:100%;border-radius:50%;display:grid;place-content:center;text-align:center;background:#0b1220}.turn-ring-v21 strong{font-size:19px;line-height:1;color:#fff}.turn-ring-v21 small{font-size:8px;color:#94a3b8;margin-top:2px}
+    body.game-active .hud{display:block!important;min-height:0!important;margin:0 0 5px!important;position:relative;z-index:4}.controls .icon-control{min-height:47px}.controls .actions.icon-actions{grid-template-columns:repeat(5,minmax(0,1fr))}.controls .icon-control .control-icon{font-size:17px}.controls .icon-control .control-text{font-size:8px}
+    @media(max-width:900px){.match-hud-v21{grid-template-columns:minmax(0,1fr) 92px 58px;padding:5px 6px;gap:5px;border-radius:0}.hud-players-v21{grid-template-columns:repeat(2,minmax(0,1fr));gap:3px}.hud-player-v21{padding:3px 4px;gap:4px;border-radius:8px}.hud-avatar{width:25px;height:25px;flex-basis:25px;border-radius:7px;font-size:9px}.hud-player-copy strong{font-size:8px}.hud-player-copy small{font-size:7px}.hud-score-v21{min-width:0;padding:2px 5px}.hud-score-v21 strong{font-size:18px}.hud-score-v21 span{font-size:7px;max-width:90px;overflow:hidden;text-overflow:ellipsis}.turn-ring-v21{width:50px;height:50px;padding:4px}.turn-ring-v21 strong{font-size:14px}.controls .actions.icon-actions{grid-template-columns:repeat(5,minmax(0,1fr))!important}.controls .icon-control{min-height:46px!important}.controls .icon-control .control-text{font-size:7px!important}}
+    @media(max-width:430px){.match-hud-v21{grid-template-columns:minmax(0,1fr) 78px 48px}.hud-player-v21:nth-child(n+3){display:none}.hud-score-v21 strong{font-size:16px}.turn-ring-v21{width:44px;height:44px}.turn-ring-v21 strong{font-size:13px}}
+
 </style>
 </head>
 <body>
@@ -720,7 +734,7 @@
     <header>
       <p class="eyebrow">لعبة كيرم مستقرة — ملف واحد فقط</p>
       <h1>كيرم محمد عبدالله الجابري</h1>
-      <p>فيزياء محسنة، واجهة لعب مبسطة، لوحة متجاوبة مع عرض الجوال، مستويات XP متدرجة، وصوت خاص مع اللاعب المقابل.</p>
+      <p>واجهة مباراة احترافية بنتيجة واضحة، صور اللاعبين ومؤقت دائري، مع 20 لوحًا فاخرًا محسّنًا للأداء.</p>
     </header>
 
     <section id="menu" class="menu panel menu-dashboard">
@@ -795,6 +809,7 @@
 
           <div class="actions icon-actions">
             <button id="toggleAim" class="icon-control" type="button" title="إظهار أو إخفاء خط التصويب"><span class="control-icon" aria-hidden="true">🎯</span><span class="control-text">خط التصويب</span></button>
+            <button id="openSettingsGame" class="icon-control" type="button" title="إعدادات المباراة"><span class="control-icon" aria-hidden="true">⚙️</span><span class="control-text">الإعدادات</span></button>
             <button id="toggleSound" class="icon-control" type="button" title="تشغيل أو كتم الصوت"><span class="control-icon" aria-hidden="true">🔊</span><span class="control-text">الصوت</span></button>
             <button id="toggleVoice" class="icon-control voice-control" type="button" disabled title="تحدث فقط مع اللاعب المقابل"><span class="control-icon" aria-hidden="true">🎙️</span><span class="control-text">مايك المقابل</span></button>
             <button id="back" class="icon-control exit-match-control" type="button" title="الخروج من المباراة"><span class="control-icon" aria-hidden="true">🚪</span><span class="control-text">الخروج من المباراة</span></button>
@@ -945,7 +960,8 @@
   let shopPreviewTimer = null;
   let strikerImpactUntil = 0;
   let legendVictoryUntil = 0;
-  let currentTheme = localStorage.getItem("carrom-board-theme") || "arabic";
+  let currentTheme = localStorage.getItem("carrom-board-theme") || "maple";
+  currentTheme = ({classic:"maple",royal:"mahogany",modern:"carbon"}[currentTheme] || currentTheme);
   if (themeEl) themeEl.value = currentTheme;
   if (difficultyEl) difficultyEl.value = difficulty;
   let teamScores = [0, 0];
@@ -1486,12 +1502,16 @@
   }
 
 
+  function boardThemeOptions() {
+    return Object.entries(THEME_STYLES).map(([key,style]) => `<option value="${key}" ${currentTheme===key?"selected":""}>${style.name} — ${style.rarity}</option>`).join("");
+  }
+
   function showSettingsModal(message = "") {
     modalTitleEl.textContent = "الإعدادات";
     modalBodyEl.innerHTML = `<div class="settings-grid">
       ${message?`<div class="notice" style="grid-column:1/-1">${escapeHtml(message)}</div>`:""}
       <section class="settings-card"><label for="settingsDifficulty">🧠 مستوى الذكاء الاصطناعي</label><select id="settingsDifficulty"><option value="hard" ${difficulty==="hard"?"selected":""}>متقدم</option><option value="expert" ${difficulty==="expert"?"selected":""}>محترف</option><option value="legendary" ${difficulty==="legendary"?"selected":""}>أسطوري</option></select></section>
-      <section class="settings-card"><label for="settingsTheme">✨ ثيم الزخرفة</label><select id="settingsTheme"><option value="arabic" ${currentTheme==="arabic"?"selected":""}>عربي</option><option value="indian" ${currentTheme==="indian"?"selected":""}>هندي</option><option value="royal" ${currentTheme==="royal"?"selected":""}>ملكي</option><option value="classic" ${currentTheme==="classic"?"selected":""}>كلاسيكي</option><option value="modern" ${currentTheme==="modern"?"selected":""}>عصري</option></select></section>
+      <section class="settings-card" style="grid-column:1/-1"><label for="settingsTheme">🪵 شكل اللوح — 20 تصميمًا</label><select id="settingsTheme">${boardThemeOptions()}</select><small>يُطبّق التصميم فورًا ويحفظ على هذا الجهاز، ويُنقل تلقائيًا إلى غرفة اللعب الأون لاين.</small></section>
       <section class="settings-card"><label for="settingsVolume">🔊 مستوى الصوت: <span id="settingsVolumeValue" class="volume-value">${Math.round(masterVolume*100)}%</span></label><input id="settingsVolume" type="range" min="0" max="100" value="${Math.round(masterVolume*100)}"></section>
       <section class="settings-card"><label>🌓 مظهر الصفحة</label><div class="appearance-options"><label class="appearance-option"><input type="radio" name="appearanceMode" value="dark" ${appearanceMode==="dark"?"checked":""}> داكن</label><label class="appearance-option"><input type="radio" name="appearanceMode" value="light" ${appearanceMode==="light"?"checked":""}> فاتح</label></div></section>
       <section class="settings-card" style="grid-column:1/-1"><label class="appearance-option" style="justify-content:flex-start"><input id="settingsOnlineVisibility" type="checkbox" ${onlineVisibility?"checked":""}> إظهار العلامة الخضراء للأصدقاء عند اتصالي</label></section>
@@ -1966,6 +1986,7 @@
     let seconds = TURN_SECONDS;
     turnDeadline = performance.now() + TURN_SECONDS * 1000;
     timerEl.textContent = `${seconds} ث`;
+    updateTurnClock(seconds,TURN_SECONDS,"الدور");
     countdownEl.textContent = `وقت اللاعب ${currentPlayer + 1}: ${seconds} ثوانٍ`;
     countdownEl.classList.remove("hidden");
 
@@ -1973,6 +1994,7 @@
       if (phase !== "ready") return;
       seconds = Math.max(0, Math.ceil((turnDeadline - performance.now()) / 1000));
       timerEl.textContent = `${seconds} ث`;
+      updateTurnClock(seconds,TURN_SECONDS,"الدور");
       countdownEl.textContent = `وقت اللاعب ${currentPlayer + 1}: ${seconds} ثوانٍ`;
     }, 150);
 
@@ -2150,6 +2172,7 @@
     let seconds = SHOT_SECONDS;
     shotDeadline = performance.now() + SHOT_SECONDS * 1000;
     countdownEl.textContent = `انتهاء الضربة خلال ${seconds} ثوانٍ`;
+    updateTurnClock(seconds,SHOT_SECONDS,"الضربة");
     countdownEl.classList.remove("hidden");
     timerEl.textContent = `${seconds} ث`;
     setStatus("بدأت الضربة. عند انتهاء 7 ثوانٍ تتوقف القطع ويُحسم الدور.");
@@ -2157,6 +2180,7 @@
       seconds = Math.max(0, Math.ceil((shotDeadline - performance.now()) / 1000));
       countdownEl.textContent = `انتهاء الضربة خلال ${seconds} ثوانٍ`;
       timerEl.textContent = `${seconds} ث`;
+      updateTurnClock(seconds,SHOT_SECONDS,"الضربة");
     }, 150);
     shotTimer = setTimeout(finishShotByTimer, SHOT_SECONDS * 1000);
   }
@@ -2674,50 +2698,30 @@
   }
 
   const THEME_STYLES = {
-    arabic: {
-      name: "عربي",
-      dark: "rgba(94,54,22,.58)",
-      mid: "rgba(128,78,32,.44)",
-      light: "rgba(255,244,210,.42)",
-      gold: "#c8a24a",
-      center: "arabic"
-    },
-    indian: {
-      name: "هندي",
-      dark: "rgba(112,49,25,.58)",
-      mid: "rgba(154,71,32,.42)",
-      light: "rgba(255,235,199,.4)",
-      gold: "#c58b45",
-      center: "lotus"
-    },
-    royal: {
-      name: "ملكي",
-      dark: "rgba(80,48,22,.6)",
-      mid: "rgba(117,78,32,.44)",
-      light: "rgba(255,246,211,.43)",
-      gold: "#d4af37",
-      center: "royal"
-    },
-    classic: {
-      name: "كلاسيكي",
-      dark: "rgba(88,55,29,.56)",
-      mid: "rgba(119,78,41,.4)",
-      light: "rgba(255,242,210,.38)",
-      gold: "#a77c45",
-      center: "classic"
-    },
-    modern: {
-      name: "عصري",
-      dark: "rgba(77,60,43,.5)",
-      mid: "rgba(112,86,57,.36)",
-      light: "rgba(255,247,225,.34)",
-      gold: "#b59b70",
-      center: "modern"
-    },
+    maple:{name:"الكلاسيكي الاحترافي — Maple",rarity:"احترافي",frame:["#c98a4a","#a96531","#7c421f","#4f2813"],surface:["#fff0cf","#efd29a","#d9b277"],line:"#8f3d2b",dark:"rgba(113,68,30,.54)",mid:"rgba(150,96,47,.40)",light:"rgba(255,247,222,.46)",gold:"#b98a43",center:"classic",pattern:"maple",pocket:"#0d0805"},
+    mahogany:{name:"الماهوجني الملكي",rarity:"ملكي",frame:["#7b311e","#5b2117","#3f160f","#250b08"],surface:["#eed3a7","#d6aa70","#b7784b"],line:"#7d211c",dark:"rgba(77,31,20,.68)",mid:"rgba(118,55,31,.46)",light:"rgba(255,226,188,.40)",gold:"#d4af37",center:"royal",pattern:"mahogany",pocket:"#090403"},
+    walnut:{name:"الجوز الأمريكي — Walnut",rarity:"فاخر",frame:["#7a4a2d","#5b351f","#3b2115","#24120c"],surface:["#ead1a6","#c99b68","#a86f43"],line:"#6f3322",dark:"rgba(71,43,27,.62)",mid:"rgba(113,72,44,.46)",light:"rgba(255,232,196,.38)",gold:"#b98c55",center:"classic",pattern:"walnut",pocket:"#0b0705"},
+    oak:{name:"البلوط الأوروبي — Oak",rarity:"طبيعي",frame:["#b98b57","#967047","#6d4d2f","#45301e"],surface:["#f5e4c1","#dfc08d","#c29a65"],line:"#84502f",dark:"rgba(91,67,40,.54)",mid:"rgba(136,102,63,.42)",light:"rgba(255,246,219,.44)",gold:"#b49461",center:"classic",pattern:"oak",pocket:"#15100b"},
+    rosewood:{name:"الورد الهندي — Rosewood",rarity:"فاخر",frame:["#8f3f31","#67291f","#461912","#270b08"],surface:["#f0d2aa","#d09b6b","#ad644d"],line:"#822f2b",dark:"rgba(91,31,25,.65)",mid:"rgba(145,59,47,.47)",light:"rgba(255,225,198,.39)",gold:"#c99a54",center:"lotus",pattern:"rosewood",pocket:"#100605"},
+    arabic:{name:"العربي المزخرف",rarity:"نادر",frame:["#8d552b","#653816","#43220e","#281307"],surface:["#f5dfb1","#e2bd7b","#c9914f"],line:"#8b3522",dark:"rgba(94,54,22,.64)",mid:"rgba(128,78,32,.48)",light:"rgba(255,244,210,.45)",gold:"#d3ae55",center:"arabic",pattern:"arabic",pocket:"#0c0704"},
+    islamic:{name:"الإسلامي",rarity:"نادر",frame:["#776242","#57452e","#382b1c","#20180f"],surface:["#eee5c9","#d8c99f","#b8a775"],line:"#376b62",dark:"rgba(51,79,68,.58)",mid:"rgba(88,111,91,.42)",light:"rgba(250,247,220,.45)",gold:"#c6a85d",center:"arabic",pattern:"islamic",pocket:"#07100e"},
+    royal_gold:{name:"الملكي الذهبي",rarity:"أسطوري",frame:["#9a6922","#6f4716","#42280c","#211205"],surface:["#f6e5bd","#dcb76d","#b8893f"],line:"#9b5c15",dark:"rgba(91,55,11,.66)",mid:"rgba(154,103,26,.46)",light:"rgba(255,246,206,.49)",gold:"#f0c95c",center:"royal",pattern:"royal_gold",pocket:"#080603"},
+    japanese:{name:"الياباني — ساكورا",rarity:"أنيق",frame:["#c5a27f","#a47d59","#79563c","#4d3525"],surface:["#fff2db","#eedbc0","#d7bfa3"],line:"#a95b68",dark:"rgba(112,74,57,.50)",mid:"rgba(169,105,114,.38)",light:"rgba(255,247,238,.52)",gold:"#b78d6b",center:"modern",pattern:"japanese",pocket:"#17100d"},
+    indian:{name:"الهندي التقليدي",rarity:"نادر",frame:["#9e4d25","#753116","#4e1d0c","#2e0d05"],surface:["#f6d59d","#e7aa62","#c8753e"],line:"#9d2638",dark:"rgba(112,49,25,.64)",mid:"rgba(154,71,32,.46)",light:"rgba(255,235,199,.44)",gold:"#d5a04b",center:"lotus",pattern:"indian",pocket:"#120605"},
+    pharaonic:{name:"الفرعوني",rarity:"أسطوري",frame:["#8c6426","#644514","#3d290a","#211505"],surface:["#e8d19b","#cbaa64","#a57e3e"],line:"#8b5b10",dark:"rgba(61,44,15,.67)",mid:"rgba(122,91,29,.45)",light:"rgba(246,224,164,.44)",gold:"#e2bd4f",center:"royal",pattern:"pharaonic",pocket:"#070707"},
+    moroccan:{name:"المغربي — زليج",rarity:"نادر",frame:["#865130","#63351e","#412013","#241009"],surface:["#e8caa0","#d39a65","#b96d43"],line:"#326b6c",dark:"rgba(70,57,39,.61)",mid:"rgba(46,105,107,.40)",light:"rgba(250,224,190,.43)",gold:"#c3914e",center:"arabic",pattern:"moroccan",pocket:"#071010"},
+    andalusian:{name:"الأندلسي",rarity:"نادر",frame:["#5e3424","#422219","#2b1510","#180b08"],surface:["#e3c69e","#bd8e5f","#8c5b3e"],line:"#7d2f2f",dark:"rgba(63,34,27,.69)",mid:"rgba(116,65,46,.46)",light:"rgba(249,221,190,.39)",gold:"#d2aa56",center:"arabic",pattern:"andalusian",pocket:"#080504"},
+    marble:{name:"الرخام والخشب",rarity:"فاخر",frame:["#80502d","#5a321b","#371d0f","#1f0d06"],surface:["#f1eee7","#d8d5cf","#bcb9b1"],line:"#7a5e55",dark:"rgba(73,67,62,.48)",mid:"rgba(129,119,110,.38)",light:"rgba(255,255,255,.58)",gold:"#b58a58",center:"modern",pattern:"marble",pocket:"#151515"},
+    black_luxury:{name:"الأسود الفاخر",rarity:"فاخر",frame:["#282828","#171717","#0b0b0b","#030303"],surface:["#393939","#242424","#111111"],line:"#d1a743",dark:"rgba(0,0,0,.70)",mid:"rgba(80,80,80,.35)",light:"rgba(255,255,255,.17)",gold:"#e0b84e",center:"royal",pattern:"black_luxury",pocket:"#000000"},
+    carbon:{name:"الكربون الحديث",rarity:"أسطوري",frame:["#26313a","#182027","#0b1015","#030507"],surface:["#303943","#202831","#11171d"],line:"#58a6b8",dark:"rgba(3,10,14,.76)",mid:"rgba(57,79,90,.42)",light:"rgba(167,219,229,.19)",gold:"#7dd3fc",center:"modern",pattern:"carbon",pocket:"#000407"},
+    crystal:{name:"البلوري",rarity:"أسطوري",frame:["#6a8da6","#3f657f","#24435a","#102534"],surface:["#e8f6ff","#bedcec","#8fbacd"],line:"#4188a9",dark:"rgba(31,86,110,.55)",mid:"rgba(91,154,179,.42)",light:"rgba(255,255,255,.67)",gold:"#b8ecff",center:"modern",pattern:"crystal",pocket:"#04151f"},
+    forest:{name:"الغابة",rarity:"فاخر",frame:["#5d4b25","#3f341b","#27220f","#121004"],surface:["#e3d8a6","#bdb776","#89944e"],line:"#426b37",dark:"rgba(45,70,35,.62)",mid:"rgba(88,113,64,.44)",light:"rgba(239,242,190,.42)",gold:"#a99f4e",center:"classic",pattern:"forest",pocket:"#071107"},
+    galaxy:{name:"المجرة",rarity:"أسطوري",frame:["#24203d","#14142b","#090a18","#02030a"],surface:["#181a33","#10132a","#090c1e"],line:"#8b7cf6",dark:"rgba(7,5,25,.78)",mid:"rgba(70,50,135,.43)",light:"rgba(184,173,255,.27)",gold:"#b6a4ff",center:"modern",pattern:"galaxy",pocket:"#000008"},
+    legendary:{name:"الأسطوري النادر",rarity:"أسطوري نادر",frame:["#6d2517","#49140d","#280905","#120301"],surface:["#ecd0a0","#bd7b4b","#7f3b29"],line:"#8f2018",dark:"rgba(69,17,12,.76)",mid:"rgba(127,48,26,.48)",light:"rgba(255,226,177,.43)",gold:"#f5cf59",center:"arabic",pattern:"legendary",pocket:"#020202"}
   };
 
   function getThemeStyle() {
-    return THEME_STYLES[currentTheme] || THEME_STYLES.arabic;
+    return THEME_STYLES[currentTheme] || THEME_STYLES.maple;
   }
 
   function drawWearMarks(d) {
@@ -3545,114 +3549,126 @@
     ctx.restore();
   }
 
-  function drawBoard() {
-    const style = getThemeStyle();
+  const staticBoardCache = document.createElement("canvas");
+  staticBoardCache.width = BOARD_SIZE; staticBoardCache.height = BOARD_SIZE;
+  const staticBoardCacheCtx = staticBoardCache.getContext("2d");
+  let staticBoardCacheKey = "";
+
+  function drawThemeSpecial(style) {
+    const pattern = style.pattern;
+    ctx.save();
+    ctx.beginPath(); ctx.rect(68,68,764,764); ctx.clip();
+    if (["maple","mahogany","walnut","oak","rosewood"].includes(pattern)) {
+      ctx.strokeStyle = pattern==="rosewood" ? "rgba(105,28,25,.16)" : "rgba(92,54,22,.12)";
+      ctx.lineWidth = pattern==="oak" ? 2.2 : 1.2;
+      for (let i=0;i<13;i++) {
+        const y=92+i*56;
+        ctx.beginPath(); ctx.moveTo(78,y);
+        ctx.bezierCurveTo(260,y-20+(i%3)*7,610,y+18-(i%2)*9,822,y-5); ctx.stroke();
+      }
+    }
+    if (pattern==="japanese") {
+      ctx.fillStyle="rgba(184,75,99,.30)";
+      [[150,120],[220,780],[740,150],[775,710],[690,105]].forEach(([x,y],i)=>{
+        for(let p=0;p<5;p++){ctx.save();ctx.translate(x,y);ctx.rotate(p*Math.PI*2/5+i*.2);ctx.beginPath();ctx.ellipse(0,-13,5,12,0,0,Math.PI*2);ctx.fill();ctx.restore();}
+      });
+    } else if (pattern==="pharaonic") {
+      ctx.strokeStyle="rgba(226,189,79,.45)";ctx.lineWidth=2;
+      for(let x=130;x<=770;x+=80){ctx.strokeRect(x-12,91,24,24);ctx.beginPath();ctx.moveTo(x-12,115);ctx.lineTo(x,91);ctx.lineTo(x+12,115);ctx.stroke();}
+    } else if (pattern==="moroccan") {
+      ctx.strokeStyle="rgba(42,113,114,.38)";ctx.lineWidth=1.5;
+      for(let x=120;x<=780;x+=55){ctx.save();ctx.translate(x,105);ctx.rotate(Math.PI/4);ctx.strokeRect(-9,-9,18,18);ctx.restore();ctx.save();ctx.translate(x,795);ctx.rotate(Math.PI/4);ctx.strokeRect(-9,-9,18,18);ctx.restore();}
+    } else if (pattern==="andalusian") {
+      ctx.strokeStyle="rgba(210,170,86,.40)";ctx.lineWidth=2;
+      for(let x=140;x<=760;x+=78){ctx.beginPath();ctx.arc(x,110,24,Math.PI,0);ctx.lineTo(x+24,130);ctx.moveTo(x-24,130);ctx.lineTo(x-24,110);ctx.stroke();}
+    } else if (pattern==="marble") {
+      ctx.strokeStyle="rgba(87,91,104,.22)";ctx.lineWidth=2;
+      for(let i=0;i<8;i++){ctx.beginPath();ctx.moveTo(70+i*80,70);ctx.bezierCurveTo(130+i*55,250,20+i*90,550,180+i*75,830);ctx.stroke();}
+    } else if (pattern==="black_luxury") {
+      ctx.strokeStyle="rgba(224,184,78,.48)";ctx.lineWidth=2.2;ctx.strokeRect(102,102,696,696);
+      ctx.beginPath();ctx.moveTo(102,160);ctx.lineTo(160,102);ctx.moveTo(740,798);ctx.lineTo(798,740);ctx.stroke();
+    } else if (pattern==="carbon") {
+      ctx.strokeStyle="rgba(125,211,252,.11)";ctx.lineWidth=1;
+      for(let x=-700;x<900;x+=22){ctx.beginPath();ctx.moveTo(x,70);ctx.lineTo(x+760,830);ctx.stroke();ctx.beginPath();ctx.moveTo(x+12,830);ctx.lineTo(x+772,70);ctx.stroke();}
+    } else if (pattern==="crystal") {
+      ctx.fillStyle="rgba(255,255,255,.14)";
+      [[110,170,160,80],[650,90,170,55],[560,700,230,85]].forEach(([x,y,w,h])=>{ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x+w,y+h*.2);ctx.lineTo(x+w*.7,y+h);ctx.lineTo(x-w*.1,y+h*.45);ctx.closePath();ctx.fill();});
+    } else if (pattern==="forest") {
+      ctx.fillStyle="rgba(48,91,45,.24)";
+      for(let i=0;i<18;i++){const a=i*Math.PI/9,x=450+Math.cos(a)*335,y=450+Math.sin(a)*335;ctx.save();ctx.translate(x,y);ctx.rotate(a);ctx.beginPath();ctx.ellipse(0,0,6,16,0,0,Math.PI*2);ctx.fill();ctx.restore();}
+    } else if (pattern==="galaxy") {
+      for(let i=0;i<70;i++){const x=80+((i*137)%740),y=80+((i*83)%740),r=(i%5===0?2.2:1);ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle=i%7===0?"rgba(176,151,255,.9)":"rgba(255,255,255,.72)";ctx.fill();}
+      const neb=ctx.createRadialGradient(580,300,10,580,300,240);neb.addColorStop(0,"rgba(99,64,190,.22)");neb.addColorStop(1,"rgba(0,0,0,0)");ctx.fillStyle=neb;ctx.fillRect(250,80,600,500);
+    } else if (pattern==="legendary") {
+      ctx.save();ctx.shadowColor="#f5cf59";ctx.shadowBlur=14;ctx.strokeStyle="rgba(245,207,89,.72)";ctx.lineWidth=3;starPath(450,450,16,102,72,-Math.PI/2);ctx.stroke();ctx.restore();
+      ctx.strokeStyle="rgba(245,207,89,.52)";ctx.lineWidth=2.5;ctx.strokeRect(94,94,712,712);
+    }
+    ctx.restore();
+  }
+
+  function renderStaticBoard(style) {
     ctx.clearRect(0,0,BOARD_SIZE,BOARD_SIZE);
     const frame=ctx.createLinearGradient(0,0,900,900);
-    frame.addColorStop(0,"#bd7739"); frame.addColorStop(.3,"#975827"); frame.addColorStop(.65,"#6a3818"); frame.addColorStop(1,"#3d1c0d");
-    ctx.fillStyle=frame; ctx.fillRect(0,0,900,900);
-    ctx.strokeStyle="rgba(255,255,255,.07)"; ctx.lineWidth=1.5;
+    const fs=style.frame||["#bd7739","#975827","#6a3818","#3d1c0d"];
+    frame.addColorStop(0,fs[0]);frame.addColorStop(.3,fs[1]);frame.addColorStop(.65,fs[2]);frame.addColorStop(1,fs[3]);
+    ctx.fillStyle=frame;ctx.fillRect(0,0,900,900);
+    ctx.strokeStyle="rgba(255,255,255,.065)";ctx.lineWidth=1.4;
     for(let i=0;i<14;i++){const y=35+i*59;ctx.beginPath();ctx.moveTo(18,y);ctx.bezierCurveTo(190,y-18,690,y+17,882,y-7);ctx.stroke();}
-
-    ctx.save();
-    ctx.shadowColor="rgba(0,0,0,.38)"; ctx.shadowBlur=28; ctx.shadowOffsetY=12;
-    const surface=ctx.createLinearGradient(50,50,850,850); surface.addColorStop(0,"#f9e9c5"); surface.addColorStop(.45,"#edcf94"); surface.addColorStop(1,"#d7af71");
-    ctx.fillStyle=surface; ctx.fillRect(52,52,796,796); ctx.restore();
-
-    ctx.strokeStyle="#4d2813"; ctx.lineWidth=12; ctx.strokeRect(52,52,796,796);
-    ctx.strokeStyle="rgba(255,244,220,.38)"; ctx.lineWidth=2; ctx.strokeRect(66,66,768,768);
-    ctx.strokeStyle=style.line; ctx.lineWidth=1;
+    ctx.save();ctx.shadowColor="rgba(0,0,0,.38)";ctx.shadowBlur=28;ctx.shadowOffsetY=12;
+    const ss=style.surface||["#f9e9c5","#edcf94","#d7af71"];
+    const surface=ctx.createLinearGradient(50,50,850,850);surface.addColorStop(0,ss[0]);surface.addColorStop(.48,ss[1]);surface.addColorStop(1,ss[2]);ctx.fillStyle=surface;ctx.fillRect(52,52,796,796);ctx.restore();
+    ctx.strokeStyle=fs[3];ctx.lineWidth=12;ctx.strokeRect(52,52,796,796);
+    ctx.strokeStyle="rgba(255,255,255,.25)";ctx.lineWidth=2;ctx.strokeRect(66,66,768,768);
+    ctx.strokeStyle=style.line||"#8d3823";ctx.lineWidth=1;
     for(let i=0;i<11;i++){const y=105+i*64;ctx.beginPath();ctx.moveTo(74,y);ctx.bezierCurveTo(250,y-12,620,y+10,825,y-4);ctx.stroke();}
-
-    ctx.save();
-    const overheadLight = ctx.createRadialGradient(430, 120, 30, 450, 330, 650);
-    overheadLight.addColorStop(0, "rgba(255,250,232,.18)");
-    overheadLight.addColorStop(.42, "rgba(255,246,220,.07)");
-    overheadLight.addColorStop(1, "rgba(255,255,255,0)");
-    ctx.fillStyle = overheadLight;
-    ctx.fillRect(52, 52, 796, 796);
-
-    const boardSheen = ctx.createLinearGradient(80, 80, 820, 820);
-    boardSheen.addColorStop(0, "rgba(255,255,255,.05)");
-    boardSheen.addColorStop(.36, "rgba(255,255,255,.012)");
-    boardSheen.addColorStop(.7, "rgba(255,255,255,0)");
-    boardSheen.addColorStop(1, "rgba(74,42,18,.025)");
-    ctx.fillStyle = boardSheen;
-    ctx.fillRect(66, 66, 768, 768);
-    ctx.restore();
-
+    ctx.save();const overheadLight=ctx.createRadialGradient(430,120,30,450,330,650);overheadLight.addColorStop(0,"rgba(255,250,232,.16)");overheadLight.addColorStop(.42,"rgba(255,246,220,.055)");overheadLight.addColorStop(1,"rgba(255,255,255,0)");ctx.fillStyle=overheadLight;ctx.fillRect(52,52,796,796);ctx.restore();
+    drawThemeSpecial(style);
     drawEngravedTheme(style);
+    for(const p of pocketCenters){const g=ctx.createRadialGradient(p.x-8,p.y-8,4,p.x,p.y,POCKET_RADIUS);g.addColorStop(0,"#342116");g.addColorStop(.6,style.pocket||"#1c120c");g.addColorStop(1,"#020202");ctx.beginPath();ctx.arc(p.x,p.y,POCKET_RADIUS,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();ctx.beginPath();ctx.arc(p.x,p.y,POCKET_RADIUS+12,0,Math.PI*2);ctx.strokeStyle=style.gold||"rgba(99,56,28,.58)";ctx.globalAlpha=.55;ctx.lineWidth=8;ctx.stroke();ctx.globalAlpha=1;}
+    ctx.strokeStyle=style.line||"#8d3823";ctx.lineWidth=3.5;ctx.beginPath();ctx.arc(450,450,116,0,Math.PI*2);ctx.stroke();ctx.beginPath();ctx.arc(450,450,48,0,Math.PI*2);ctx.stroke();
+    const lines=[[250,BASELINE_NEAR,650,BASELINE_NEAR],[250,BASELINE_FAR,650,BASELINE_FAR],[BASELINE_NEAR,250,BASELINE_NEAR,650],[BASELINE_FAR,250,BASELINE_FAR,650]];for(const l of lines){ctx.beginPath();ctx.moveTo(l[0],l[1]);ctx.lineTo(l[2],l[3]);ctx.stroke();}
+    staticBoardCacheCtx.clearRect(0,0,BOARD_SIZE,BOARD_SIZE);staticBoardCacheCtx.drawImage(canvas,0,0);staticBoardCacheKey=currentTheme;
+  }
 
-    for(const p of pocketCenters){
-      const g=ctx.createRadialGradient(p.x-8,p.y-8,4,p.x,p.y,POCKET_RADIUS);
-      g.addColorStop(0,"#342116");g.addColorStop(.6,"#1c120c");g.addColorStop(1,"#080503");
-      ctx.beginPath();ctx.arc(p.x,p.y,POCKET_RADIUS,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();
-      ctx.beginPath();ctx.arc(p.x,p.y,POCKET_RADIUS+12,0,Math.PI*2);ctx.strokeStyle="rgba(99,56,28,.58)";ctx.lineWidth=8;ctx.stroke();
-    }
-
-    ctx.strokeStyle="#8d3823"; ctx.lineWidth=3.5;
-    ctx.beginPath(); ctx.arc(450,450,116,0,Math.PI*2); ctx.stroke();
-    ctx.beginPath(); ctx.arc(450,450,48,0,Math.PI*2); ctx.stroke();
-
-    const lines=[[250,BASELINE_NEAR,650,BASELINE_NEAR],[250,BASELINE_FAR,650,BASELINE_FAR],[BASELINE_NEAR,250,BASELINE_NEAR,650],[BASELINE_FAR,250,BASELINE_FAR,650]];
-    for(const l of lines){ctx.beginPath();ctx.moveTo(l[0],l[1]);ctx.lineTo(l[2],l[3]);ctx.stroke();}
-
-    const side=playerSide(currentPlayer,playerCount);ctx.fillStyle="rgba(37,99,235,.075)";
+  function drawBoard() {
+    const style=getThemeStyle();
+    if(staticBoardCacheKey!==currentTheme) renderStaticBoard(style);
+    ctx.clearRect(0,0,BOARD_SIZE,BOARD_SIZE);ctx.drawImage(staticBoardCache,0,0);
+    const side=playerSide(currentPlayer,playerCount);ctx.fillStyle="rgba(37,99,235,.07)";
     if(side==="bottom")ctx.fillRect(218,708,464,96);if(side==="top")ctx.fillRect(218,96,464,96);if(side==="left")ctx.fillRect(96,218,96,464);if(side==="right")ctx.fillRect(708,218,96,464);
-    const displayDiscs = replaying && replayDisplay ? replayDisplay : discs;
+    const displayDiscs=replaying&&replayDisplay?replayDisplay:discs;
     for(const d of displayDiscs) if(d.active) drawDisc(d);
-    const striker = displayDiscs.find(d => d.kind === "striker");
-    if(aimVisible && aiming && aimPoint && striker){
-      const pullDx = striker.x - aimPoint.x, pullDy = striker.y - aimPoint.y;
-      const pullLen = Math.hypot(pullDx, pullDy);
-      if (pullLen > 6) {
-        const dirX = pullDx / pullLen, dirY = pullDy / pullLen;
-        const ghostOffset = clamp(pullLen * .18, 8, 34);
-        const ghostX = striker.x - dirX * ghostOffset, ghostY = striker.y - dirY * ghostOffset;
-        const previewLen = clamp(pullLen * 1.55, 120, 260);
-        const previewX = striker.x + dirX * previewLen, previewY = striker.y + dirY * previewLen;
-        ctx.save(); ctx.globalAlpha = .28; drawDisc({ ...striker, x: ghostX, y: ghostY }); ctx.restore();
-        ctx.save();
-        ctx.setLineDash([14,10]); ctx.lineWidth = 5; ctx.strokeStyle = "#2563eb";
-        ctx.beginPath(); ctx.moveTo(striker.x, striker.y); ctx.lineTo(previewX, previewY); ctx.stroke();
-        ctx.setLineDash([]);
-        ctx.beginPath(); ctx.arc(previewX, previewY, 11, 0, Math.PI * 2); ctx.fillStyle = "#fbbf24"; ctx.fill();
-        ctx.beginPath(); ctx.moveTo(striker.x, striker.y); ctx.lineTo(aimPoint.x, aimPoint.y); ctx.strokeStyle = "rgba(255,255,255,.24)"; ctx.lineWidth = 3; ctx.stroke();
-        const power = clamp(pullLen / 3.2, 0, 100);
-        ctx.fillStyle = "rgba(15,23,42,.86)"; ctx.fillRect(285,26,330,35);
-        ctx.fillStyle = "#fbbf24"; ctx.fillRect(285,26,3.3*power,35);
-        ctx.strokeStyle = "#fff"; ctx.strokeRect(285,26,330,35);
-        ctx.fillStyle = "#e2e8f0"; ctx.font = "bold 16px Arial"; ctx.fillText("اسحب المضرب للخلف ثم اتركه", 336, 48);
-        ctx.restore();
-      }
+    const striker=displayDiscs.find(d=>d.kind==="striker");
+    if(aimVisible&&aiming&&aimPoint&&striker){
+      const pullDx=striker.x-aimPoint.x,pullDy=striker.y-aimPoint.y,pullLen=Math.hypot(pullDx,pullDy);
+      if(pullLen>6){const dirX=pullDx/pullLen,dirY=pullDy/pullLen,ghostOffset=clamp(pullLen*.18,8,34),ghostX=striker.x-dirX*ghostOffset,ghostY=striker.y-dirY*ghostOffset,previewLen=clamp(pullLen*1.55,120,260),previewX=striker.x+dirX*previewLen,previewY=striker.y+dirY*previewLen;
+        ctx.save();ctx.globalAlpha=.28;drawDisc({...striker,x:ghostX,y:ghostY});ctx.restore();ctx.save();ctx.setLineDash([14,10]);ctx.lineWidth=5;ctx.strokeStyle="#2563eb";ctx.beginPath();ctx.moveTo(striker.x,striker.y);ctx.lineTo(previewX,previewY);ctx.stroke();ctx.setLineDash([]);ctx.beginPath();ctx.arc(previewX,previewY,11,0,Math.PI*2);ctx.fillStyle="#fbbf24";ctx.fill();ctx.beginPath();ctx.moveTo(striker.x,striker.y);ctx.lineTo(aimPoint.x,aimPoint.y);ctx.strokeStyle="rgba(255,255,255,.24)";ctx.lineWidth=3;ctx.stroke();const power=clamp(pullLen/3.2,0,100);ctx.fillStyle="rgba(15,23,42,.86)";ctx.fillRect(285,26,330,35);ctx.fillStyle="#fbbf24";ctx.fillRect(285,26,3.3*power,35);ctx.strokeStyle="#fff";ctx.strokeRect(285,26,330,35);ctx.fillStyle="#e2e8f0";ctx.font="bold 16px Arial";ctx.fillText("اسحب المضرب للخلف ثم اتركه",336,48);ctx.restore();}
     }
   }
 
-function renderHud() {
-    hudEl.innerHTML = "";
-    if (playerCount === 4) {
-      const teamNames = [
-        `${playerName(0)} + ${playerName(2)}`,
-        `${playerName(1)} + ${playerName(3)}`
-      ];
-      for (let team = 0; team < 2; team++) {
-        const card = document.createElement("div");
-        card.className = "player-card team-card" + (teamIndexForPlayer(currentPlayer) === team ? " active" : "");
-        card.innerHTML = `<div>الفريق ${team + 1}</div><small>${teamNames[team]}</small><div class="score">${teamScores[team] || 0} نقطة</div>`;
-        hudEl.appendChild(card);
-      }
-      const turn = document.createElement("div");
-      turn.className = "player-card turn-card";
-      turn.innerHTML = `<div>الدور الآن</div><div class="score">${playerName(currentPlayer)}</div>${mode === "online" ? `<span class="online-turn-badge">● غرفة ${onlineSession.roomCode}</span>` : ""}`;
-      hudEl.appendChild(turn);
-      return;
-    }
-    for (let i = 0; i < playerCount; i++) {
-      const card = document.createElement("div");
-      card.className = "player-card" + (i === currentPlayer ? " active" : "");
-      card.innerHTML = `<div>${playerName(i)}</div><div class="score">${scores[i] || 0} نقطة</div>`;
-      hudEl.appendChild(card);
-    }
+function hudAvatarMarkup(index) {
+    if(mode==="ai"&&index===1) return `<span class="hud-avatar hud-avatar-bot">🤖</span>`;
+    const person=mode==="online"?onlineSession.players[index]:null;
+    const avatar=person?.avatar || (index===0?profileAvatarSource():"");
+    const name=playerName(index);
+    return avatar?`<img class="hud-avatar" src="${escapeHtml(avatar)}" alt="${escapeHtml(name)}">`:`<span class="hud-avatar">${escapeHtml(initials(name))}</span>`;
+  }
+
+  function updateTurnClock(seconds=TURN_SECONDS,total=TURN_SECONDS,label="الدور") {
+    const ring=document.getElementById("turnRingV21"),value=document.getElementById("turnRingValueV21"),caption=document.getElementById("turnRingCaptionV21");
+    if(!ring||!value)return;const safe=Math.max(0,Number(seconds)||0),pct=Math.max(0,Math.min(1,safe/Math.max(1,total)));
+    ring.style.setProperty("--turn-deg",`${pct*360}deg`);ring.classList.toggle("danger",safe<=5);value.textContent=String(Math.ceil(safe));if(caption)caption.textContent=label;
+  }
+
+  function renderHud() {
+    const scoreText=playerCount===4?`${teamScores[0]||0} : ${teamScores[1]||0}`:`${scores[0]||0} : ${scores[1]||0}`;
+    const players=[];
+    for(let i=0;i<playerCount;i++) players.push(`<div class="hud-player-v21 ${i===currentPlayer?"active":""}">${hudAvatarMarkup(i)}<span class="hud-player-copy"><strong>${escapeHtml(playerName(i))}</strong><small>${playerCount===4?`الفريق ${teamIndexForPlayer(i)+1}`:`${scores[i]||0} نقطة`}</small></span><i class="turn-indicator-v21" aria-hidden="true"></i></div>`);
+    hudEl.innerHTML=`<div class="match-hud-v21"><div class="hud-players-v21">${players.join("")}</div><div class="hud-score-v21"><small>النتيجة</small><strong>${scoreText}</strong><span>${escapeHtml(playerName(currentPlayer))} عليه الدور</span></div><div class="turn-ring-v21" id="turnRingV21" style="--turn-deg:360deg"><div><strong id="turnRingValueV21">${TURN_SECONDS}</strong><small id="turnRingCaptionV21">الدور</small></div></div></div>`;
+    const now=performance.now();
+    if(phase==="moving"&&shotDeadline>now) updateTurnClock((shotDeadline-now)/1000,SHOT_SECONDS,"الضربة");
+    else if(phase==="ready"&&turnDeadline>now) updateTurnClock((turnDeadline-now)/1000,TURN_SECONDS,"الدور");
+    else updateTurnClock(TURN_SECONDS,TURN_SECONDS,"الدور");
   }
 
   function updateRemaining() {
@@ -3683,6 +3699,7 @@ function renderHud() {
     let seconds = SHOT_SECONDS;
     shotDeadline = performance.now() + SHOT_SECONDS * 1000;
     countdownEl.textContent = `انتهاء الضربة خلال ${seconds} ثوانٍ`;
+    updateTurnClock(seconds,SHOT_SECONDS,"الضربة");
     countdownEl.classList.remove("hidden");
     timerEl.textContent = `${seconds} ث`;
     setStatus("بدأت الضربة. عند انتهاء 7 ثوانٍ تتوقف القطع ويُحسم الدور.");
@@ -3690,6 +3707,7 @@ function renderHud() {
       seconds = Math.max(0, Math.ceil((shotDeadline - performance.now()) / 1000));
       countdownEl.textContent = `انتهاء الضربة خلال ${seconds} ثوانٍ`;
       timerEl.textContent = `${seconds} ث`;
+      updateTurnClock(seconds,SHOT_SECONDS,"الضربة");
     }, 150);
     shotTimer = setTimeout(finishShotByTimer, SHOT_SECONDS * 1000);
   }
@@ -4703,6 +4721,7 @@ function renderHud() {
   document.getElementById("openFriendRequestsMenu")?.addEventListener("click",()=>showFriendCenter("requests"));
   document.getElementById("openFriendsListMenu")?.addEventListener("click",()=>{requestMessageNotificationPermission();showFriendCenter("friends");});
   document.getElementById("openSettingsMenu")?.addEventListener("click",()=>showSettingsModal());
+  document.getElementById("openSettingsGame")?.addEventListener("click",()=>showSettingsModal());
   document.getElementById("friendsRoomMode").addEventListener("click", showFriendsRoomHub);
   document.getElementById("tournamentMode").addEventListener("click", showTournamentHub);
   document.getElementById("closeModal").addEventListener("click", closeInfoModal);

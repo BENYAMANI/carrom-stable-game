@@ -1,4 +1,4 @@
-const CACHE_NAME = "carrom-v20-mobile-game-ui";
+const CACHE_NAME = "carrom-v21-professional-boards";
 const APP_SHELL = [
   "./",
   "./index.html",
