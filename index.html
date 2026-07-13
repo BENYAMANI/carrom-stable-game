@@ -595,6 +595,26 @@
     }
     @media (prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
 
+
+
+    /* ===== v19 private-message notifications, typing, and opposite-player voice ===== */
+    .message-toast-v19{position:fixed;top:18px;left:50%;transform:translate(-50%,-18px);z-index:12000;display:flex;align-items:center;gap:10px;max-width:min(92vw,420px);padding:11px 15px;border-radius:14px;background:linear-gradient(135deg,#0f766e,#0f172a);border:1px solid rgba(94,234,212,.5);box-shadow:0 18px 50px rgba(0,0,0,.42);color:#fff;font-weight:900;opacity:0;pointer-events:none;transition:opacity .18s ease,transform .18s ease}
+    .message-toast-v19.show{opacity:1;transform:translate(-50%,0)}
+    .message-toast-v19 .toast-icon{width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,.13);display:grid;place-items:center;font-size:18px;flex:0 0 auto}
+    .typing-indicator{min-height:27px;display:flex;align-items:center;justify-content:flex-end;gap:7px;color:#94a3b8;font-size:11px;font-weight:800;padding:1px 6px}
+    .typing-indicator.hidden{visibility:hidden}
+    .typing-dots{display:inline-flex;gap:3px;direction:ltr}
+    .typing-dots i{width:6px;height:6px;border-radius:50%;background:#5eead4;animation:typingBounce .85s infinite ease-in-out}
+    .typing-dots i:nth-child(2){animation-delay:.12s}.typing-dots i:nth-child(3){animation-delay:.24s}
+    @keyframes typingBounce{0%,70%,100%{transform:translateY(0);opacity:.45}35%{transform:translateY(-4px);opacity:1}}
+    .chat-unread-pill{display:inline-grid;place-items:center;min-width:19px;height:19px;padding:0 5px;border-radius:999px;background:#ef4444;color:#fff;font-size:9px;font-weight:1000;margin-inline-start:5px;vertical-align:middle}
+    .voice-control.active{background:linear-gradient(135deg,#15803d,#0f766e)!important;border-color:#4ade80!important;color:#fff!important;box-shadow:0 0 0 2px rgba(74,222,128,.15),0 8px 22px rgba(21,128,61,.25)}
+    .voice-control.connecting{background:linear-gradient(135deg,#92400e,#78350f)!important;border-color:#fbbf24!important}
+    .voice-control[disabled]{opacity:.42;filter:grayscale(.35);cursor:not-allowed}
+    .voice-note{display:none;padding:6px 8px;border-radius:10px;background:rgba(34,197,94,.09);border:1px solid rgba(74,222,128,.28);color:#bbf7d0;font-size:9px;line-height:1.4;text-align:center}
+    body.game-active.online-voice-ready .voice-note{display:block}
+    @media(max-width:900px){.message-toast-v19{top:8px;padding:9px 12px;font-size:11px}.voice-note{font-size:8px;padding:4px}}
+
 </style>
 </head>
 <body>
@@ -602,7 +622,7 @@
     <header>
       <p class="eyebrow">لعبة كيرم مستقرة — ملف واحد فقط</p>
       <h1>كيرم محمد عبدالله الجابري</h1>
-      <p>فيزياء محسنة، متجر مضارب، ملف شخصي، يوزر فريد، غرف أصدقاء منفصلة، وغرف بطولات تنافسية.</p>
+      <p>فيزياء محسنة، رسائل خاصة فورية، إشعارات وكتابة مباشرة، وصوت خاص مع اللاعب المقابل داخل المباراة.</p>
     </header>
 
     <section id="menu" class="menu panel menu-dashboard">
@@ -610,7 +630,7 @@
         <div class="social-left-stack">
           <button id="openSettingsMenu" class="header-action" type="button"><span class="head-icon">⚙️</span><span class="head-label">الإعدادات</span></button>
           <button id="openFriendRequestsMenu" class="header-action" type="button"><span class="head-icon">🔔</span><span class="head-label">الطلبات</span><b id="friendRequestBadge" class="request-badge" data-count="0">0</b></button>
-          <button id="openFriendsListMenu" class="header-action" type="button"><span class="head-icon">👥</span><span class="head-label">الأصدقاء</span></button>
+          <button id="openFriendsListMenu" class="header-action" type="button"><span class="head-icon">👥</span><span class="head-label">الأصدقاء</span><b id="messageUnreadBadge" class="request-badge" data-count="0">0</b></button>
         </div>
         <button id="openProfileMenu" class="profile-head-card" type="button" aria-label="فتح الملف الشخصي">
           <span class="profile-head-avatar-wrap">
@@ -687,6 +707,7 @@
           <div class="actions icon-actions">
             <button id="toggleAim" class="icon-control" type="button" title="إظهار أو إخفاء خط التصويب"><span class="control-icon" aria-hidden="true">🎯</span><span class="control-text">خط التصويب</span></button>
             <button id="toggleSound" class="icon-control" type="button" title="تشغيل أو كتم الصوت"><span class="control-icon" aria-hidden="true">🔊</span><span class="control-text">الصوت</span></button>
+            <button id="toggleVoice" class="icon-control voice-control" type="button" disabled title="تحدث فقط مع اللاعب المقابل"><span class="control-icon" aria-hidden="true">🎙️</span><span class="control-text">مايك المقابل</span></button>
             <button id="replayShot" class="icon-control" type="button" disabled title="إعادة آخر تسديدة ببطء"><span class="control-icon" aria-hidden="true">⏪</span><span class="control-text">إعادة بطيئة</span></button>
             <button id="showAchievements" class="icon-control" type="button" title="عرض التصنيف والإنجازات"><span class="control-icon" aria-hidden="true">🏆</span><span class="control-text">الإنجازات</span></button>
             <button id="openShopGame" class="icon-control" type="button" title="فتح متجر المضارب"><span class="control-icon" aria-hidden="true">🛍️</span><span class="control-text">المتجر</span></button>
@@ -694,6 +715,7 @@
             <button id="back" class="icon-control" type="button" title="العودة إلى الشاشة الرئيسية"><span class="control-icon" aria-hidden="true">⌂</span><span class="control-text">الرئيسية</span></button>
             <button id="installAppGame" class="icon-control install-control" type="button" title="تثبيت اللعبة كتطبيق"><span class="control-icon" aria-hidden="true">⬇️</span><span class="control-text install-label">تثبيت التطبيق</span></button>
           </div>
+          <div id="voiceNote" class="voice-note">الصوت خاص بينك وبين اللاعب المقابل فقط. اللاعبان المجاوران لا يسمعان المحادثة.</div>
           <div class="help compact-help">حرّك المضرب بالشريط، ثم اضغط عليه واسحب للخلف باتجاه معاكس للضربة واتركه.</div>
         </aside>
       </div>
@@ -763,6 +785,8 @@
   const themeEl = document.getElementById("theme");
   const toggleAimEl = document.getElementById("toggleAim");
   const toggleSoundEl = document.getElementById("toggleSound");
+  const toggleVoiceEl = document.getElementById("toggleVoice");
+  const voiceNoteEl = document.getElementById("voiceNote");
   const cameraFrameEl = document.getElementById("cameraFrame");
   const slowBadgeEl = document.getElementById("slowBadge");
   const replayShotEl = document.getElementById("replayShot");
@@ -841,6 +865,15 @@
     localSlot:0, syncTimer:null, stateSequence:0, lastAppliedSequence:0,
     lobbyMessage:"", resultShown:false
   };
+  const voiceSession = {
+    localStream:null,
+    outgoingCall:null,
+    incomingCalls:new Map(),
+    remoteAudios:new Map(),
+    muted:true,
+    connecting:false,
+    partnerSlot:-1
+  };
 
   function clamp(value, min, max) { return Math.max(min, Math.min(max, value)); }
   function distance(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
@@ -887,6 +920,7 @@
   }
   function refreshControlAvailability() {
     strikerPositionEl.disabled = !canLocalControl();
+    refreshVoiceControl();
   }
 
   function randomIndex(max) {
@@ -946,7 +980,14 @@
   let cloudSyncTimer = null;
   let presenceChannel = null;
   let friendRequestChannel = null;
+  let privateMessageChannel = null;
+  let typingChannel = null;
+  let typingIdleTimer = null;
+  let typingHideTimer = null;
   let roomRegistryTimer = null;
+  let unreadMessageCount = 0;
+  let activeChatPartner = null;
+  const profileNameCache = new Map();
   const onlineUserIds = new Set();
   let pendingFriendRequestCount = 0;
   let activeFriendCenterTab = "requests";
@@ -964,6 +1005,120 @@
     node.classList.add("show");
     clearTimeout(node._timer);
     node._timer = setTimeout(() => node.classList.remove("show"), 3200);
+  }
+
+
+  function updateMessageBadge(count = unreadMessageCount) {
+    unreadMessageCount = Math.max(0, Number(count) || 0);
+    const badge = document.getElementById("messageUnreadBadge");
+    if (!badge) return;
+    badge.textContent = String(unreadMessageCount);
+    badge.dataset.count = String(unreadMessageCount);
+  }
+
+  function showPrivateMessageToast(senderName) {
+    let node = document.getElementById("privateMessageToast");
+    if (!node) {
+      node = document.createElement("div");
+      node.id = "privateMessageToast";
+      node.className = "message-toast-v19";
+      node.innerHTML = '<span class="toast-icon">💬</span><span class="toast-copy"></span>';
+      document.body.appendChild(node);
+    }
+    const copy = node.querySelector(".toast-copy");
+    if (copy) copy.textContent = `رسالة جديدة من ${senderName || "صديق"}`;
+    node.classList.add("show");
+    clearTimeout(node._timer);
+    node._timer = setTimeout(() => node.classList.remove("show"), 2000);
+    if (document.hidden && "Notification" in window && Notification.permission === "granted") {
+      try { new Notification("رسالة خاصة جديدة", {body:`${senderName || "صديق"} أرسل لك رسالة`,icon:"./icon-192.png",tag:"carrom-private-message"}); } catch (_) {}
+    }
+  }
+
+  async function requestMessageNotificationPermission() {
+    if (!("Notification" in window) || Notification.permission !== "default") return;
+    try { await Notification.requestPermission(); } catch (_) {}
+  }
+
+  async function profileNameForUser(userId) {
+    if (!userId) return "صديق";
+    if (profileNameCache.has(userId)) return profileNameCache.get(userId);
+    const { data } = await cloudClient.from("player_profiles").select("display_name").eq("user_id",userId).maybeSingle();
+    const name = data?.display_name || "صديق";
+    profileNameCache.set(userId,name);
+    return name;
+  }
+
+  async function refreshUnreadMessageCount() {
+    if (!cloudReady || !cloudUser) return updateMessageBadge(0);
+    const { count, error } = await cloudClient.from("private_messages").select("id",{count:"exact",head:true}).eq("receiver_id",cloudUser.id).is("read_at",null);
+    if (!error) updateMessageBadge(count || 0);
+  }
+
+  async function markConversationRead(userId) {
+    if (!cloudReady || !cloudUser || !userId) return;
+    await cloudClient.from("private_messages").update({read_at:new Date().toISOString()}).eq("receiver_id",cloudUser.id).eq("sender_id",userId).is("read_at",null);
+    await refreshUnreadMessageCount();
+  }
+
+  async function setupPrivateMessageRealtime() {
+    if (!cloudReady || !cloudClient || !cloudUser) return;
+    if (privateMessageChannel) { try { await cloudClient.removeChannel(privateMessageChannel); } catch (_) {} }
+    privateMessageChannel = cloudClient.channel(`carrom-private-inbox-${cloudUser.id}`)
+      .on("postgres_changes",{event:"INSERT",schema:"public",table:"private_messages",filter:`receiver_id=eq.${cloudUser.id}`},async payload=>{
+        const message = payload.new || {};
+        if (activeChatUserId && message.sender_id === activeChatUserId && !infoModalEl.classList.contains("hidden")) {
+          await markConversationRead(message.sender_id);
+          await loadPrivateMessages();
+          return;
+        }
+        const senderName = await profileNameForUser(message.sender_id);
+        showPrivateMessageToast(senderName);
+        await refreshUnreadMessageCount();
+        if (!infoModalEl.classList.contains("hidden") && modalTitleEl.textContent === "الطلبات والأصدقاء" && activeFriendCenterTab === "friends") showFriendCenter("friends");
+      })
+      .subscribe();
+    await refreshUnreadMessageCount();
+  }
+
+  function setTypingIndicator(visible) {
+    const indicator = document.getElementById("typingIndicator");
+    if (!indicator) return;
+    indicator.classList.toggle("hidden",!visible);
+    clearTimeout(typingHideTimer);
+    if (visible) typingHideTimer = setTimeout(()=>indicator.classList.add("hidden"),1800);
+  }
+
+  async function setupTypingChannel(userId) {
+    if (!cloudReady || !cloudUser || !userId) return;
+    if (typingChannel) { try { await cloudClient.removeChannel(typingChannel); } catch (_) {} }
+    const key = [cloudUser.id,userId].sort().join("-");
+    typingChannel = cloudClient.channel(`carrom-typing-${key}`,{config:{broadcast:{self:false}}})
+      .on("broadcast",{event:"typing"},({payload})=>{
+        if (payload?.user_id === activeChatUserId) setTypingIndicator(Boolean(payload.typing));
+      })
+      .subscribe();
+  }
+
+  function sendTypingState(typing) {
+    if (!typingChannel || !cloudUser || !activeChatUserId) return;
+    typingChannel.send({type:"broadcast",event:"typing",payload:{user_id:cloudUser.id,typing:Boolean(typing)}}).catch?.(()=>{});
+  }
+
+  function handleChatTypingInput() {
+    sendTypingState(true);
+    clearTimeout(typingIdleTimer);
+    typingIdleTimer = setTimeout(()=>sendTypingState(false),900);
+  }
+
+  async function cleanupActiveChat() {
+    clearTimeout(typingIdleTimer); clearTimeout(typingHideTimer);
+    if (typingChannel) {
+      try { sendTypingState(false); await cloudClient.removeChannel(typingChannel); } catch (_) {}
+    }
+    typingChannel = null;
+    activeChatUserId = null;
+    activeChatPartner = null;
   }
 
 
@@ -1025,6 +1180,7 @@
         })
         .subscribe();
       await refreshFriendRequestCount();
+      await setupPrivateMessageRealtime();
     } catch (error) {
       console.warn("Realtime social setup failed", error);
     }
@@ -1127,9 +1283,13 @@
         if (error) throw error;
         const ids = (rows||[]).map(row => row.user_a === cloudUser.id ? row.user_b : row.user_a);
         const profiles = await fetchProfilesByUserIds(ids);
+        const { data: unreadRows } = await cloudClient.from("private_messages").select("sender_id").eq("receiver_id",cloudUser.id).is("read_at",null);
+        const unreadBySender = new Map();
+        (unreadRows||[]).forEach(item=>unreadBySender.set(item.sender_id,(unreadBySender.get(item.sender_id)||0)+1));
         cards = ids.map(id => {
           const person = profiles.get(id) || {display_name:"لاعب",player_id:"-------------",user_id:id};
-          return `<div class="social-card"><div class="social-card-main">${avatarMarkup(person)}<div class="social-card-copy"><strong>${escapeHtml(person.display_name)} ${presenceMarkup(id, "متصل")}</strong><small>${escapeHtml(person.player_id)}</small></div></div><div class="social-actions"><button class="mini-action" data-chat-user="${id}">دردشة</button><button class="mini-action neutral" data-view-remote-user="${id}">الملف</button><button class="mini-action reject" data-remove-friend="${id}">إزالة</button></div></div>`;
+          const unread = unreadBySender.get(id) || 0;
+          return `<div class="social-card"><div class="social-card-main">${avatarMarkup(person)}<div class="social-card-copy"><strong>${escapeHtml(person.display_name)} ${presenceMarkup(id, "متصل")}</strong><small>${escapeHtml(person.player_id)}</small></div></div><div class="social-actions"><button class="mini-action" data-chat-user="${id}">دردشة${unread?` <span class="chat-unread-pill">${unread}</span>`:""}</button><button class="mini-action neutral" data-view-remote-user="${id}">الملف</button><button class="mini-action reject" data-remove-friend="${id}">إزالة</button></div></div>`;
         }).join("") || '<div class="notice">لا توجد صداقات بعد. ابحث عن لاعب من ملفك الشخصي وأرسل له طلبًا.</div>';
       }
       modalBodyEl.innerHTML = `<div class="friend-center-tabs"><button class="friend-tab ${activeFriendCenterTab==="requests"?"active":""}" data-friend-tab="requests">الطلبات ${pendingFriendRequestCount?`(${pendingFriendRequestCount})`:""}</button><button class="friend-tab ${activeFriendCenterTab==="friends"?"active":""}" data-friend-tab="friends">الأصدقاء</button></div><div class="social-list">${cards}</div>`;
@@ -1185,31 +1345,41 @@
   function markDailyTask(key){ const t=ensureDailyTasks(); if(!t[key]){t[key]=true;saveProfile();renderDailyTasks();} }
   async function openPrivateChat(userId){
     if(!cloudReady||!cloudUser) return gameToast("الدردشة تحتاج اتصالًا بالسحابة");
+    await requestMessageNotificationPermission();
     activeChatUserId=userId;
     const {data:person}=await cloudClient.from("player_profiles").select("user_id,display_name,player_id").eq("user_id",userId).maybeSingle();
-    modalTitleEl.textContent=`الدردشة مع ${person?.display_name||"صديق"}`;
+    activeChatPartner = person || {user_id:userId,display_name:"صديق",player_id:"-------------"};
+    profileNameCache.set(userId,activeChatPartner.display_name||"صديق");
+    modalTitleEl.textContent=`الدردشة مع ${activeChatPartner.display_name||"صديق"}`;
     modalBodyEl.innerHTML='<div class="profile-help">جاري تحميل الرسائل...</div>'; infoModalEl.classList.remove("hidden");
+    await setupTypingChannel(userId);
+    await markConversationRead(userId);
     await loadPrivateMessages();
     if(chatRealtimeChannel){try{await cloudClient.removeChannel(chatRealtimeChannel)}catch(_){}}
     chatRealtimeChannel=cloudClient.channel(`chat-${[cloudUser.id,userId].sort().join("-")}`)
-      .on("postgres_changes",{event:"INSERT",schema:"public",table:"private_messages"},payload=>{
-        const m=payload.new;if([m.sender_id,m.receiver_id].includes(cloudUser.id)&&[m.sender_id,m.receiver_id].includes(activeChatUserId)) loadPrivateMessages();
+      .on("postgres_changes",{event:"INSERT",schema:"public",table:"private_messages"},async payload=>{
+        const m=payload.new;if([m.sender_id,m.receiver_id].includes(cloudUser.id)&&[m.sender_id,m.receiver_id].includes(activeChatUserId)){
+          if(m.receiver_id===cloudUser.id) await markConversationRead(m.sender_id);
+          await loadPrivateMessages();
+        }
       }).subscribe();
   }
   async function loadPrivateMessages(){
     if(!activeChatUserId) return;
     const me=cloudUser.id,other=activeChatUserId;
-    const {data,error}=await cloudClient.from("private_messages").select("id,sender_id,receiver_id,body,created_at").or(`and(sender_id.eq.${me},receiver_id.eq.${other}),and(sender_id.eq.${other},receiver_id.eq.${me})`).order("created_at",{ascending:true}).limit(100);
+    const {data,error}=await cloudClient.from("private_messages").select("id,sender_id,receiver_id,body,created_at,read_at").or(`and(sender_id.eq.${me},receiver_id.eq.${other}),and(sender_id.eq.${other},receiver_id.eq.${me})`).order("created_at",{ascending:true}).limit(100);
     if(error){modalBodyEl.innerHTML=`<div class="notice">${escapeHtml(error.message)}</div>`;return;}
-    const rows=(data||[]).map(m=>`<div class="chat-bubble ${m.sender_id===me?"mine":"theirs"}">${escapeHtml(m.body)}<small>${new Date(m.created_at).toLocaleTimeString("ar",{hour:"2-digit",minute:"2-digit"})}</small></div>`).join("")||'<div class="notice">ابدأ المحادثة برسالة قصيرة.</div>';
-    modalBodyEl.innerHTML=`<div class="friend-chat"><div id="chatMessages" class="chat-messages">${rows}</div><div class="chat-compose"><input id="chatInput" maxlength="500" placeholder="اكتب رسالة خاصة..."><button class="btn primary" data-send-chat>إرسال</button></div></div>`;
-    requestAnimationFrame(()=>{const box=document.getElementById("chatMessages");if(box)box.scrollTop=box.scrollHeight;});
+    const rows=(data||[]).map(m=>`<div class="chat-bubble ${m.sender_id===me?"mine":"theirs"}">${escapeHtml(m.body)}<small>${new Date(m.created_at).toLocaleTimeString("ar",{hour:"2-digit",minute:"2-digit"})}${m.sender_id===me?` · ${m.read_at?"مقروءة":"تم الإرسال"}`:""}</small></div>`).join("")||'<div class="notice">ابدأ المحادثة برسالة قصيرة.</div>';
+    modalBodyEl.innerHTML=`<div class="friend-chat"><div id="chatMessages" class="chat-messages">${rows}</div><div id="typingIndicator" class="typing-indicator hidden"><span class="typing-dots"><i></i><i></i><i></i></span><span>${escapeHtml(activeChatPartner?.display_name||"الصديق")} يكتب الآن</span></div><div class="chat-compose"><input id="chatInput" maxlength="500" autocomplete="off" placeholder="اكتب رسالة خاصة..."><button class="btn primary" data-send-chat>إرسال</button></div></div>`;
+    requestAnimationFrame(()=>{const box=document.getElementById("chatMessages");if(box)box.scrollTop=box.scrollHeight;document.getElementById("chatInput")?.focus();});
   }
   async function sendPrivateChat(){
     const input=document.getElementById("chatInput");const body=(input?.value||"").trim();if(!body||!activeChatUserId)return;
+    sendTypingState(false); clearTimeout(typingIdleTimer);
     const {error}=await cloudClient.from("private_messages").insert({sender_id:cloudUser.id,receiver_id:activeChatUserId,body});
     if(error)return gameToast(error.message||"تعذر إرسال الرسالة"); input.value=""; await loadPrivateMessages();
   }
+
 
   function showSettingsModal(message = "") {
     modalTitleEl.textContent = "الإعدادات";
@@ -1220,6 +1390,7 @@
       <section class="settings-card"><label for="settingsVolume">🔊 مستوى الصوت: <span id="settingsVolumeValue" class="volume-value">${Math.round(masterVolume*100)}%</span></label><input id="settingsVolume" type="range" min="0" max="100" value="${Math.round(masterVolume*100)}"></section>
       <section class="settings-card"><label>🌓 مظهر الصفحة</label><div class="appearance-options"><label class="appearance-option"><input type="radio" name="appearanceMode" value="dark" ${appearanceMode==="dark"?"checked":""}> داكن</label><label class="appearance-option"><input type="radio" name="appearanceMode" value="light" ${appearanceMode==="light"?"checked":""}> فاتح</label></div></section>
       <section class="settings-card" style="grid-column:1/-1"><label class="appearance-option" style="justify-content:flex-start"><input id="settingsOnlineVisibility" type="checkbox" ${onlineVisibility?"checked":""}> إظهار العلامة الخضراء للأصدقاء عند اتصالي</label></section>
+      <section class="settings-card" style="grid-column:1/-1"><label>🔔 إشعارات الرسائل</label><button class="btn" type="button" data-enable-message-notifications>${("Notification" in window && Notification.permission==="granted")?"الإشعارات مفعّلة":"تفعيل إشعارات الجهاز"}</button><small>يبقى إشعار داخل اللعبة فعالًا دائمًا، ويختفي بعد ثانيتين.</small></section>
     </div><div class="settings-actions"><button class="btn primary" data-save-settings>حفظ الإعدادات</button><button class="btn" data-close-settings>إلغاء</button></div>`;
     infoModalEl.classList.remove("hidden");
   }
@@ -3113,6 +3284,7 @@
   }
 
   function closeInfoModal() {
+    if (activeChatUserId) cleanupActiveChat();
     infoModalEl.classList.add("hidden");
     if (shopPreviewTimer) { clearInterval(shopPreviewTimer); shopPreviewTimer=null; }
     if (modalCardEl) modalCardEl.classList.remove("shop-modal-card");
@@ -3955,6 +4127,108 @@ function renderHud() {
   }
   function onlinePlayerTeam(slot) { return onlineSession.capacity === 4 ? `الفريق ${teamIndexForPlayer(slot)+1}` : "مواجهة فردية"; }
   function currentPlayerProfileName() { return profile.displayName || "لاعب جديد"; }
+
+
+  function voicePartnerSlot() {
+    if (!onlineSession.started || onlineSession.localSlot < 0) return -1;
+    return onlineSession.capacity === 4 ? (onlineSession.localSlot + 2) % 4 : (onlineSession.localSlot === 0 ? 1 : 0);
+  }
+
+  function refreshVoiceControl() {
+    if (!toggleVoiceEl) return;
+    const available = mode === "online" && onlineSession.active && onlineSession.started && Boolean(onlineSession.players?.[voicePartnerSlot()]?.peerId);
+    toggleVoiceEl.disabled = !available;
+    toggleVoiceEl.classList.toggle("active",available && !voiceSession.muted);
+    toggleVoiceEl.classList.toggle("connecting",available && voiceSession.connecting);
+    const icon = voiceSession.muted ? "🎙️" : "🎤";
+    const label = !available ? "مايك المقابل" : voiceSession.connecting ? "جاري الاتصال" : voiceSession.muted ? "تشغيل المايك" : "إغلاق المايك";
+    toggleVoiceEl.innerHTML = `<span class="control-icon" aria-hidden="true">${icon}</span><span class="control-text">${label}</span>`;
+    document.body.classList.toggle("online-voice-ready",available);
+  }
+
+  async function ensureVoiceStream() {
+    if (voiceSession.localStream) return voiceSession.localStream;
+    if (!navigator.mediaDevices?.getUserMedia) throw new Error("هذا المتصفح لا يدعم المايك.");
+    const stream = await navigator.mediaDevices.getUserMedia({video:false,audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
+    stream.getAudioTracks().forEach(track=>track.enabled=false);
+    voiceSession.localStream = stream;
+    return stream;
+  }
+
+  function attachRemoteVoice(stream, key="remote") {
+    let audio = voiceSession.remoteAudios.get(key);
+    if (!audio) {
+      audio = document.createElement("audio");
+      audio.autoplay = true; audio.playsInline = true; audio.hidden = true;
+      document.body.appendChild(audio); voiceSession.remoteAudios.set(key,audio);
+    }
+    audio.srcObject = stream;
+    const playPromise = audio.play();
+    if (playPromise?.catch) playPromise.catch(()=>gameToast("اضغط زر المايك مرة واحدة للسماح بتشغيل الصوت"));
+  }
+
+  function handleIncomingVoiceCall(call) {
+    const fromSlot = Number(call?.metadata?.fromSlot);
+    const partner = voicePartnerSlot();
+    if (!onlineSession.started || partner < 0 || fromSlot !== partner || call?.metadata?.kind !== "carrom-opposite-voice") {
+      try { call.close(); } catch (_) {}
+      return;
+    }
+    try { call.answer(); } catch (_) { return; }
+    voiceSession.incomingCalls.set(call.peer,call);
+    call.on("stream",stream=>attachRemoteVoice(stream,call.peer));
+    call.on("close",()=>{voiceSession.incomingCalls.delete(call.peer);const audio=voiceSession.remoteAudios.get(call.peer);if(audio){audio.srcObject=null;audio.remove();voiceSession.remoteAudios.delete(call.peer);}});
+    call.on("error",()=>voiceSession.incomingCalls.delete(call.peer));
+  }
+
+  async function connectOutgoingVoice() {
+    const partnerSlot = voicePartnerSlot();
+    const partner = onlineSession.players?.[partnerSlot];
+    if (!partner?.peerId || !onlineSession.peer) throw new Error("اللاعب المقابل غير متصل بالصوت بعد.");
+    const stream = await ensureVoiceStream();
+    if (voiceSession.outgoingCall && voiceSession.outgoingCall.peer !== partner.peerId) {
+      try { voiceSession.outgoingCall.close(); } catch (_) {}
+      voiceSession.outgoingCall = null;
+    }
+    if (!voiceSession.outgoingCall) {
+      voiceSession.connecting = true; refreshVoiceControl();
+      const call = onlineSession.peer.call(partner.peerId,stream,{metadata:{kind:"carrom-opposite-voice",fromSlot:onlineSession.localSlot,toSlot:partnerSlot}});
+      if (!call) throw new Error("تعذر فتح الاتصال الصوتي.");
+      voiceSession.outgoingCall = call;
+      call.on("close",()=>{if(voiceSession.outgoingCall===call)voiceSession.outgoingCall=null;voiceSession.connecting=false;refreshVoiceControl();});
+      call.on("error",()=>{if(voiceSession.outgoingCall===call)voiceSession.outgoingCall=null;voiceSession.connecting=false;refreshVoiceControl();});
+      setTimeout(()=>{voiceSession.connecting=false;refreshVoiceControl();},650);
+    }
+    return stream;
+  }
+
+  async function toggleOppositeVoice() {
+    if (toggleVoiceEl?.disabled) return gameToast("الميكروفون يعمل داخل المباراة الأون لاين فقط");
+    try {
+      const stream = await connectOutgoingVoice();
+      voiceSession.muted = !voiceSession.muted;
+      stream.getAudioTracks().forEach(track=>track.enabled=!voiceSession.muted);
+      gameToast(voiceSession.muted ? "تم إغلاق المايك" : "المايك مفتوح مع اللاعب المقابل فقط");
+      refreshVoiceControl();
+    } catch (error) {
+      voiceSession.muted = true; voiceSession.connecting = false; refreshVoiceControl();
+      gameToast(error?.message || "تعذر تشغيل المايك");
+    }
+  }
+
+  function cleanupVoiceChat(stopTracks=true) {
+    try { voiceSession.outgoingCall?.close(); } catch (_) {}
+    voiceSession.outgoingCall = null;
+    for (const call of voiceSession.incomingCalls.values()) { try { call.close(); } catch (_) {} }
+    voiceSession.incomingCalls.clear();
+    for (const audio of voiceSession.remoteAudios.values()) { try { audio.srcObject=null; audio.remove(); } catch (_) {} }
+    voiceSession.remoteAudios.clear();
+    if (stopTracks && voiceSession.localStream) voiceSession.localStream.getTracks().forEach(track=>track.stop());
+    if (stopTracks) voiceSession.localStream = null;
+    else if (voiceSession.localStream) voiceSession.localStream.getAudioTracks().forEach(track=>track.enabled=false);
+    voiceSession.muted = true; voiceSession.connecting = false; voiceSession.partnerSlot = -1;
+    refreshVoiceControl();
+  }
   function currentOnlineIdentity(slot = 0) {
     return {
       slot,
@@ -3963,11 +4237,13 @@ function renderHud() {
       avatar: profileAvatarSource(),
       level: levelFromXp(profile.xp),
       skin: profile.equippedStriker || "classic",
+      peerId: onlineSession.peer?.id || "",
       connected: true
     };
   }
 
   function destroyOnlinePeer() {
+    cleanupVoiceChat(true);
     if (onlineSession.syncTimer) clearInterval(onlineSession.syncTimer);
     onlineSession.syncTimer = null;
     clearInterval(roomRegistryTimer); roomRegistryTimer = null;
@@ -4066,8 +4342,9 @@ function renderHud() {
     onlineSession.players[0] = currentOnlineIdentity(0);
     const peer = new Peer(roomPeerId(code,type), {debug:1});
     onlineSession.peer = peer;
-    peer.on("open", async () => { onlineSession.lobbyMessage="الغرفة جاهزة. شارك الاسم أو الرمز مع أصدقائك."; await registerOnlineRoom("lobby"); renderOnlineLobby(); });
+    peer.on("open", async id => { onlineSession.players[0] = {...currentOnlineIdentity(0),peerId:id}; onlineSession.lobbyMessage="الغرفة جاهزة. شارك الاسم أو الرمز مع أصدقائك."; await registerOnlineRoom("lobby"); renderOnlineLobby(); });
     peer.on("connection", connection => setupHostConnection(connection));
+    peer.on("call",handleIncomingVoiceCall);
     peer.on("error", err => { onlineSession.lobbyMessage=peerErrorMessage(err); renderOnlineLobby(); });
     peer.on("disconnected", () => { onlineSession.lobbyMessage="انقطع الاتصال بخدمة الغرف. جاري إعادة الاتصال..."; try{peer.reconnect();}catch(_){} renderOnlineLobby(); });
     showRoomHub(type);
@@ -4091,6 +4368,7 @@ function renderHud() {
           avatar:String(message.avatar||"").slice(0,180000),
           level:Number(message.level)||1,
           skin:message.skin||"classic",
+          peerId:String(message.peerId||connection.peer||""),
           connected:true
         };
         connection.send({type:"joined",slot:freeSlot,roomCode:onlineSession.roomCode,roomName:onlineSession.roomName,capacity:onlineSession.capacity,players:onlineSession.players,roomType:onlineSession.roomType});
@@ -4146,14 +4424,15 @@ function renderHud() {
     leaveOnlineRoom(false);
     Object.assign(onlineSession,{active:true,isHost:false,started:false,roomCode:code,players:[],localSlot:-1,lobbyMessage:"جاري الاتصال بالغرفة...",roomType:type});
     const peer = new Peer(undefined,{debug:0,pingInterval:3000}); onlineSession.peer=peer;
-    peer.on("open",()=>{
+    peer.on("open",peerId=>{
       const conn=peer.connect(roomPeerId(code,type),{serialization:"json",reliable:true,metadata:{playerId:profile.playerId}});
       onlineSession.hostConnection=conn;
-      conn.on("open",()=>conn.send({type:"join",roomType:type,name:profile.displayName,playerId:profile.playerId,avatar:profileAvatarSource(),level:levelFromXp(profile.xp),skin:profile.equippedStriker||"classic"}));
+      conn.on("open",()=>conn.send({type:"join",roomType:type,name:profile.displayName,playerId:profile.playerId,avatar:profileAvatarSource(),level:levelFromXp(profile.xp),skin:profile.equippedStriker||"classic",peerId}));
       conn.on("data",handleClientOnlineMessage);
       conn.on("close",()=>onlineConnectionLost());
       conn.on("error",()=>onlineConnectionLost());
     });
+    peer.on("call",handleIncomingVoiceCall);
     peer.on("error",err=>{onlineSession.lobbyMessage=peerErrorMessage(err);renderOnlineLobby();});
     showRoomHub(type);
   }
@@ -4306,6 +4585,7 @@ function renderHud() {
     toggleSoundEl.innerHTML=`<span class="control-icon" aria-hidden="true">${soundEnabled?"🔊":"🔇"}</span><span class="control-text">${soundEnabled?"كتم الصوت":"تشغيل الصوت"}</span>`;
     if(soundEnabled)sound("ui");
   });
+  toggleVoiceEl?.addEventListener("click",toggleOppositeVoice);
   if (themeEl) themeEl.addEventListener("change",()=>{currentTheme=themeEl.value;localStorage.setItem("carrom-board-theme", currentTheme);drawBoard();});
   replayShotEl.addEventListener("click",()=>startReplay());
   document.getElementById("showAchievements").addEventListener("click", showAchievementsModal);
@@ -4314,7 +4594,7 @@ function renderHud() {
   document.getElementById("openShopGame").addEventListener("click", showShop);
   if (openProfileMenuEl) openProfileMenuEl.addEventListener("click", showPlayerProfile);
   document.getElementById("openFriendRequestsMenu")?.addEventListener("click",()=>showFriendCenter("requests"));
-  document.getElementById("openFriendsListMenu")?.addEventListener("click",()=>showFriendCenter("friends"));
+  document.getElementById("openFriendsListMenu")?.addEventListener("click",()=>{requestMessageNotificationPermission();showFriendCenter("friends");});
   document.getElementById("openSettingsMenu")?.addEventListener("click",()=>showSettingsModal());
   document.getElementById("friendsRoomMode").addEventListener("click", showFriendsRoomHub);
   document.getElementById("tournamentMode").addEventListener("click", showTournamentHub);
@@ -4348,6 +4628,7 @@ function renderHud() {
     const searchRooms = event.target.closest("[data-search-rooms]");
     const joinFoundRoom = event.target.closest("[data-join-found-room]");
     const resultBack = event.target.closest("[data-result-back]");
+    const enableMessageNotifications = event.target.closest("[data-enable-message-notifications]");
     if (category) { activeShopCategory = category.dataset.shopCategory; renderShopContent(); startShopPreviewAnimation(); }
     else if (buy) buySkin(buy.dataset.buySkin);
     else if (equip) equipSkin(equip.dataset.equipSkin);
@@ -4370,6 +4651,7 @@ function renderHud() {
     else if (openFriendCenter) showFriendCenter("requests");
     else if (chatUser) openPrivateChat(chatUser.dataset.chatUser);
     else if (sendChat) sendPrivateChat();
+    else if (enableMessageNotifications) requestMessageNotificationPermission().then(()=>showSettingsModal(Notification.permission==="granted"?"تم تفعيل إشعارات الرسائل.":"لم يتم السماح بالإشعارات."));
     else if (copyRemoteId) { navigator.clipboard?.writeText(copyRemoteId.dataset.copyRemoteId); gameToast("تم نسخ اليوزر"); }
     else if (saveSettings) saveGameSettings();
     else if (closeSettings) closeInfoModal();
@@ -4381,6 +4663,9 @@ function renderHud() {
     if (event.target?.id === "profileAvatarInput" && event.target.files?.[0]) changeProfileAvatar(event.target.files[0]);
     if (event.target?.id === "settingsVolume") { const value=document.getElementById("settingsVolumeValue"); if(value)value.textContent=`${event.target.value}%`; }
   });
+  modalBodyEl.addEventListener("input", event => {
+    if (event.target?.id === "chatInput") handleChatTypingInput();
+  });
   modalBodyEl.addEventListener("keydown", event => {
     if (event.key === "Enter" && event.target?.id === "playerSearchInput") searchPlayerDirectory();
     if (event.key === "Enter" && event.target?.id === "profileNameInput") changeDisplayName();
@@ -4389,6 +4674,8 @@ function renderHud() {
   });
 
   window.addEventListener("beforeunload",()=>{
+    cleanupVoiceChat(true);
+    if (activeChatUserId) sendTypingState(false);
     if (onlineSession.isHost) removeOnlineRoomRegistry();
     if (presenceChannel) { try { presenceChannel.untrack(); } catch (_) {} }
   });
