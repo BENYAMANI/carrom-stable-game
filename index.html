@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#0f172a" />
   <title>كيرم محمد عبدالله الجابري</title>
-  <meta name="description" content="لعبة كيرم عربية أون لاين بملفات شخصية وصداقات وغرف قابلة للبحث ومتجر مضارب." />
+  <meta name="description" content="لعبة كيرم عربية أون لاين بملفات شخصية وصداقات ودردشة خاصة وغرف أون لاين ومهام يومية." />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -427,7 +427,7 @@
 
 
 
-    /* ===== v17: واجهة اجتماعية، طلبات صداقة، حضور مباشر، إعدادات وغرف قابلة للبحث ===== */
+    /* ===== v18: أداء محسن، واجهة جانبية، دردشة خاصة، مهام يومية، ونتائج Win/Lose ===== */
     .social-header { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:10px; align-items:stretch; margin-bottom:10px; }
     .profile-head-card { position:relative; min-width:0; display:flex; align-items:center; gap:11px; padding:10px 12px; border-radius:16px; border:1px solid rgba(251,191,36,.35); background:linear-gradient(135deg,rgba(15,23,42,.98),rgba(30,41,59,.96)); color:var(--text); text-align:right; }
     .profile-head-card:hover { border-color:#fbbf24; transform:translateY(-1px); }
@@ -528,6 +528,73 @@
       .social-actions .mini-action { flex:1; }
     }
 
+
+
+    /* ===== v18 UI + performance ===== */
+    .social-header{direction:ltr;grid-template-columns:210px minmax(0,1fr);grid-template-areas:"social profile";align-items:stretch}
+    .profile-head-card{grid-area:profile;direction:rtl;justify-content:flex-start;border-radius:18px;min-height:78px;background:linear-gradient(135deg,rgba(17,24,39,.98),rgba(30,41,59,.96));box-shadow:0 14px 35px rgba(0,0,0,.18)}
+    .social-left-stack{grid-area:social;direction:rtl;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto auto;gap:6px}
+    .social-left-stack .header-action:first-child{grid-column:1/-1;min-height:38px}
+    .social-left-stack .header-action{min-height:36px;border-radius:11px;flex-direction:row;gap:7px;padding:6px 8px}
+    .social-left-stack .head-label{display:inline!important;font-size:10px}
+    .social-left-stack .head-icon{font-size:15px}
+    .profile-head-card .mini-avatar,.profile-avatar{border-radius:16%!important}
+    .profile-head-avatar-wrap,.profile-head-card .mini-avatar{width:60px;height:60px;flex-basis:60px}
+    .menu-dashboard{position:relative;overflow:hidden;background:
+      radial-gradient(circle at 86% 0%,rgba(251,191,36,.14),transparent 30%),
+      radial-gradient(circle at 0% 100%,rgba(59,130,246,.16),transparent 35%),
+      linear-gradient(145deg,rgba(23,32,51,.98),rgba(10,18,34,.98));}
+    .menu-dashboard:before{content:"";position:absolute;inset:-40%;background:conic-gradient(from 90deg,transparent,rgba(94,234,212,.04),transparent 35%);pointer-events:none;animation:heroGlow 16s linear infinite}
+    @keyframes heroGlow{to{transform:rotate(360deg)}}
+    .menu-dashboard>*{position:relative;z-index:1}
+    .quick-tile,.mode-card,.profile-head-card,.header-action{transition:transform .16s ease,border-color .16s ease,background-color .16s ease}
+    .quick-tile:hover,.mode-card:hover,.profile-head-card:hover,.header-action:hover{transform:translateY(-2px)}
+    .friend-chat{display:grid;grid-template-rows:minmax(220px,50vh) auto;gap:10px}
+    .chat-messages{overflow:auto;display:flex;flex-direction:column;gap:8px;padding:10px;border-radius:14px;background:#08111f;border:1px solid var(--border)}
+    .chat-bubble{max-width:82%;padding:9px 11px;border-radius:14px;background:#1e293b;color:#f8fafc;line-height:1.55;word-break:break-word}
+    .chat-bubble.mine{align-self:flex-start;background:#1d4ed8}
+    .chat-bubble.theirs{align-self:flex-end;background:#263449}
+    .chat-bubble small{display:block;margin-top:4px;opacity:.65;font-size:9px}
+    .chat-compose{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+    .chat-compose input{padding:12px;border-radius:11px;border:1px solid #475569;background:#07101f;color:#fff}
+    .daily-tasks-card{grid-column:1/-1;padding:11px;border-radius:14px;border:1px solid rgba(94,234,212,.24);background:linear-gradient(135deg,rgba(20,184,166,.08),rgba(37,99,235,.08))}
+    .daily-task-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+    .daily-task-row:last-child{border-bottom:0}
+    .daily-task-row.done strong{color:#86efac}
+    .result-word{font-size:clamp(42px,10vw,92px);font-weight:1000;letter-spacing:4px;text-align:center;margin:4px 0 12px}
+    .result-word.win{color:#4ade80;text-shadow:0 0 30px rgba(74,222,128,.35)}
+    .result-word.lose{color:#fb7185;text-shadow:0 0 30px rgba(251,113,133,.3)}
+    .result-word.draw{color:#fde68a}
+    .low-power *{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}
+    .low-power .menu-dashboard:before{display:none}
+    .low-power .camera-frame,.low-power .panel{box-shadow:none!important}
+    #game{min-height:0}
+    #cameraFrame{contain:layout paint size;transform:translateZ(0)}
+    #board{will-change:contents;image-rendering:auto}
+
+    @media (max-width:900px){
+      body.game-active{overflow:hidden}
+      body.game-active .app{height:100dvh;min-height:100dvh;display:flex;flex-direction:column;padding:4px 0}
+      body.game-active header,body.game-active footer{display:none!important}
+      body.game-active #game{display:flex!important;flex-direction:column;min-height:0;height:100%;width:100%}
+      body.game-active .hud{flex:0 0 auto;margin:0 0 4px;gap:4px}
+      body.game-active .game-wrap{display:grid;grid-template-rows:minmax(0,1fr) auto;gap:4px;min-height:0;height:100%}
+      body.game-active .camera-frame{width:min(100%,calc(100dvh - 205px));max-width:100%;aspect-ratio:1/1;margin:auto;min-height:0}
+      body.game-active canvas{width:100%!important;height:100%!important;object-fit:contain;border-radius:10px}
+      body.game-active .controls{padding:6px;max-height:190px;overflow:auto;border-radius:12px}
+      body.game-active .status{min-height:0;margin:4px 0;padding:6px;font-size:10px;line-height:1.35}
+      body.game-active .stats{margin:3px 0;gap:3px}
+      body.game-active .stat{padding:4px;font-size:9px}
+      body.game-active .actions{gap:3px}
+      .social-header{grid-template-columns:118px minmax(0,1fr);gap:5px}
+      .social-left-stack{grid-template-columns:1fr;grid-template-rows:repeat(3,1fr);gap:3px}
+      .social-left-stack .header-action:first-child{grid-column:auto}
+      .social-left-stack .header-action{min-height:24px;padding:2px 5px}
+      .social-left-stack .head-icon{font-size:13px}.social-left-stack .head-label{font-size:8px!important}
+      .profile-head-card{min-height:72px}.profile-head-avatar-wrap,.profile-head-card .mini-avatar{width:50px;height:50px;flex-basis:50px}
+    }
+    @media (prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+
 </style>
 </head>
 <body>
@@ -540,6 +607,11 @@
 
     <section id="menu" class="menu panel menu-dashboard">
       <div class="social-header">
+        <div class="social-left-stack">
+          <button id="openSettingsMenu" class="header-action" type="button"><span class="head-icon">⚙️</span><span class="head-label">الإعدادات</span></button>
+          <button id="openFriendRequestsMenu" class="header-action" type="button"><span class="head-icon">🔔</span><span class="head-label">الطلبات</span><b id="friendRequestBadge" class="request-badge" data-count="0">0</b></button>
+          <button id="openFriendsListMenu" class="header-action" type="button"><span class="head-icon">👥</span><span class="head-label">الأصدقاء</span></button>
+        </div>
         <button id="openProfileMenu" class="profile-head-card" type="button" aria-label="فتح الملف الشخصي">
           <span class="profile-head-avatar-wrap">
             <span id="menuProfileAvatar" class="mini-avatar" aria-hidden="true">م</span>
@@ -547,12 +619,8 @@
           </span>
           <span class="profile-head-copy"><strong id="menuProfileName">ملفي الشخصي</strong><small id="menuPlayerId">-------------</small></span>
         </button>
-        <div class="header-actions">
-          <button id="openFriendRequestsMenu" class="header-action" type="button"><span class="head-icon">🔔</span><span class="head-label">الطلبات</span><b id="friendRequestBadge" class="request-badge" data-count="0">0</b></button>
-          <button id="openSettingsMenu" class="header-action" type="button"><span class="head-icon">⚙️</span><span class="head-label">الإعدادات</span></button>
-          <button id="installAppMenu" class="header-action install-cta" type="button" aria-label="تثبيت اللعبة على أندرويد"><span class="head-icon">⬇️</span><span class="head-label install-label">تثبيت أندرويد</span></button>
-        </div>
       </div>
+      <button id="installAppMenu" class="btn install-cta" type="button" style="width:100%;margin:0 0 7px;background:#166534;border-color:#22c55e">⬇️ تثبيت على أندرويد</button>
 
       <div class="menu-heading-row"><div><h2>اختر أسلوب اللعب</h2><p>اللعب المحلي أو عبر الإنترنت من شاشة واحدة.</p></div></div>
 
@@ -580,6 +648,7 @@
         <button id="tournamentMode" class="mode-card tournament-card" type="button"><span class="mode-icon" aria-hidden="true">🏆</span><span class="mode-label">غرفة البطولات</span></button>
       </div>
 
+      <div id="dailyTasksMenu" class="daily-tasks-card"></div>
       <div class="menu-bottom-row">
         <div class="profile-strip compact-profile">
           <div class="profile-chip">الرتبة<strong id="menuRank">برونزي</strong></div>
@@ -1060,7 +1129,7 @@
         const profiles = await fetchProfilesByUserIds(ids);
         cards = ids.map(id => {
           const person = profiles.get(id) || {display_name:"لاعب",player_id:"-------------",user_id:id};
-          return `<div class="social-card"><div class="social-card-main">${avatarMarkup(person)}<div class="social-card-copy"><strong>${escapeHtml(person.display_name)} ${presenceMarkup(id, "متصل")}</strong><small>${escapeHtml(person.player_id)}</small></div></div><div class="social-actions"><button class="mini-action" data-view-remote-user="${id}">عرض الملف</button><button class="mini-action reject" data-remove-friend="${id}">إزالة</button></div></div>`;
+          return `<div class="social-card"><div class="social-card-main">${avatarMarkup(person)}<div class="social-card-copy"><strong>${escapeHtml(person.display_name)} ${presenceMarkup(id, "متصل")}</strong><small>${escapeHtml(person.player_id)}</small></div></div><div class="social-actions"><button class="mini-action" data-chat-user="${id}">دردشة</button><button class="mini-action neutral" data-view-remote-user="${id}">الملف</button><button class="mini-action reject" data-remove-friend="${id}">إزالة</button></div></div>`;
         }).join("") || '<div class="notice">لا توجد صداقات بعد. ابحث عن لاعب من ملفك الشخصي وأرسل له طلبًا.</div>';
       }
       modalBodyEl.innerHTML = `<div class="friend-center-tabs"><button class="friend-tab ${activeFriendCenterTab==="requests"?"active":""}" data-friend-tab="requests">الطلبات ${pendingFriendRequestCount?`(${pendingFriendRequestCount})`:""}</button><button class="friend-tab ${activeFriendCenterTab==="friends"?"active":""}" data-friend-tab="friends">الأصدقاء</button></div><div class="social-list">${cards}</div>`;
@@ -1090,6 +1159,56 @@
     modalTitleEl.textContent = "ملف اللاعب";
     modalBodyEl.innerHTML = `<div class="profile-layout"><section class="profile-hero"><div class="profile-avatar-wrap">${person.avatar_url?`<img class="profile-avatar" src="${escapeHtml(person.avatar_url)}" alt="الصورة الشخصية">`:`<div class="profile-avatar">${escapeHtml(initials(person.display_name))}</div>`}</div><div><h3 class="profile-name">${escapeHtml(person.display_name)}</h3><button class="profile-id" type="button" data-copy-remote-id="${escapeHtml(person.player_id)}">${escapeHtml(person.player_id)} 📋</button><div style="margin-top:9px">${presenceMarkup(person.user_id)}</div><div class="profile-stats-grid"><div class="profile-stat"><small>المستوى</small><strong>${Number(person.level)||1}</strong></div><div class="profile-stat"><small>XP</small><strong>${Number(person.xp)||0}</strong></div><div class="profile-stat"><small>الكؤوس</small><strong>${Number(person.trophies)||0}</strong></div></div><div class="remote-profile-actions">${action}<button class="btn" data-open-friend-center>الطلبات والأصدقاء</button></div></div></section></div>`;
     infoModalEl.classList.remove("hidden");
+  }
+
+
+  let activeChatUserId = null;
+  let chatRealtimeChannel = null;
+  function localDayStamp(){ return new Date().toISOString().slice(0,10); }
+  function ensureDailyTasks(){
+    const today=localDayStamp();
+    if(!profile.dailyTasks || profile.dailyTasks.date!==today){
+      profile.dailyTasks={date:today,played:false,pocketed:false,claimed:false};
+      saveProfile();
+    }
+    return profile.dailyTasks;
+  }
+  function renderDailyTasks(){
+    const box=document.getElementById("dailyTasksMenu"); if(!box) return;
+    const t=ensureDailyTasks();
+    const complete=t.played&&t.pocketed;
+    if(complete&&!t.claimed){ t.claimed=true; profile.xp+=25; saveProfile(); gameToast("أنجزت مهمتي اليوم وحصلت على 25 XP"); }
+    box.innerHTML=`<div style="display:flex;justify-content:space-between;gap:10px;align-items:center"><strong>📋 المهام اليومية</strong><small>${t.claimed?"تم استلام 25 XP":"أكمل المهمتين لتحصل على 25 XP"}</small></div>
+      <div class="daily-task-row ${t.played?"done":""}"><strong>${t.played?"✓":"○"} العب مباراة واحدة</strong><span>${t.played?"مكتملة":"0/1"}</span></div>
+      <div class="daily-task-row ${t.pocketed?"done":""}"><strong>${t.pocketed?"✓":"○"} أدخل قطعة واحدة</strong><span>${t.pocketed?"مكتملة":"0/1"}</span></div>`;
+  }
+  function markDailyTask(key){ const t=ensureDailyTasks(); if(!t[key]){t[key]=true;saveProfile();renderDailyTasks();} }
+  async function openPrivateChat(userId){
+    if(!cloudReady||!cloudUser) return gameToast("الدردشة تحتاج اتصالًا بالسحابة");
+    activeChatUserId=userId;
+    const {data:person}=await cloudClient.from("player_profiles").select("user_id,display_name,player_id").eq("user_id",userId).maybeSingle();
+    modalTitleEl.textContent=`الدردشة مع ${person?.display_name||"صديق"}`;
+    modalBodyEl.innerHTML='<div class="profile-help">جاري تحميل الرسائل...</div>'; infoModalEl.classList.remove("hidden");
+    await loadPrivateMessages();
+    if(chatRealtimeChannel){try{await cloudClient.removeChannel(chatRealtimeChannel)}catch(_){}}
+    chatRealtimeChannel=cloudClient.channel(`chat-${[cloudUser.id,userId].sort().join("-")}`)
+      .on("postgres_changes",{event:"INSERT",schema:"public",table:"private_messages"},payload=>{
+        const m=payload.new;if([m.sender_id,m.receiver_id].includes(cloudUser.id)&&[m.sender_id,m.receiver_id].includes(activeChatUserId)) loadPrivateMessages();
+      }).subscribe();
+  }
+  async function loadPrivateMessages(){
+    if(!activeChatUserId) return;
+    const me=cloudUser.id,other=activeChatUserId;
+    const {data,error}=await cloudClient.from("private_messages").select("id,sender_id,receiver_id,body,created_at").or(`and(sender_id.eq.${me},receiver_id.eq.${other}),and(sender_id.eq.${other},receiver_id.eq.${me})`).order("created_at",{ascending:true}).limit(100);
+    if(error){modalBodyEl.innerHTML=`<div class="notice">${escapeHtml(error.message)}</div>`;return;}
+    const rows=(data||[]).map(m=>`<div class="chat-bubble ${m.sender_id===me?"mine":"theirs"}">${escapeHtml(m.body)}<small>${new Date(m.created_at).toLocaleTimeString("ar",{hour:"2-digit",minute:"2-digit"})}</small></div>`).join("")||'<div class="notice">ابدأ المحادثة برسالة قصيرة.</div>';
+    modalBodyEl.innerHTML=`<div class="friend-chat"><div id="chatMessages" class="chat-messages">${rows}</div><div class="chat-compose"><input id="chatInput" maxlength="500" placeholder="اكتب رسالة خاصة..."><button class="btn primary" data-send-chat>إرسال</button></div></div>`;
+    requestAnimationFrame(()=>{const box=document.getElementById("chatMessages");if(box)box.scrollTop=box.scrollHeight;});
+  }
+  async function sendPrivateChat(){
+    const input=document.getElementById("chatInput");const body=(input?.value||"").trim();if(!body||!activeChatUserId)return;
+    const {error}=await cloudClient.from("private_messages").insert({sender_id:cloudUser.id,receiver_id:activeChatUserId,body});
+    if(error)return gameToast(error.message||"تعذر إرسال الرسالة"); input.value=""; await loadPrivateMessages();
   }
 
   function showSettingsModal(message = "") {
@@ -1622,7 +1741,7 @@
     queenPendingPlayer = null;
     queenCoveredThisShot = true;
     profile.queens += 1;
-    profile.pockets += 1;
+    profile.pockets += 1; markDailyTask("pocketed");
     profile.xp += 35;
     profile.coins += 50;
     profile.trophies += 20;
@@ -1650,6 +1769,7 @@
   function startGame(nextMode, count) {
     clearTimers();
     mode = nextMode;
+    markDailyTask("played");
     difficulty = difficultyEl.value;
     playerCount = count;
     currentPlayer = 0;
@@ -1952,7 +2072,7 @@
         pocketedThisShot += 1;
         queenPendingPlayer = null;
         profile.queens += 1;
-        profile.pockets += 1;
+        profile.pockets += 1; markDailyTask("pocketed");
         profile.xp += 35;
         profile.coins += 50;
         profile.trophies += 20;
@@ -1980,7 +2100,7 @@
     shotScored = true;
     normalPocketedThisShot = true;
     pocketedThisShot += 1;
-    profile.pockets += 1;
+    profile.pockets += 1; markDailyTask("pocketed");
     profile.xp += disc.kind === "white" ? 12 : 8;
     profile.coins += disc.kind === "white" ? 10 : 5;
     profile.trophies += disc.kind === "white" ? 5 : 3;
@@ -3040,7 +3160,10 @@
       }
     }
 
-    const html = `<p class="notice">${resultTitle}: <strong>${winnerLabel}</strong> بنتيجة ${maxScore} نقطة.${reward?` حصلت على ${reward} عملة.`:""}</p><div class="stats">${scoreRows}</div><button class="btn primary" data-result-back>العودة للبداية</button>`;
+    let resultWord="تعادل",resultClass="draw";
+    if(mode==="ai"){const humanWon=scores[0]===maxScore && scores.filter(s=>s===maxScore).length===1;resultWord=humanWon?"Win":"Lose";resultClass=humanWon?"win":"lose";}
+    else if(mode==="online"){const localTeam=playerCount===4?(onlineSession.localSlot%2):onlineSession.localSlot;const winningIndex=playerCount===4?teamScores.indexOf(maxScore):scores.indexOf(maxScore);const unique=(playerCount===4?teamScores:scores).filter(s=>s===maxScore).length===1;if(unique){const won=localTeam===winningIndex;resultWord=won?"Win":"Lose";resultClass=won?"win":"lose";}}
+    const html = `<div class="result-word ${resultClass}">${resultWord}</div><p class="notice">${resultTitle}: <strong>${winnerLabel}</strong> بنتيجة ${maxScore} نقطة.${reward?` حصلت على ${reward} عملة.`:""}</p><div class="stats">${scoreRows}</div><button class="btn primary" data-result-back>العودة للبداية</button>`;
     showModal("انتهت المباراة", html);
     if (mode === "online" && onlineSession.isHost) broadcastOnlineMessage({type:"result", title:"انتهت المباراة", html});
     return true;
@@ -3474,7 +3597,7 @@ function renderHud() {
         pocketedThisShot += 1;
         queenPendingPlayer = null;
         profile.queens += 1;
-        profile.pockets += 1;
+        profile.pockets += 1; markDailyTask("pocketed");
         profile.xp += 35;
         profile.coins += 50;
         profile.trophies += 20;
@@ -3502,7 +3625,7 @@ function renderHud() {
     shotScored = true;
     normalPocketedThisShot = true;
     pocketedThisShot += 1;
-    profile.pockets += 1;
+    profile.pockets += 1; markDailyTask("pocketed");
     profile.xp += disc.kind === "white" ? 12 : 8;
     profile.coins += disc.kind === "white" ? 10 : 5;
     profile.trophies += disc.kind === "white" ? 5 : 3;
@@ -3984,6 +4107,13 @@ function renderHud() {
 
   function removeOnlinePlayer(slot) {
     if (slot === undefined || slot === 0) return;
+    if (onlineSession.started && phase !== "finished") {
+      clearTimers(); phase="finished";
+      const departed=onlineSession.players[slot]?.name||"اللاعب المنسحب";
+      const html=`<div class="result-word win">Win</div><p class="notice">انسحب ${escapeHtml(departed)} أثناء المباراة، لذلك انتهت المباراة مباشرة لصالح الطرف الآخر.</p><button class="btn primary" data-result-back>العودة للبداية</button>`;
+      broadcastOnlineMessage({type:"result",title:"انتهت المباراة بالانسحاب",html});
+      showModal("انتهت المباراة بالانسحاب",html);
+    }
     const connection = onlineSession.connections.get(slot);
     if (connection) { try { connection.close(); } catch (_) {} }
     onlineSession.connections.delete(slot);
@@ -4015,7 +4145,7 @@ function renderHud() {
     if (typeof Peer === "undefined") return showModal("تعذر تحميل الاتصال", '<p class="notice">تحقق من اتصال الإنترنت ثم حدّث الصفحة.</p>');
     leaveOnlineRoom(false);
     Object.assign(onlineSession,{active:true,isHost:false,started:false,roomCode:code,players:[],localSlot:-1,lobbyMessage:"جاري الاتصال بالغرفة...",roomType:type});
-    const peer = new Peer(undefined,{debug:1}); onlineSession.peer=peer;
+    const peer = new Peer(undefined,{debug:0,pingInterval:3000}); onlineSession.peer=peer;
     peer.on("open",()=>{
       const conn=peer.connect(roomPeerId(code,type),{serialization:"json",reliable:true,metadata:{playerId:profile.playerId}});
       onlineSession.hostConnection=conn;
@@ -4078,7 +4208,8 @@ function renderHud() {
     queenPendingPlayer=null; finalQueenReady=false; finalQueenPocketedThisShot=false; queenReturnedForEndgameThisShot=false; lastNormalPocketedThisShot=false;
     discs=initialPieces(); phase="ready"; strikerOffset=50; currentTheme=message.theme||currentTheme; if(themeEl)themeEl.value=currentTheme;
     menuEl.classList.add("hidden"); gameEl.classList.remove("hidden"); document.body.classList.add("game-active");
-    setStatus("تم بدء مباراة البطولة. في انتظار بيانات المضيف..."); renderHud(); updateRemaining(); refreshControlAvailability(); infoModalEl.classList.add("hidden");
+    setStatus("تم بدء المباراة. جاري مزامنة اللوحة..."); renderHud(); updateRemaining(); refreshControlAvailability(); infoModalEl.classList.add("hidden");
+    requestAnimationFrame(()=>{ resizeBoardForViewport(); drawBoard(); window.scrollTo(0,0); });
   }
 
   function onlineSnapshot() {
@@ -4097,7 +4228,7 @@ function renderHud() {
   function startOnlineStateSync() {
     if (!onlineSession.isHost || !onlineSession.started) return;
     if (onlineSession.syncTimer) clearInterval(onlineSession.syncTimer);
-    onlineSession.syncTimer=setInterval(()=>broadcastOnlineState(),85);
+    onlineSession.syncTimer=setInterval(()=>broadcastOnlineState(),140);
   }
 
   function applyOnlineState(state) {
@@ -4125,6 +4256,14 @@ function renderHud() {
       const vx=Number(message.vx),vy=Number(message.vy); if(Number.isFinite(vx)&&Number.isFinite(vy)) beginShot(vx,vy);
     }
   }
+
+  function resizeBoardForViewport(){
+    if(gameEl.classList.contains("hidden")) return;
+    const frame=cameraFrameEl.getBoundingClientRect();
+    if(frame.width>0){canvas.style.width="100%";canvas.style.height="100%";}
+  }
+  window.addEventListener("resize",()=>requestAnimationFrame(resizeBoardForViewport),{passive:true});
+  window.addEventListener("orientationchange",()=>setTimeout(resizeBoardForViewport,120),{passive:true});
 
   function canvasPoint(event) {
     const r=canvas.getBoundingClientRect();return {x:(event.clientX-r.left)/r.width*BOARD_SIZE,y:(event.clientY-r.top)/r.height*BOARD_SIZE};
@@ -4175,6 +4314,7 @@ function renderHud() {
   document.getElementById("openShopGame").addEventListener("click", showShop);
   if (openProfileMenuEl) openProfileMenuEl.addEventListener("click", showPlayerProfile);
   document.getElementById("openFriendRequestsMenu")?.addEventListener("click",()=>showFriendCenter("requests"));
+  document.getElementById("openFriendsListMenu")?.addEventListener("click",()=>showFriendCenter("friends"));
   document.getElementById("openSettingsMenu")?.addEventListener("click",()=>showSettingsModal());
   document.getElementById("friendsRoomMode").addEventListener("click", showFriendsRoomHub);
   document.getElementById("tournamentMode").addEventListener("click", showTournamentHub);
@@ -4200,6 +4340,8 @@ function renderHud() {
     const removeFriendButton = event.target.closest("[data-remove-friend]");
     const friendTab = event.target.closest("[data-friend-tab]");
     const openFriendCenter = event.target.closest("[data-open-friend-center]");
+    const chatUser = event.target.closest("[data-chat-user]");
+    const sendChat = event.target.closest("[data-send-chat]");
     const copyRemoteId = event.target.closest("[data-copy-remote-id]");
     const saveSettings = event.target.closest("[data-save-settings]");
     const closeSettings = event.target.closest("[data-close-settings]");
@@ -4226,6 +4368,8 @@ function renderHud() {
     else if (removeFriendButton) removeFriend(removeFriendButton.dataset.removeFriend);
     else if (friendTab) showFriendCenter(friendTab.dataset.friendTab);
     else if (openFriendCenter) showFriendCenter("requests");
+    else if (chatUser) openPrivateChat(chatUser.dataset.chatUser);
+    else if (sendChat) sendPrivateChat();
     else if (copyRemoteId) { navigator.clipboard?.writeText(copyRemoteId.dataset.copyRemoteId); gameToast("تم نسخ اليوزر"); }
     else if (saveSettings) saveGameSettings();
     else if (closeSettings) closeInfoModal();
@@ -4241,6 +4385,7 @@ function renderHud() {
     if (event.key === "Enter" && event.target?.id === "playerSearchInput") searchPlayerDirectory();
     if (event.key === "Enter" && event.target?.id === "profileNameInput") changeDisplayName();
     if (event.key === "Enter" && event.target?.id === "roomSearchInput") searchOnlineRooms();
+    if (event.key === "Enter" && event.target?.id === "chatInput") sendPrivateChat();
   });
 
   window.addEventListener("beforeunload",()=>{
@@ -4248,6 +4393,9 @@ function renderHud() {
     if (presenceChannel) { try { presenceChannel.untrack(); } catch (_) {} }
   });
 
+  const lowPowerDevice = matchMedia("(max-width: 900px)").matches || (navigator.hardwareConcurrency||8) <= 4;
+  if(lowPowerDevice) document.body.classList.add("low-power");
+  let lastVisualFrame=0;
   function loop(now){
     const frameDt = Math.min(Math.max((now - lastFrameTime) / 1000, 0), MAX_FRAME_DT);
     lastFrameTime = now;
@@ -4260,11 +4408,14 @@ function renderHud() {
     }
     if (steps === MAX_SUB_STEPS) physicsAccumulator = 0;
     captureReplayFrame(now);
-    updateCamera(replaying && replayDisplay ? replayDisplay : discs);
-    drawBoard();
+    const targetInterval = lowPowerDevice ? 33 : 16;
+    if(now-lastVisualFrame>=targetInterval){
+      updateCamera(replaying && replayDisplay ? replayDisplay : discs);
+      drawBoard(); lastVisualFrame=now;
+    }
     requestAnimationFrame(loop);
   }
-  updateAchievements(); saveProfile();
+  updateAchievements(); saveProfile(); renderDailyTasks();
   discs=initialPieces();drawBoard();requestAnimationFrame(loop);
   initializeCloudDirectory();
 })();
