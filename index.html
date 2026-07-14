@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#0f172a" />
-  <title>محمد عبدالله — v24</title>
-  <meta name="description" content="لعبة كيرم عربية أون لاين بملفات شخصية وصداقات ودردشة خاصة وغرف أون لاين ومهام يومية." />
+  <title>محمد عبدالله — v25</title>
+  <meta name="description" content="لعبة كيرم عربية سريعة مع غرف صحيحة للاعبين أو أربعة، بحث فوري وتفاعلات داخل الغرفة فقط." />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -753,7 +753,7 @@
     @media(max-width:600px){.install-platform-grid{grid-template-columns:1fr}.platform-install{min-height:46px}.board-shop-grid{grid-template-columns:1fr}.board-preview{height:145px}.board-owned-strip{grid-template-columns:1fr}}
 
 
-    /* ===== v24: beige luxury UI, room reactions and invitations ===== */
+    /* ===== v25: beige luxury UI, room reactions and invitations ===== */
     body.beige-mode{
       --bg:#eadcc6;--panel:#f7eddd;--panel-2:#efe2ce;--text:#3b2b20;--muted:#765f4c;--border:rgba(92,64,39,.20);
       background:
@@ -805,7 +805,18 @@
     .room-invite-badge{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 5px;border-radius:999px;background:#ef4444;color:#fff;font-size:10px;font-weight:900;margin-inline-start:5px}
     @media(max-width:600px){.room-invite-card,.invite-friend-row{align-items:flex-start;flex-direction:column}.room-invite-actions{width:100%}.invite-yes,.invite-no{flex:1}.room-reaction-bar{justify-content:center}.reaction-btn{width:36px;height:36px}}
 
-</style>
+
+    /* ===== v25: correct room capacity, faster social UI, lobby-only reactions ===== */
+    .game-reaction-bar{display:none!important}
+    .room-reaction-pop{display:none!important}
+    .room-player strong{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+    .room-player-reaction{display:inline-grid;place-items:center;min-width:34px;height:30px;padding:0 7px;border-radius:999px;background:#fff4dc;border:1px solid rgba(116,78,38,.22);font-size:22px;box-shadow:0 5px 14px rgba(76,47,22,.14);animation:roomReactionPulse .22s ease-out}
+    @keyframes roomReactionPulse{from{transform:scale(.55);opacity:0}to{transform:scale(1);opacity:1}}
+    .room-player,.social-card,.room-result,.room-invite-card{contain:layout paint style}
+    .info-modal .modal-body{content-visibility:auto;contain-intrinsic-size:480px}
+    .instant-result{opacity:.78}
+
+  </style>
 </head>
 <body>
   <main class="app">
@@ -902,7 +913,6 @@
             <button id="installAppGame" class="icon-control install-control match-extra-hidden" type="button" title="تثبيت اللعبة كتطبيق"><span class="control-icon" aria-hidden="true">⬇️</span><span class="control-text install-label">تثبيت التطبيق</span></button>
           </div>
           <div id="voiceNote" class="voice-note">الصوت خاص بينك وبين اللاعب المقابل فقط. اللاعبان المجاوران لا يسمعان المحادثة.</div>
-          <div id="gameReactionBar" class="room-reaction-bar game-reaction-bar" aria-label="تفاعلات الغرفة"><strong>تفاعل سريع</strong><button class="reaction-btn" data-room-reaction="😭" type="button">😭</button><button class="reaction-btn" data-room-reaction="😈" type="button">😈</button><button class="reaction-btn" data-room-reaction="😊" type="button">😊</button><button class="reaction-btn" data-room-reaction="😂" type="button">😂</button><button class="reaction-btn" data-room-reaction="😢" type="button">😢</button><button class="reaction-btn" data-room-reaction="😎" type="button">😎</button></div>
           <div class="help compact-help">حرّك المضرب بالشريط، ثم اضغط عليه واسحب للخلف باتجاه معاكس للضربة واتركه.</div>
         </aside>
       </div>
@@ -1052,11 +1062,18 @@
   if (difficultyEl) difficultyEl.value = difficulty;
   let teamScores = [0, 0];
   const onlineSession = {
-    active:false, isHost:false, started:false, roomCode:"", roomName:"", capacity:4, roomType:"friends",
-    peer:null, hostConnection:null, connections:new Map(), players:[],
+    active:false, isHost:false, started:false, roomCode:"", roomName:"", capacity:2, requestedCapacity:2, roomType:"friends",
+    peer:null, hostConnection:null, connections:new Map(), players:[], reactions:new Map(),
     localSlot:0, syncTimer:null, stateSequence:0, lastAppliedSequence:0,
     lobbyMessage:"", resultShown:false
   };
+  const profileDirectoryCache = new Map();
+  const friendCenterHtmlCache = new Map();
+  const roomSearchResultsCache = new Map();
+  let friendIdsSnapshot = {ids:[], at:0};
+  let playerSearchSequence = 0;
+  const SOCIAL_CACHE_TTL = 15000;
+  const ROOM_SEARCH_CACHE_TTL = 8000;
   const voiceSession = {
     localStream:null,
     outgoingCall:null,
@@ -1068,6 +1085,9 @@
   };
 
   function clamp(value, min, max) { return Math.max(min, Math.min(max, value)); }
+  function normalizeRoomCapacity(value, type = "friends") { return type === "tournament" ? 4 : (Number(value) === 4 ? 4 : 2); }
+  function cachePlayerProfile(person) { if (person?.user_id) profileDirectoryCache.set(String(person.user_id), person); return person; }
+  function invalidateSocialCaches() { friendCenterHtmlCache.clear(); friendIdsSnapshot = {ids:[],at:0}; }
   function distance(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
   function activeNormalPiecesCount() {
     return discs.filter(d => d.active && (d.kind === "white" || d.kind === "black")).length;
@@ -1241,25 +1261,34 @@
     badge.textContent=String(total);badge.dataset.count=String(total);
   }
 
-  function showRoomReaction(emoji,senderName="لاعب"){
-    let node=document.getElementById("roomReactionPop");
-    if(!node){node=document.createElement("div");node.id="roomReactionPop";node.className="room-reaction-pop";node.innerHTML='<b></b><span></span>';document.body.appendChild(node);}
-    node.querySelector("b").textContent=emoji;node.querySelector("span").textContent=senderName;
-    node.classList.add("show");clearTimeout(node._timer);node._timer=setTimeout(()=>node.classList.remove("show"),2000);
+  function showRoomReaction(emoji,senderName="لاعب",senderSlot=-1){
+    if(!onlineSession.active || onlineSession.started || !ROOM_REACTIONS.includes(emoji)) return;
+    let slot = Number(senderSlot);
+    if(!Number.isInteger(slot) || slot < 0) slot = onlineSession.players.findIndex(player=>player?.name===senderName);
+    if(slot < 0) return;
+    const token = `${Date.now()}-${Math.random()}`;
+    onlineSession.reactions.set(slot,{emoji,senderName,token,expiresAt:Date.now()+2000});
+    if(!infoModalEl.classList.contains("hidden")) renderOnlineLobby();
+    setTimeout(()=>{
+      const current=onlineSession.reactions.get(slot);
+      if(current?.token===token){onlineSession.reactions.delete(slot);if(onlineSession.active&&!onlineSession.started&&!infoModalEl.classList.contains("hidden"))renderOnlineLobby();}
+    },2050);
   }
 
   function sendRoomReaction(emoji){
     if(!ROOM_REACTIONS.includes(emoji)||!onlineSession.active)return gameToast("ادخل غرفة أولًا لإرسال التفاعل");
+    if(onlineSession.started)return gameToast("التفاعلات متاحة داخل غرفة الانتظار فقط");
     const message={type:"reaction",emoji,senderSlot:onlineSession.localSlot,senderName:profile.displayName};
     if(onlineSession.isHost) handleHostRoomReaction(onlineSession.localSlot,message);
     else if(onlineSession.hostConnection?.open) onlineSession.hostConnection.send(message);
   }
 
   function handleHostRoomReaction(slot,message){
-    if(!onlineSession.isHost||!ROOM_REACTIONS.includes(message?.emoji))return;
-    const sender=onlineSession.players[slot]?.name||message.senderName||`اللاعب ${Number(slot)+1}`;
-    const outgoing={type:"reaction",emoji:message.emoji,senderSlot:slot,senderName:sender};
-    showRoomReaction(outgoing.emoji,outgoing.senderName);broadcastOnlineMessage(outgoing);
+    if(!onlineSession.isHost||onlineSession.started||!ROOM_REACTIONS.includes(message?.emoji))return;
+    const normalizedSlot=Number(slot);
+    const sender=onlineSession.players[normalizedSlot]?.name||message.senderName||`اللاعب ${normalizedSlot+1}`;
+    const outgoing={type:"reaction",emoji:message.emoji,senderSlot:normalizedSlot,senderName:sender};
+    showRoomReaction(outgoing.emoji,outgoing.senderName,outgoing.senderSlot);broadcastOnlineMessage(outgoing);
   }
 
   function updateMessageBadge(count = unreadMessageCount) {
@@ -1481,11 +1510,17 @@
   }
 
   async function fetchProfilesByUserIds(ids) {
-    const unique = [...new Set((ids || []).filter(Boolean))];
+    const unique = [...new Set((ids || []).filter(Boolean).map(String))];
     if (!unique.length) return new Map();
-    const { data, error } = await cloudClient.from("player_profiles").select("user_id,player_id,display_name,avatar_url,level,xp,trophies").in("user_id",unique);
-    if (error) throw error;
-    return new Map((data || []).map(item => [item.user_id,item]));
+    const result = new Map();
+    const missing=[];
+    unique.forEach(id=>{const cached=profileDirectoryCache.get(id);if(cached)result.set(id,cached);else missing.push(id);});
+    if(missing.length){
+      const { data, error } = await cloudClient.from("player_profiles").select("user_id,player_id,display_name,avatar_url,level,xp,trophies").in("user_id",missing);
+      if (error) throw error;
+      (data||[]).forEach(item=>{cachePlayerProfile(item);result.set(String(item.user_id),item);});
+    }
+    return result;
   }
 
   async function getFriendRelation(targetUserId) {
@@ -1514,6 +1549,7 @@
       else gameToast(error.message || "تعذر إرسال الطلب");
       return;
     }
+    invalidateSocialCaches();
     gameToast("تم إرسال طلب الصداقة");
     if (currentRemoteProfile) renderRemotePlayerProfile(currentRemoteProfile);
   }
@@ -1532,6 +1568,7 @@
       if (friendError) return gameToast(friendError.message || "تعذر إضافة الصديق");
       gameToast("تم قبول طلب الصداقة");
     } else gameToast("تم رفض الطلب");
+    invalidateSocialCaches();
     await refreshFriendRequestCount();
     showFriendCenter(activeFriendCenterTab);
   }
@@ -1543,6 +1580,7 @@
     const userB = userA === me ? targetUserId : me;
     const { error } = await cloudClient.from("friendships").delete().eq("user_a",userA).eq("user_b",userB);
     if (error) return gameToast(error.message || "تعذر حذف الصديق");
+    invalidateSocialCaches();
     gameToast("تمت إزالة الصديق");
     showFriendCenter("friends");
   }
@@ -1550,7 +1588,8 @@
   async function showFriendCenter(tab = "requests") {
     activeFriendCenterTab = ["requests","friends","invites"].includes(tab) ? tab : "requests";
     modalTitleEl.textContent = "الطلبات والأصدقاء";
-    modalBodyEl.innerHTML = '<div class="profile-help">جاري تحميل البيانات...</div>';
+    const cachedCenter=friendCenterHtmlCache.get(activeFriendCenterTab);
+    modalBodyEl.innerHTML = cachedCenter && Date.now()-cachedCenter.at<SOCIAL_CACHE_TTL ? cachedCenter.html : '<div class="profile-help">جاري تحميل البيانات...</div>';
     infoModalEl.classList.remove("hidden");
     if (!cloudReady || !cloudUser) {
       modalBodyEl.innerHTML = '<div class="notice">يحتاج قسم الصداقة إلى اتصال Supabase.</div>';
@@ -1576,11 +1615,16 @@
           return `<div class="room-invite-card"><div class="invite-copy"><strong>🎮 ${escapeHtml(person.display_name)} دعاك إلى ${escapeHtml(invite.room_name||"غرفة لعب")}</strong><small>الرمز: ${escapeHtml(invite.room_code||"------")} · ${invite.room_type==="tournament"?"بطولة":"غرفة أصدقاء"}</small></div><div class="room-invite-actions"><button class="invite-yes" title="قبول" data-accept-room-invite="${item.id}">✓</button><button class="invite-no" title="رفض" data-reject-room-invite="${item.id}">✕</button></div></div>`;
         }).join("")||'<div class="notice">لا توجد دعوات غرف جديدة.</div>';
       } else {
-        const { data: rows, error } = await cloudClient.from("friendships").select("user_a,user_b,created_at").or(`user_a.eq.${cloudUser.id},user_b.eq.${cloudUser.id}`).order("created_at",{ascending:false});
-        if (error) throw error;
-        const ids = (rows||[]).map(row => row.user_a === cloudUser.id ? row.user_b : row.user_a);
+        const [friendRowsResponse,unreadResponse] = await Promise.all([
+          cloudClient.from("friendships").select("user_a,user_b,created_at").or(`user_a.eq.${cloudUser.id},user_b.eq.${cloudUser.id}`).order("created_at",{ascending:false}),
+          cloudClient.from("private_messages").select("sender_id,body").eq("receiver_id",cloudUser.id).is("read_at",null)
+        ]);
+        if (friendRowsResponse.error) throw friendRowsResponse.error;
+        const rows=friendRowsResponse.data||[];
+        const ids = rows.map(row => row.user_a === cloudUser.id ? row.user_b : row.user_a);
+        friendIdsSnapshot={ids:[...ids],at:Date.now()};
         const profiles = await fetchProfilesByUserIds(ids);
-        const { data: unreadRows } = await cloudClient.from("private_messages").select("sender_id,body").eq("receiver_id",cloudUser.id).is("read_at",null);
+        const unreadRows=unreadResponse.data||[];
         const unreadBySender = new Map();
         (unreadRows||[]).filter(item=>!isRoomSystemMessage(item.body)).forEach(item=>unreadBySender.set(item.sender_id,(unreadBySender.get(item.sender_id)||0)+1));
         cards = ids.map(id => {
@@ -1589,7 +1633,9 @@
           return `<div class="social-card"><div class="social-card-main">${avatarMarkup(person)}<div class="social-card-copy"><strong>${escapeHtml(person.display_name)} ${presenceMarkup(id, "متصل")}</strong><small>${escapeHtml(person.player_id)}</small></div></div><div class="social-actions"><button class="mini-action" data-chat-user="${id}">دردشة${unread?` <span class="chat-unread-pill">${unread}</span>`:""}</button><button class="mini-action neutral" data-view-remote-user="${id}">الملف</button><button class="mini-action reject" data-remove-friend="${id}">إزالة</button></div></div>`;
         }).join("") || '<div class="notice">لا توجد صداقات بعد. ابحث عن لاعب من ملفك الشخصي وأرسل له طلبًا.</div>';
       }
-      modalBodyEl.innerHTML = `<div class="friend-center-tabs"><button class="friend-tab ${activeFriendCenterTab==="requests"?"active":""}" data-friend-tab="requests">طلبات الصداقة ${pendingFriendRequestCount?`(${pendingFriendRequestCount})`:""}</button><button class="friend-tab ${activeFriendCenterTab==="invites"?"active":""}" data-friend-tab="invites">دعوات الغرف ${pendingRoomInviteCount?`(${pendingRoomInviteCount})`:""}</button><button class="friend-tab ${activeFriendCenterTab==="friends"?"active":""}" data-friend-tab="friends">الأصدقاء</button></div><div class="social-list">${cards}</div>`;
+      const centerHtml=`<div class="friend-center-tabs"><button class="friend-tab ${activeFriendCenterTab==="requests"?"active":""}" data-friend-tab="requests">طلبات الصداقة ${pendingFriendRequestCount?`(${pendingFriendRequestCount})`:""}</button><button class="friend-tab ${activeFriendCenterTab==="invites"?"active":""}" data-friend-tab="invites">دعوات الغرف ${pendingRoomInviteCount?`(${pendingRoomInviteCount})`:""}</button><button class="friend-tab ${activeFriendCenterTab==="friends"?"active":""}" data-friend-tab="friends">الأصدقاء</button></div><div class="social-list">${cards}</div>`;
+      friendCenterHtmlCache.set(activeFriendCenterTab,{html:centerHtml,at:Date.now()});
+      modalBodyEl.innerHTML = centerHtml;
     } catch (error) {
       modalBodyEl.innerHTML = `<div class="notice">${escapeHtml(error.message || "تعذر تحميل البيانات")}</div>`;
     }
@@ -1956,28 +2002,21 @@
     const input = document.getElementById("playerSearchInput");
     const result = document.getElementById("playerSearchResult");
     const playerId = String(input?.value || "").normalize("NFKC").toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,13);
+    const searchSequence=++playerSearchSequence;
     if (input) input.value = playerId;
     if (playerId.length !== 13) { if (result) result.innerHTML = '<div class="notice">اليوزر يجب أن يكون 13 خانة إنجليزية وأرقامًا.</div>'; return; }
-    if (!cloudReady || !cloudUser) { if (result) result.innerHTML = '<div class="notice">الاتصال السحابي غير جاهز. حدّث الصفحة وانتظر ظهور عبارة متصل بالدليل العالمي.</div>'; return; }
-    if (result) result.innerHTML = '<div class="profile-help">جاري البحث في الدليل والأصدقاء...</div>';
-    let data=null,searchError=null;
-    const direct=await cloudClient.from("player_profiles").select("user_id,player_id,display_name,avatar_url,level,xp,trophies").ilike("player_id",playerId).limit(1);
-    searchError=direct.error;data=direct.data?.[0]||null;
-    if(!data){
-      const {data:rows}=await cloudClient.from("friendships").select("user_a,user_b").or(`user_a.eq.${cloudUser.id},user_b.eq.${cloudUser.id}`).limit(500);
-      const ids=(rows||[]).map(row=>row.user_a===cloudUser.id?row.user_b:row.user_a);
-      if(ids.length){
-        const profiles=await fetchProfilesByUserIds(ids);
-        data=[...profiles.values()].find(item=>String(item.player_id||"").toUpperCase()===playerId)||null;
-      }
+    if (!cloudReady || !cloudUser) { if (result) result.innerHTML = '<div class="notice">الاتصال السحابي غير جاهز. انتظر ظهور عبارة متصل بالدليل العالمي.</div>'; return; }
+    const cached=[...profileDirectoryCache.values()].find(item=>String(item.player_id||"").toUpperCase()===playerId);
+    if(cached){
+      result.innerHTML = `<div class="search-player-card">${cached.avatar_url ? `<img src="${escapeHtml(cached.avatar_url)}" alt="">` : `<span class="search-avatar-fallback">${escapeHtml(initials(cached.display_name))}</span>`}<div style="flex:1"><strong>${escapeHtml(cached.display_name)} ${presenceMarkup(cached.user_id,"متصل")}</strong><small>${escapeHtml(cached.player_id)}</small><div class="profile-help">المستوى ${Number(cached.level)||0} · ${Number(cached.trophies)||0} كأس</div></div><button class="mini-action" data-view-remote-user="${cached.user_id}">عرض الملف</button></div>`;
+      return;
     }
-    if(!data){
-      await new Promise(resolve=>setTimeout(resolve,450));
-      const retry=await cloudClient.from("player_profiles").select("user_id,player_id,display_name,avatar_url,level,xp,trophies").eq("player_id",playerId).limit(1);
-      searchError=searchError||retry.error;data=retry.data?.[0]||null;
-    }
-    if (searchError && !data) { result.innerHTML = `<div class="notice">تعذر البحث: ${escapeHtml(searchError.message||"خطأ غير معروف")}</div>`; return; }
-    if (!data) { result.innerHTML = '<div class="notice">لم يظهر هذا اللاعب بعد. اطلب منه فتح ملفه الشخصي والانتظار 10 ثوانٍ، ثم انسخ اليوزر من زر النسخ وابحث مرة أخرى.</div>'; return; }
+    if (result) result.innerHTML = '<div class="profile-help instant-result">جاري البحث السريع...</div>';
+    const {data,error}=await cloudClient.from("player_profiles").select("user_id,player_id,display_name,avatar_url,level,xp,trophies").eq("player_id",playerId).maybeSingle();
+    if(searchSequence!==playerSearchSequence)return;
+    if(error){result.innerHTML=`<div class="notice">تعذر البحث: ${escapeHtml(error.message||"خطأ غير معروف")}</div>`;return;}
+    if(!data){result.innerHTML='<div class="notice">لم يتم العثور على هذا اليوزر. تأكد من نسخه كاملًا من زر النسخ في ملف صديقك.</div>';return;}
+    cachePlayerProfile(data);
     result.innerHTML = `<div class="search-player-card">${data.avatar_url ? `<img src="${escapeHtml(data.avatar_url)}" alt="">` : `<span class="search-avatar-fallback">${escapeHtml(initials(data.display_name))}</span>`}<div style="flex:1"><strong>${escapeHtml(data.display_name)} ${presenceMarkup(data.user_id,"متصل")}</strong><small>${escapeHtml(data.player_id)}</small><div class="profile-help">المستوى ${Number(data.level)||0} · ${Number(data.trophies)||0} كأس</div></div><button class="mini-action" data-view-remote-user="${data.user_id}">عرض الملف</button></div>`;
   }
 
@@ -2042,6 +2081,7 @@
       await syncCloudProfileNow();
       await setupRealtimeSocial();
       updateProfileUI();
+      setTimeout(()=>{friendIdsForCurrentUser(true).then(ids=>fetchProfilesByUserIds(ids)).catch(()=>{});},0);
     } catch (error) {
       cloudReady = false;
       cloudStatusText = "الحفظ المحلي يعمل";
@@ -4627,7 +4667,7 @@ function hudAvatarMarkup(index) {
       host_user_id:cloudUser.id,
       host_player_id:profile.playerId,
       host_name:profile.displayName,
-      capacity:onlineSession.capacity,
+      capacity:normalizeRoomCapacity(onlineSession.capacity,onlineSession.roomType),
       current_players:onlineSession.players.filter(Boolean).length,
       status,
       updated_at:new Date().toISOString()
@@ -4640,13 +4680,17 @@ function hudAvatarMarkup(index) {
 
   async function updateOnlineRoomRegistry(status = onlineSession.started ? "playing" : "lobby") {
     if (!cloudReady || !cloudUser || !onlineSession.isHost || !onlineSession.roomCode) return;
-    await cloudClient.from("online_rooms").update({room_name:onlineSession.roomName,current_players:onlineSession.players.filter(Boolean).length,status,updated_at:new Date().toISOString()}).eq("code",onlineSession.roomCode).eq("host_user_id",cloudUser.id);
+    await cloudClient.from("online_rooms").update({room_name:onlineSession.roomName,capacity:normalizeRoomCapacity(onlineSession.capacity,onlineSession.roomType),current_players:onlineSession.players.filter(Boolean).length,status,updated_at:new Date().toISOString()}).eq("code",onlineSession.roomCode).eq("host_user_id",cloudUser.id);
   }
 
   async function removeOnlineRoomRegistry() {
     clearInterval(roomRegistryTimer); roomRegistryTimer=null;
     if (!cloudReady || !cloudUser || !onlineSession.isHost || !onlineSession.roomCode) return;
     await cloudClient.from("online_rooms").delete().eq("code",onlineSession.roomCode).eq("host_user_id",cloudUser.id);
+  }
+
+  function renderRoomSearchResults(data,result){
+    result.innerHTML=(data||[]).map(room=>`<div class="room-result"><div><strong>${escapeHtml(room.room_name)}</strong><small>المضيف: ${escapeHtml(room.host_name||"لاعب")} · ${Number(room.current_players)||1}/${normalizeRoomCapacity(room.capacity,room.room_type)} · الرمز ${escapeHtml(room.code)}</small></div><button class="mini-action" data-join-found-room="${escapeHtml(room.code)}" data-room-type="${escapeHtml(room.room_type)}" data-room-capacity="${normalizeRoomCapacity(room.capacity,room.room_type)}">دخول</button></div>`).join("") || '<div class="notice">لم يتم العثور على غرفة متاحة بهذا الاسم.</div>';
   }
 
   async function searchOnlineRooms() {
@@ -4656,11 +4700,15 @@ function hudAvatarMarkup(index) {
     if (!result) return;
     if (!cloudReady) return result.innerHTML='<div class="notice">البحث عن الغرف يحتاج الاتصال السحابي.</div>';
     if (term.length < 2) return result.innerHTML='<div class="notice">اكتب حرفين على الأقل من اسم الغرفة.</div>';
-    result.innerHTML='<div class="profile-help">جاري البحث...</div>';
+    const cacheKey=`${onlineSession.roomType}|${term.toLocaleLowerCase("ar")}`;
+    const cached=roomSearchResultsCache.get(cacheKey);
+    if(cached&&Date.now()-cached.at<ROOM_SEARCH_CACHE_TTL){renderRoomSearchResults(cached.data,result);return;}
+    result.innerHTML='<div class="profile-help instant-result">جاري البحث السريع...</div>';
     const stale = new Date(Date.now()-10*60*1000).toISOString();
     const { data, error } = await cloudClient.from("online_rooms").select("code,room_name,room_type,host_name,capacity,current_players,status,updated_at").eq("room_type",onlineSession.roomType).eq("status","lobby").gt("updated_at",stale).ilike("room_name",`%${term}%`).order("updated_at",{ascending:false}).limit(12);
     if (error) return result.innerHTML=`<div class="notice">${escapeHtml(error.message)}</div>`;
-    result.innerHTML=(data||[]).map(room=>`<div class="room-result"><div><strong>${escapeHtml(room.room_name)}</strong><small>المضيف: ${escapeHtml(room.host_name||"لاعب")} · ${Number(room.current_players)||1}/${Number(room.capacity)||2} · الرمز ${escapeHtml(room.code)}</small></div><button class="mini-action" data-join-found-room="${escapeHtml(room.code)}" data-room-type="${escapeHtml(room.room_type)}">دخول</button></div>`).join("") || '<div class="notice">لم يتم العثور على غرفة متاحة بهذا الاسم.</div>';
+    roomSearchResultsCache.set(cacheKey,{data:data||[],at:Date.now()});
+    renderRoomSearchResults(data,result);
   }
 
   function normalizeRoomCode(value) { return String(value || "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 6); }
@@ -4812,17 +4860,20 @@ function hudAvatarMarkup(index) {
     if (onlineSession.active && onlineSession.isHost) { broadcastOnlineMessage({type:"room-closed"}); removeOnlineRoomRegistry(); }
     destroyOnlinePeer();
     Object.assign(onlineSession, {
-      active:false,isHost:false,started:false,roomCode:"",roomName:"",capacity:4,players:[],localSlot:0,roomType:previousType,
+      active:false,isHost:false,started:false,roomCode:"",roomName:"",capacity:normalizeRoomCapacity(null,previousType),requestedCapacity:normalizeRoomCapacity(null,previousType),players:[],reactions:new Map(),localSlot:0,roomType:previousType,
       stateSequence:0,lastAppliedSequence:0,lobbyMessage:"",resultShown:false
     });
     if (showHub) showRoomHub(previousType);
   }
 
-  async function friendIdsForCurrentUser(){
+  async function friendIdsForCurrentUser(force=false){
     if(!cloudReady||!cloudUser)return[];
+    if(!force&&Date.now()-friendIdsSnapshot.at<SOCIAL_CACHE_TTL)return[...friendIdsSnapshot.ids];
     const {data,error}=await cloudClient.from("friendships").select("user_a,user_b").or(`user_a.eq.${cloudUser.id},user_b.eq.${cloudUser.id}`).limit(500);
     if(error)throw error;
-    return (data||[]).map(row=>row.user_a===cloudUser.id?row.user_b:row.user_a);
+    const ids=(data||[]).map(row=>row.user_a===cloudUser.id?row.user_b:row.user_a);
+    friendIdsSnapshot={ids:[...ids],at:Date.now()};
+    return ids;
   }
 
   async function showRoomInvitePicker(){
@@ -4840,7 +4891,7 @@ function hudAvatarMarkup(index) {
     if(!onlineSession.active||!onlineSession.isHost||onlineSession.started)return gameToast("الغرفة غير متاحة للدعوات الآن");
     const friendIds=await friendIdsForCurrentUser();
     if(!friendIds.includes(receiverId))return gameToast("يمكن دعوة الأصدقاء فقط");
-    const payload={room_code:onlineSession.roomCode,room_name:onlineSession.roomName||"غرفة أصدقاء",room_type:onlineSession.roomType||"friends",sender_name:profile.displayName,sent_at:new Date().toISOString()};
+    const payload={room_code:onlineSession.roomCode,room_name:onlineSession.roomName||"غرفة أصدقاء",room_type:onlineSession.roomType||"friends",capacity:normalizeRoomCapacity(onlineSession.capacity,onlineSession.roomType),sender_name:profile.displayName,sent_at:new Date().toISOString()};
     const {error}=await cloudClient.from("private_messages").insert({sender_id:cloudUser.id,receiver_id:receiverId,body:encodeSpecialMessage(ROOM_INVITE_PREFIX,payload)});
     if(error)return gameToast(error.message||"تعذر إرسال الدعوة");
     gameToast("تم إرسال دعوة الغرفة");showRoomInvitePicker();
@@ -4855,7 +4906,7 @@ function hudAvatarMarkup(index) {
     await markMessageIdsRead([message.id]);await refreshRoomInviteCount();
     const response={status:accepted?"accepted":"rejected",room_code:invite.room_code,friend_name:profile.displayName,responded_at:new Date().toISOString()};
     await cloudClient.from("private_messages").insert({sender_id:cloudUser.id,receiver_id:message.sender_id,body:encodeSpecialMessage(ROOM_INVITE_RESPONSE_PREFIX,response)});
-    if(accepted){closeInfoModal();joinOnlineRoom(invite.room_type||"friends",invite.room_code||"");}
+    if(accepted){closeInfoModal();joinOnlineRoom(invite.room_type||"friends",invite.room_code||"",invite.capacity);}
     else{gameToast("تم رفض الدعوة");showFriendCenter("invites");}
   }
 
@@ -4891,14 +4942,17 @@ function hudAvatarMarkup(index) {
   function renderOnlineLobby() {
     if (!onlineSession.active) return showRoomHub(onlineSession.roomType || "friends");
     modalTitleEl.textContent = roomTitle();
-    const required = onlineSession.capacity;
+    const required = normalizeRoomCapacity(onlineSession.capacity,onlineSession.roomType);
+    onlineSession.capacity=required;
     const players = Array.from({length:required}, (_,slot) => onlineSession.players[slot] || null);
     const connectedCount = players.filter(Boolean).length;
     const rows = players.map((player,slot) => {
       if (!player) return `<div class="room-player"><div class="room-player-main"><span class="room-avatar">${slot+1}</span><div class="room-player-copy"><strong>المقعد ${slot+1}</strong><small>بانتظار لاعب</small></div></div><span>فارغ</span></div>`;
       const status = slot === onlineSession.localSlot ? "أنت" : slot === 0 ? "المضيف" : "متصل";
       const kick = onlineSession.isHost && slot !== 0 && !onlineSession.started ? `<button class="kick-player" data-kick-slot="${slot}">طرد</button>` : "";
-      return `<div class="room-player connected"><div class="room-player-main">${avatarMarkup(player)}<div class="room-player-copy"><strong>${escapeHtml(player.name)}</strong><small>${escapeHtml(player.playerId || "بدون يوزر")} · مستوى ${Number.isFinite(Number(player.level)) ? Number(player.level) : 0}</small><small>${required===4?onlinePlayerTeam(slot):slot===0?"المضيف":"المنافس"} — ${["أسفل","يمين","أعلى","يسار"][slot] || "أعلى"}</small></div></div><div class="room-player-actions"><span>${status}</span>${kick}</div></div>`;
+      const reaction=onlineSession.reactions.get(slot);
+      const reactionHtml=reaction&&reaction.expiresAt>Date.now()?`<span class="room-player-reaction" aria-label="تفاعل ${escapeHtml(reaction.emoji)}">${escapeHtml(reaction.emoji)}</span>`:"";
+      return `<div class="room-player connected"><div class="room-player-main">${avatarMarkup(player)}<div class="room-player-copy"><strong>${escapeHtml(player.name)}${reactionHtml}</strong><small>${escapeHtml(player.playerId || "بدون يوزر")} · مستوى ${Number.isFinite(Number(player.level)) ? Number(player.level) : 0}</small><small>${required===4?onlinePlayerTeam(slot):slot===0?"المضيف":"المنافس"} — ${["أسفل","يمين","أعلى","يسار"][slot] || "أعلى"}</small></div></div><div class="room-player-actions"><span>${status}</span>${kick}</div></div>`;
     }).join("");
     const canStart = onlineSession.isHost && connectedCount === required && !onlineSession.started;
     modalBodyEl.innerHTML = `<div class="tournament-hub">
@@ -4925,11 +4979,11 @@ function hudAvatarMarkup(index) {
   function createOnlineRoom(type, capacity, requestedName) {
     if (typeof Peer === "undefined") return showModal("تعذر تحميل الاتصال", '<p class="notice">تحقق من اتصال الإنترنت ثم حدّث الصفحة.</p>');
     leaveOnlineRoom(false);
-    const selectedCapacity = type === "tournament" ? 4 : (Number(capacity) === 4 ? 4 : 2);
+    const selectedCapacity = normalizeRoomCapacity(capacity,type);
     const roomName = normalizeRoomName(requestedName);
     if (roomName.length < 3) return showModal("اسم الغرفة مطلوب", '<p class="notice">اكتب اسمًا للغرفة من 3 أحرف على الأقل.</p>');
     const code = generateRoomCode();
-    Object.assign(onlineSession,{active:true,isHost:true,started:false,roomCode:code,roomName,capacity:selectedCapacity,players:[],localSlot:0,lobbyMessage:"جاري فتح الغرفة...",roomType:type});
+    Object.assign(onlineSession,{active:true,isHost:true,started:false,roomCode:code,roomName,capacity:selectedCapacity,requestedCapacity:selectedCapacity,players:[],reactions:new Map(),localSlot:0,lobbyMessage:"جاري فتح الغرفة...",roomType:type});
     onlineSession.players[0] = currentOnlineIdentity(0);
     const peer = new Peer(roomPeerId(code,type), {debug:1});
     onlineSession.peer = peer;
@@ -4947,6 +5001,7 @@ function hudAvatarMarkup(index) {
     connection.on("data", message => {
       if (!message || typeof message !== "object") return;
       if (message.type === "join" && connection.__slot === undefined) {
+        onlineSession.capacity=normalizeRoomCapacity(onlineSession.capacity,onlineSession.roomType);
         const freeSlot = Array.from({length:onlineSession.capacity},(_,i)=>i).find(slot=>!onlineSession.players[slot]);
         if (freeSlot === undefined) { connection.send({type:"rejected",reason:"الغرفة مكتملة."}); connection.close(); return; }
         if (message.roomType && message.roomType !== onlineSession.roomType) { connection.send({type:"rejected",reason:"نوع الغرفة غير مطابق."}); connection.close(); return; }
@@ -4962,8 +5017,8 @@ function hudAvatarMarkup(index) {
           peerId:String(message.peerId||connection.peer||""),
           connected:true
         };
-        connection.send({type:"joined",slot:freeSlot,roomCode:onlineSession.roomCode,roomName:onlineSession.roomName,capacity:onlineSession.capacity,players:onlineSession.players,roomType:onlineSession.roomType});
-        broadcastOnlineMessage({type:"lobby",players:onlineSession.players,capacity:onlineSession.capacity,roomCode:onlineSession.roomCode,roomName:onlineSession.roomName,roomType:onlineSession.roomType});
+        connection.send({type:"joined",slot:freeSlot,roomCode:onlineSession.roomCode,roomName:onlineSession.roomName,capacity:normalizeRoomCapacity(onlineSession.capacity,onlineSession.roomType),players:onlineSession.players,roomType:onlineSession.roomType});
+        broadcastOnlineMessage({type:"lobby",players:onlineSession.players,capacity:normalizeRoomCapacity(onlineSession.capacity,onlineSession.roomType),roomCode:onlineSession.roomCode,roomName:onlineSession.roomName,roomType:onlineSession.roomType});
         updateOnlineRoomRegistry("lobby");
         onlineSession.lobbyMessage=`انضم ${onlineSession.players[freeSlot].name}.`;
         renderOnlineLobby();
@@ -4990,7 +5045,7 @@ function hudAvatarMarkup(index) {
     const departed = onlineSession.players[slot]?.name;
     onlineSession.players[slot] = null;
     onlineSession.lobbyMessage = departed ? `غادر ${departed} الغرفة.` : "غادر أحد اللاعبين.";
-    broadcastOnlineMessage({type:"lobby",players:onlineSession.players,capacity:onlineSession.capacity,roomCode:onlineSession.roomCode,roomName:onlineSession.roomName,roomType:onlineSession.roomType});
+    broadcastOnlineMessage({type:"lobby",players:onlineSession.players,capacity:normalizeRoomCapacity(onlineSession.capacity,onlineSession.roomType),roomCode:onlineSession.roomCode,roomName:onlineSession.roomName,roomType:onlineSession.roomType});
     updateOnlineRoomRegistry(onlineSession.started?"playing":"lobby");
     if (!onlineSession.started) renderOnlineLobby();
   }
@@ -5004,29 +5059,40 @@ function hudAvatarMarkup(index) {
     onlineSession.connections.delete(slot);
     onlineSession.players[slot] = null;
     onlineSession.lobbyMessage = player ? `تم إخراج ${player.name} من الغرفة.` : "تم إخلاء المقعد.";
-    broadcastOnlineMessage({type:"lobby",players:onlineSession.players,capacity:onlineSession.capacity,roomCode:onlineSession.roomCode,roomName:onlineSession.roomName,roomType:onlineSession.roomType});
+    broadcastOnlineMessage({type:"lobby",players:onlineSession.players,capacity:normalizeRoomCapacity(onlineSession.capacity,onlineSession.roomType),roomCode:onlineSession.roomCode,roomName:onlineSession.roomName,roomType:onlineSession.roomType});
     updateOnlineRoomRegistry("lobby");
     renderOnlineLobby();
   }
 
-  function joinOnlineRoom(type, code) {
+  function joinOnlineRoom(type, code, capacityHint) {
     code=normalizeRoomCode(code);
     if (code.length !== 6) return showModal("بيانات غير مكتملة", '<p class="notice">اكتب رمز غرفة مكونًا من 6 خانات.</p>');
     if (typeof Peer === "undefined") return showModal("تعذر تحميل الاتصال", '<p class="notice">تحقق من اتصال الإنترنت ثم حدّث الصفحة.</p>');
     leaveOnlineRoom(false);
-    Object.assign(onlineSession,{active:true,isHost:false,started:false,roomCode:code,players:[],localSlot:-1,lobbyMessage:"جاري الاتصال بالغرفة...",roomType:type});
-    const peer = new Peer(undefined,{debug:0,pingInterval:3000}); onlineSession.peer=peer;
+    const initialCapacity=normalizeRoomCapacity(capacityHint,type);
+    Object.assign(onlineSession,{active:true,isHost:false,started:false,roomCode:code,roomName:"",capacity:initialCapacity,requestedCapacity:initialCapacity,players:[],reactions:new Map(),localSlot:-1,lobbyMessage:"جاري الاتصال بالغرفة...",roomType:type});
+    showRoomHub(type);
+    if(cloudReady){
+      cloudClient.from("online_rooms").select("room_name,room_type,capacity,status").eq("code",code).maybeSingle().then(({data})=>{
+        if(!data||!onlineSession.active||onlineSession.roomCode!==code)return;
+        onlineSession.roomName=data.room_name||onlineSession.roomName;
+        onlineSession.roomType=data.room_type||onlineSession.roomType;
+        onlineSession.capacity=normalizeRoomCapacity(data.capacity,onlineSession.roomType);
+        onlineSession.requestedCapacity=onlineSession.capacity;
+        if(!infoModalEl.classList.contains("hidden"))renderOnlineLobby();
+      }).catch(()=>{});
+    }
+    const peer = new Peer(undefined,{debug:0,pingInterval:5000}); onlineSession.peer=peer;
     peer.on("open",peerId=>{
       const conn=peer.connect(roomPeerId(code,type),{serialization:"json",reliable:true,metadata:{playerId:profile.playerId}});
       onlineSession.hostConnection=conn;
-      conn.on("open",()=>conn.send({type:"join",roomType:type,name:profile.displayName,playerId:profile.playerId,avatar:profileAvatarSource(),level:levelFromXp(profile.xp),skin:profile.equippedStriker||"classic",peerId}));
+      conn.on("open",()=>conn.send({type:"join",roomType:type,expectedCapacity:onlineSession.requestedCapacity,name:profile.displayName,playerId:profile.playerId,avatar:profileAvatarSource(),level:levelFromXp(profile.xp),skin:profile.equippedStriker||"classic",peerId}));
       conn.on("data",handleClientOnlineMessage);
       conn.on("close",()=>onlineConnectionLost());
       conn.on("error",()=>onlineConnectionLost());
     });
     peer.on("call",handleIncomingVoiceCall);
     peer.on("error",err=>{onlineSession.lobbyMessage=peerErrorMessage(err);renderOnlineLobby();});
-    showRoomHub(type);
   }
   function joinTournamentRoom(_name, code) { joinOnlineRoom("tournament", code); }
   function joinFriendsRoom(code) { joinOnlineRoom("friends", code); }
@@ -5034,17 +5100,17 @@ function hudAvatarMarkup(index) {
   function handleClientOnlineMessage(message) {
     if (!message || typeof message !== "object") return;
     if (message.type === "joined") {
-      onlineSession.localSlot=message.slot; onlineSession.capacity=message.capacity; onlineSession.players=message.players||[]; onlineSession.roomName=message.roomName||onlineSession.roomName; onlineSession.roomType=message.roomType||onlineSession.roomType;
+      onlineSession.localSlot=message.slot; onlineSession.roomType=message.roomType||onlineSession.roomType; onlineSession.capacity=normalizeRoomCapacity(message.capacity,onlineSession.roomType); onlineSession.requestedCapacity=onlineSession.capacity; onlineSession.players=message.players||[]; onlineSession.roomName=message.roomName||onlineSession.roomName;
       onlineSession.lobbyMessage="تم الاتصال بالغرفة بنجاح."; renderOnlineLobby();
     } else if (message.type === "rejected") {
       onlineSession.lobbyMessage=message.reason||"تعذر دخول الغرفة."; renderOnlineLobby();
     } else if (message.type === "lobby") {
-      onlineSession.players=message.players||onlineSession.players; onlineSession.capacity=message.capacity||onlineSession.capacity; onlineSession.roomName=message.roomName||onlineSession.roomName; onlineSession.roomType=message.roomType||onlineSession.roomType; renderOnlineLobby();
+      onlineSession.roomType=message.roomType||onlineSession.roomType; onlineSession.players=message.players||onlineSession.players; onlineSession.capacity=normalizeRoomCapacity(message.capacity||onlineSession.capacity,onlineSession.roomType); onlineSession.requestedCapacity=onlineSession.capacity; onlineSession.roomName=message.roomName||onlineSession.roomName; renderOnlineLobby();
     } else if (message.type === "kicked") {
       const reason = message.reason || "تم إخراجك من الغرفة.";
       destroyOnlinePeer(); onlineSession.active=false; onlineSession.started=false;
       showModal("تم إخراجك من الغرفة", `<p class="notice">${escapeHtml(reason)}</p>`);
-    } else if (message.type === "reaction") showRoomReaction(message.emoji,message.senderName||"لاعب");
+    } else if (message.type === "reaction") showRoomReaction(message.emoji,message.senderName||"لاعب",message.senderSlot);
     else if (message.type === "start") startOnlineClientMatch(message);
     else if (message.type === "state") applyOnlineState(message);
     else if (message.type === "result") showModal(message.title||"انتهت المباراة", message.html||"");
@@ -5069,7 +5135,7 @@ function hudAvatarMarkup(index) {
     updateOnlineRoomRegistry("playing");
     infoModalEl.classList.add("hidden");
     startGame("online", onlineSession.capacity);
-    broadcastOnlineMessage({type:"start",capacity:onlineSession.capacity,players:onlineSession.players,roomCode:onlineSession.roomCode,roomName:onlineSession.roomName,roomType:onlineSession.roomType,theme:currentTheme});
+    broadcastOnlineMessage({type:"start",capacity:normalizeRoomCapacity(onlineSession.capacity,onlineSession.roomType),players:onlineSession.players,roomCode:onlineSession.roomCode,roomName:onlineSession.roomName,roomType:onlineSession.roomType,theme:currentTheme});
     broadcastOnlineState(true);
   }
 
@@ -5266,7 +5332,7 @@ function hudAvatarMarkup(index) {
     else if (saveSettings) saveGameSettings();
     else if (closeSettings) closeInfoModal();
     else if (searchRooms) searchOnlineRooms();
-    else if (joinFoundRoom) joinOnlineRoom(joinFoundRoom.dataset.roomType || onlineSession.roomType, joinFoundRoom.dataset.joinFoundRoom);
+    else if (joinFoundRoom) joinOnlineRoom(joinFoundRoom.dataset.roomType || onlineSession.roomType, joinFoundRoom.dataset.joinFoundRoom, joinFoundRoom.dataset.roomCapacity);
     else if (roomReaction) sendRoomReaction(roomReaction.dataset.roomReaction);
     else if (openRoomInvites) showRoomInvitePicker();
     else if (inviteFriendRoom) sendRoomInvitation(inviteFriendRoom.dataset.inviteFriendRoom);
@@ -5276,10 +5342,6 @@ function hudAvatarMarkup(index) {
     else if (resultBack) { closeInfoModal(); backToMenu(); }
   });
 
-  document.addEventListener("click",event=>{
-    const button=event.target.closest("[data-room-reaction]");
-    if(button&&!modalBodyEl.contains(button))sendRoomReaction(button.dataset.roomReaction);
-  });
 
   modalBodyEl.addEventListener("change", event => {
     if (event.target?.id === "profileAvatarInput" && event.target.files?.[0]) changeProfileAvatar(event.target.files[0]);

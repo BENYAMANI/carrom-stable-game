@@ -2,10 +2,10 @@
   "id": "./",
   "name": "محمد عبدالله",
   "short_name": "محمد عبدالله",
-  "description": "لعبة كيرم عربية بواجهة بيج فاخرة، ألواح بطولات كاملة، دعوات غرف للأصدقاء وتفاعلات مباشرة.",
+  "description": "لعبة كيرم عربية سريعة مع غرف صحيحة للاعبين أو أربعة، بحث فوري وتفاعلات داخل الغرفة فقط.",
   "lang": "ar",
   "dir": "rtl",
-  "start_url": "./?source=pwa&v=24",
+  "start_url": "./?source=pwa&v=25",
   "scope": "./",
   "display": "standalone",
   "display_override": [
