@@ -2,10 +2,10 @@
   "id": "./",
   "name": "محمد عبدالله",
   "short_name": "محمد عبدالله",
-  "description": "لعبة كيرم عربية بلوح كيرم كلاسيكي احترافي ومتجر ألواح وتثبيت على أندرويد وآيفون.",
+  "description": "لعبة كيرم عربية بواجهة بيج فاخرة، ألواح بطولات كاملة، دعوات غرف للأصدقاء وتفاعلات مباشرة.",
   "lang": "ar",
   "dir": "rtl",
-  "start_url": "./?source=pwa&v=23",
+  "start_url": "./?source=pwa&v=24",
   "scope": "./",
   "display": "standalone",
   "display_override": [
@@ -13,8 +13,8 @@
     "minimal-ui"
   ],
   "orientation": "any",
-  "background_color": "#07101f",
-  "theme_color": "#0f172a",
+  "background_color": "#eadcc6",
+  "theme_color": "#eadcc6",
   "categories": [
     "games",
     "entertainment"

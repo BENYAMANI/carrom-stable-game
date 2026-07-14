@@ -1,4 +1,4 @@
-const CACHE_NAME = "carrom-v23-classic-board-name";
+const CACHE_NAME = "carrom-v24-beige-friends-invites";
 const APP_SHELL = [
   "./",
   "./index.html",
