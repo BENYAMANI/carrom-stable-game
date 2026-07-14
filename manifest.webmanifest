@@ -1,11 +1,11 @@
 {
   "id": "./",
-  "name": "كيرم محمد عبدالله الجابري v22",
-  "short_name": "كيرم v22",
-  "description": "لعبة كيرم عربية بمتجر ألواح خشبية كاملة وتثبيت على أندرويد وآيفون.",
+  "name": "محمد عبدالله",
+  "short_name": "محمد عبدالله",
+  "description": "لعبة كيرم عربية بلوح كيرم كلاسيكي احترافي ومتجر ألواح وتثبيت على أندرويد وآيفون.",
   "lang": "ar",
   "dir": "rtl",
-  "start_url": "./?source=pwa&v=22",
+  "start_url": "./?source=pwa&v=23",
   "scope": "./",
   "display": "standalone",
   "display_override": [

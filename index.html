@@ -4,12 +4,12 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#0f172a" />
-  <title>كيرم محمد عبدالله الجابري — v22</title>
+  <title>محمد عبدالله — v23</title>
   <meta name="description" content="لعبة كيرم عربية أون لاين بملفات شخصية وصداقات ودردشة خاصة وغرف أون لاين ومهام يومية." />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="كيرم" />
+  <meta name="apple-mobile-web-app-title" content="محمد عبدالله" />
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png" />
   <link rel="apple-touch-icon" href="./icon-192.png" />
@@ -714,7 +714,7 @@
     }
 
 
-    /* ===== v21/v22: professional HUD and full premium boards ===== */
+    /* ===== v21/v23: professional HUD and full premium boards ===== */
     .match-hud-v21{display:grid;grid-template-columns:minmax(0,1fr) auto 82px;gap:10px;align-items:center;width:100%;padding:8px 10px;border-radius:16px;background:linear-gradient(135deg,rgba(15,23,42,.98),rgba(23,32,51,.96));border:1px solid rgba(255,255,255,.12);box-shadow:0 10px 28px rgba(0,0,0,.28);direction:rtl}
     .hud-players-v21{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;min-width:0}
     .hud-player-v21{position:relative;display:flex;align-items:center;gap:8px;min-width:0;padding:6px 8px;border-radius:12px;background:#0b1323;border:1px solid rgba(255,255,255,.08);transition:.15s ease}
@@ -728,7 +728,7 @@
     @media(max-width:430px){.match-hud-v21{grid-template-columns:minmax(0,1fr) 78px 48px}.hud-player-v21:nth-child(n+3){display:none}.hud-score-v21 strong{font-size:16px}.turn-ring-v21{width:44px;height:44px}.turn-ring-v21 strong{font-size:13px}}
 
 
-    /* ===== v22: full board store + Android/iPhone installation ===== */
+    /* ===== v23: full board store + Android/iPhone installation ===== */
     .install-platform-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 9px}
     .platform-install{min-height:52px;border-radius:14px;border:1px solid rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;gap:9px;font-weight:900;color:#fff;padding:9px 12px;box-shadow:0 10px 24px rgba(0,0,0,.18)}
     .platform-install.android{background:linear-gradient(135deg,#166534,#15803d);border-color:rgba(74,222,128,.52)}
@@ -758,7 +758,7 @@
   <main class="app">
     <header>
       <p class="eyebrow">لعبة كيرم مستقرة — ملف واحد فقط</p>
-      <h1>كيرم محمد عبدالله الجابري</h1>
+      <h1>محمد عبدالله</h1>
       <p>متجر متكامل للمضارب والألواح الخشبية الكاملة، مع تثبيت اللعبة على أندرويد وآيفون.</p>
     </header>
 
@@ -864,7 +864,7 @@
 
     <footer>
       <div>جميع الحقوق محفوظة © 2026</div>
-      <strong>تطوير اللعبة بواسطة محمد عبدالله الجابري</strong>
+      <strong>تطوير اللعبة بواسطة محمد عبدالله</strong>
     </footer>
   </main>
 
@@ -2757,7 +2757,7 @@
 
 
   const BOARD_SHOP = [
-    {id:"maple",name:"اللوح الكلاسيكي الاحترافي",price:0,category:"professional",construction:"بطولات",model:"tournament",description:"خشب قيقب كامل بعروق طبيعية، حواف مصقولة وخطوط رسمية للبطولات."},
+    {id:"maple",name:"اللوح الكلاسيكي الاحترافي",price:0,category:"professional",construction:"بطولات",model:"tournament",description:"لوح خشبي كلاسيكي احترافي بسطح قيقب فاتح، إطار أسود، خطوط حمراء رسمية ونجمة بوصلة في المنتصف."},
     {id:"mahogany",name:"لوح الماهوجني الملكي",price:650,category:"luxury",construction:"إطار ملكي",model:"royal",description:"هيكل ماهوجني داكن كامل، إطار ذهبي ونقوش محفورة في الحواف."},
     {id:"walnut",name:"لوح الجوز الأمريكي",price:380,category:"woods",construction:"Walnut",model:"walnut",description:"لوح كامل من الجوز بعروق عميقة، زوايا قوية ولمعان فاخر."},
     {id:"oak",name:"لوح البلوط الأوروبي",price:320,category:"woods",construction:"إطار عريض",model:"wide-oak",description:"بناء بلوط طبيعي بإطار عريض ووصلات معدنية صغيرة."},
@@ -3386,6 +3386,14 @@
   function renderBoardPreview(previewCanvas, themeId){
     const c=previewCanvas.getContext("2d"),style=THEME_STYLES[themeId]||THEME_STYLES.maple,board=boardById(themeId),w=previewCanvas.width,h=previewCanvas.height;
     c.clearRect(0,0,w,h);c.save();c.scale(w/900,h/900);
+    if(themeId === "maple") {
+      const outer=c.createLinearGradient(0,0,900,900);outer.addColorStop(0,"#262a2e");outer.addColorStop(.5,"#08090b");outer.addColorStop(1,"#1d2023");c.fillStyle=outer;c.fillRect(0,0,900,900);
+      const surf=c.createLinearGradient(55,55,845,845);surf.addColorStop(0,"#fff7dc");surf.addColorStop(.55,"#eed69d");surf.addColorStop(1,"#d8b670");c.fillStyle=surf;c.fillRect(50,50,800,800);
+      c.strokeStyle="#090b0d";c.lineWidth=17;c.strokeRect(50,50,800,800);c.strokeStyle="#821f18";c.lineWidth=4;c.strokeRect(115,115,670,670);
+      const base=(x1,y1,x2,y2)=>{c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);c.stroke();};c.strokeStyle="#8d2018";c.lineWidth=5;base(205,150,695,150);base(205,184,695,184);base(205,716,695,716);base(205,750,695,750);base(150,205,150,695);base(184,205,184,695);base(716,205,716,695);base(750,205,750,695);
+      c.save();c.translate(450,450);c.beginPath();for(let i=0;i<32;i++){const a=-Math.PI/2+i*Math.PI/16,r=i%2===0?75:(i%4===1?36:49),x=Math.cos(a)*r,y=Math.sin(a)*r;i?c.lineTo(x,y):c.moveTo(x,y);}c.closePath();c.fillStyle="#292c30";c.fill();c.strokeStyle="#7d1d17";c.lineWidth=5;c.stroke();c.beginPath();c.arc(0,0,17,0,Math.PI*2);c.fillStyle="#dc291e";c.fill();c.restore();
+      [[55,55],[845,55],[55,845],[845,845]].forEach(([x,y])=>{c.beginPath();c.arc(x,y,50,0,Math.PI*2);c.fillStyle="#9eb532";c.fill();c.beginPath();c.arc(x,y,36,0,Math.PI*2);c.fillStyle="#050505";c.fill();});c.restore();return;
+    }
     const fs=style.frame||["#c98a4a","#a96531","#7c421f","#4f2813"],ss=style.surface||["#fff0cf","#efd29a","#d9b277"];
     const frame=c.createLinearGradient(0,0,900,900);frame.addColorStop(0,fs[0]);frame.addColorStop(.35,fs[1]);frame.addColorStop(.7,fs[2]);frame.addColorStop(1,fs[3]);c.fillStyle=frame;c.fillRect(0,0,900,900);
     const surface=c.createLinearGradient(70,70,830,830);surface.addColorStop(0,ss[0]);surface.addColorStop(.5,ss[1]);surface.addColorStop(1,ss[2]);c.fillStyle=surface;c.fillRect(80,80,740,740);
@@ -3725,7 +3733,166 @@
     ctx.restore();
   }
 
+
+  function drawClassicReferenceBoard(style) {
+    ctx.clearRect(0, 0, BOARD_SIZE, BOARD_SIZE);
+
+    // Deep black tournament frame similar to the supplied reference board.
+    const outer = ctx.createLinearGradient(0, 0, 900, 900);
+    outer.addColorStop(0, "#25282c");
+    outer.addColorStop(.32, "#090b0d");
+    outer.addColorStop(.68, "#181a1d");
+    outer.addColorStop(1, "#030405");
+    ctx.fillStyle = outer;
+    ctx.fillRect(0, 0, 900, 900);
+
+    // Metallic corner protectors.
+    [[18,18,0],[882,18,Math.PI/2],[882,882,Math.PI],[18,882,-Math.PI/2]].forEach(([x,y,r]) => {
+      ctx.save(); ctx.translate(x,y); ctx.rotate(r);
+      const metal = ctx.createLinearGradient(-20,-20,22,22);
+      metal.addColorStop(0,"#e5e7eb"); metal.addColorStop(.35,"#65707a");
+      metal.addColorStop(.7,"#111827"); metal.addColorStop(1,"#d7dde3");
+      ctx.fillStyle = metal;
+      ctx.beginPath(); ctx.moveTo(-17,-17); ctx.lineTo(28,-17); ctx.lineTo(-17,28); ctx.closePath(); ctx.fill();
+      ctx.strokeStyle = "rgba(255,255,255,.45)"; ctx.lineWidth = 2; ctx.stroke();
+      ctx.restore();
+    });
+
+    // Maple playing surface.
+    ctx.save();
+    ctx.shadowColor = "rgba(0,0,0,.52)"; ctx.shadowBlur = 26; ctx.shadowOffsetY = 10;
+    const surface = ctx.createLinearGradient(54,54,846,846);
+    surface.addColorStop(0,"#fff7d9");
+    surface.addColorStop(.42,"#f3dfac");
+    surface.addColorStop(.74,"#e5c888");
+    surface.addColorStop(1,"#d7b46e");
+    ctx.fillStyle = surface; ctx.fillRect(48,48,804,804);
+    ctx.restore();
+
+    // Maple wood grain.
+    ctx.save(); ctx.beginPath(); ctx.rect(48,48,804,804); ctx.clip();
+    for (let i=0;i<24;i++) {
+      const y=68+i*33;
+      ctx.strokeStyle = i%3===0 ? "rgba(121,78,35,.12)" : "rgba(121,78,35,.065)";
+      ctx.lineWidth = i%4===0 ? 1.7 : 1;
+      ctx.beginPath(); ctx.moveTo(52,y);
+      ctx.bezierCurveTo(210,y-12+(i%4)*3,530,y+13-(i%3)*4,848,y-4);
+      ctx.stroke();
+    }
+    for (let i=0;i<8;i++) {
+      const x=110+i*96;
+      ctx.strokeStyle="rgba(255,255,255,.08)"; ctx.lineWidth=1;
+      ctx.beginPath(); ctx.moveTo(x,52); ctx.quadraticCurveTo(x+24,450,x-8,848); ctx.stroke();
+    }
+    ctx.restore();
+
+    // Inner black rails and thin red tournament boundary.
+    ctx.strokeStyle="#07090b"; ctx.lineWidth=16; ctx.strokeRect(48,48,804,804);
+    ctx.strokeStyle="rgba(255,255,255,.22)"; ctx.lineWidth=2; ctx.strokeRect(59,59,782,782);
+    ctx.strokeStyle="#7e1f18"; ctx.lineWidth=2.6; ctx.strokeRect(112,112,676,676);
+
+    // Branded top/bottom frame, kept subtle and readable.
+    ctx.save(); ctx.fillStyle="#f8fafc"; ctx.font="700 24px Arial"; ctx.textAlign="center";
+    ctx.fillText("محمد عبدالله",450,31);
+    ctx.save(); ctx.translate(450,869); ctx.rotate(Math.PI); ctx.fillText("محمد عبدالله",0,0); ctx.restore();
+    ctx.restore();
+
+    const lineColor = "#8d2018";
+    const darkDot = "#151719";
+    function baselineHorizontal(y1,y2,x1=205,x2=695){
+      ctx.strokeStyle=lineColor; ctx.lineWidth=4; ctx.lineCap="round";
+      ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y1); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(x1,y2); ctx.lineTo(x2,y2); ctx.stroke();
+      [[x1,y1],[x2,y1],[x1,y2],[x2,y2]].forEach(([x,y])=>{
+        ctx.beginPath(); ctx.arc(x,y,13,0,Math.PI*2); ctx.fillStyle="#e94132"; ctx.fill();
+        ctx.strokeStyle="#5d1712"; ctx.lineWidth=3; ctx.stroke();
+        ctx.beginPath(); ctx.arc(x,y,7,0,Math.PI*2); ctx.fillStyle=darkDot; ctx.fill();
+      });
+    }
+    function baselineVertical(x1,x2,y1=205,y2=695){
+      ctx.strokeStyle=lineColor; ctx.lineWidth=4; ctx.lineCap="round";
+      ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x1,y2); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(x2,y1); ctx.lineTo(x2,y2); ctx.stroke();
+      [[x1,y1],[x1,y2],[x2,y1],[x2,y2]].forEach(([x,y])=>{
+        ctx.beginPath(); ctx.arc(x,y,13,0,Math.PI*2); ctx.fillStyle="#e94132"; ctx.fill();
+        ctx.strokeStyle="#5d1712"; ctx.lineWidth=3; ctx.stroke();
+        ctx.beginPath(); ctx.arc(x,y,7,0,Math.PI*2); ctx.fillStyle=darkDot; ctx.fill();
+      });
+    }
+    baselineHorizontal(150,184);
+    baselineHorizontal(716,750);
+    baselineVertical(150,184);
+    baselineVertical(716,750);
+
+    // Diagonal guide lines from baselines toward pockets.
+    ctx.strokeStyle="rgba(25,25,25,.72)"; ctx.lineWidth=1.6;
+    [[205,150,78,78],[695,150,822,78],[205,750,78,822],[695,750,822,822],
+     [150,205,78,78],[150,695,78,822],[750,205,822,78],[750,695,822,822]].forEach(l=>{
+      ctx.beginPath();ctx.moveTo(l[0],l[1]);ctx.lineTo(l[2],l[3]);ctx.stroke();
+      const a=Math.atan2(l[3]-l[1],l[2]-l[0]);
+      ctx.beginPath();ctx.moveTo(l[2],l[3]);ctx.lineTo(l[2]-13*Math.cos(a-.42),l[3]-13*Math.sin(a-.42));
+      ctx.moveTo(l[2],l[3]);ctx.lineTo(l[2]-13*Math.cos(a+.42),l[3]-13*Math.sin(a+.42));ctx.stroke();
+    });
+
+    // Four circular rebound/aim motifs.
+    function cornerMotif(x,y,rot){
+      ctx.save();ctx.translate(x,y);ctx.rotate(rot);ctx.strokeStyle="rgba(28,32,34,.82)";ctx.lineWidth=2;
+      ctx.beginPath();ctx.arc(0,0,31,0,Math.PI*2);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(-42,42);ctx.lineTo(42,-42);ctx.stroke();
+      ctx.beginPath();ctx.arc(-38,-9,22,-1.2,1.25);ctx.stroke();
+      ctx.beginPath();ctx.arc(-51,-7,13,-1.05,1.15);ctx.stroke();
+      ctx.beginPath();ctx.arc(-60,-4,7,-.9,1);ctx.stroke();
+      ctx.restore();
+    }
+    cornerMotif(290,290,0);
+    cornerMotif(610,290,Math.PI/2);
+    cornerMotif(610,610,Math.PI);
+    cornerMotif(290,610,-Math.PI/2);
+
+    // Central compass-star medallion.
+    ctx.save();ctx.translate(450,450);
+    ctx.strokeStyle="#7a1c18";ctx.lineWidth=4;
+    ctx.beginPath();ctx.arc(0,0,86,0,Math.PI*2);ctx.stroke();
+    ctx.beginPath();ctx.arc(0,0,68,0,Math.PI*2);ctx.stroke();
+    ctx.beginPath();
+    for(let i=0;i<32;i++){
+      const a=-Math.PI/2+i*Math.PI/16;
+      const r=i%2===0?69:(i%4===1?35:47);
+      const x=Math.cos(a)*r,y=Math.sin(a)*r;
+      if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+    }
+    ctx.closePath();
+    const starFill=ctx.createLinearGradient(-70,-70,70,70);
+    starFill.addColorStop(0,"#f8e8a8");starFill.addColorStop(.5,"#272a2e");starFill.addColorStop(1,"#d6a63a");
+    ctx.fillStyle=starFill;ctx.fill();ctx.strokeStyle="#47140f";ctx.lineWidth=2.2;ctx.stroke();
+    ctx.beginPath();ctx.arc(0,0,15,0,Math.PI*2);ctx.fillStyle="#d72418";ctx.fill();ctx.strokeStyle="#50100b";ctx.lineWidth=3;ctx.stroke();
+    ctx.restore();
+
+    // Reference-style green felt pocket rims with deep black holes.
+    for(const p of pocketCenters){
+      const felt=ctx.createRadialGradient(p.x-8,p.y-9,2,p.x,p.y,POCKET_RADIUS+16);
+      felt.addColorStop(0,"#d7ef58");felt.addColorStop(.48,"#92a928");felt.addColorStop(1,"#33400d");
+      ctx.beginPath();ctx.arc(p.x,p.y,POCKET_RADIUS+15,0,Math.PI*2);ctx.fillStyle=felt;ctx.fill();
+      const hole=ctx.createRadialGradient(p.x-9,p.y-10,3,p.x,p.y,POCKET_RADIUS);
+      hole.addColorStop(0,"#24201b");hole.addColorStop(.55,"#070707");hole.addColorStop(1,"#000");
+      ctx.beginPath();ctx.arc(p.x,p.y,POCKET_RADIUS,0,Math.PI*2);ctx.fillStyle=hole;ctx.fill();
+      ctx.strokeStyle="rgba(255,255,255,.18)";ctx.lineWidth=2;ctx.stroke();
+    }
+
+    // Soft surface sheen.
+    const shine=ctx.createRadialGradient(320,170,20,420,340,620);
+    shine.addColorStop(0,"rgba(255,255,255,.22)");shine.addColorStop(.45,"rgba(255,255,255,.055)");shine.addColorStop(1,"rgba(255,255,255,0)");
+    ctx.fillStyle=shine;ctx.fillRect(48,48,804,804);
+  }
+
   function renderStaticBoard(style) {
+    if (currentTheme === "maple") {
+      drawClassicReferenceBoard(style);
+      staticBoardCacheCtx.clearRect(0,0,BOARD_SIZE,BOARD_SIZE);
+      staticBoardCacheCtx.drawImage(canvas,0,0);
+      staticBoardCacheKey=currentTheme;
+      return;
+    }
     ctx.clearRect(0,0,BOARD_SIZE,BOARD_SIZE);
     const frame=ctx.createLinearGradient(0,0,900,900);
     const fs=style.frame||["#bd7739","#975827","#6a3818","#3d1c0d"];
