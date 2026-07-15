@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#0f172a" />
-  <title>محمد عبدالله — v25</title>
-  <meta name="description" content="لعبة كيرم عربية سريعة مع غرف صحيحة للاعبين أو أربعة، بحث فوري وتفاعلات داخل الغرفة فقط." />
+  <title>محمد عبدالله — v26</title>
+  <meta name="description" content="لعبة كيرم عربية سريعة مع غرف صحيحة للاعبين أو أربعة، مؤقتات محسنة وواجهة فاتحة." />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -753,7 +753,7 @@
     @media(max-width:600px){.install-platform-grid{grid-template-columns:1fr}.platform-install{min-height:46px}.board-shop-grid{grid-template-columns:1fr}.board-preview{height:145px}.board-owned-strip{grid-template-columns:1fr}}
 
 
-    /* ===== v25: beige luxury UI, room reactions and invitations ===== */
+    /* ===== legacy v25 styles retained but disabled by v26 light-only mode ===== */
     body.beige-mode{
       --bg:#eadcc6;--panel:#f7eddd;--panel-2:#efe2ce;--text:#3b2b20;--muted:#765f4c;--border:rgba(92,64,39,.20);
       background:
@@ -806,7 +806,7 @@
     @media(max-width:600px){.room-invite-card,.invite-friend-row{align-items:flex-start;flex-direction:column}.room-invite-actions{width:100%}.invite-yes,.invite-no{flex:1}.room-reaction-bar{justify-content:center}.reaction-btn{width:36px;height:36px}}
 
 
-    /* ===== v25: correct room capacity, faster social UI, lobby-only reactions ===== */
+    /* ===== legacy v25 room styles ===== */
     .game-reaction-bar{display:none!important}
     .room-reaction-pop{display:none!important}
     .room-player strong{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
@@ -816,6 +816,21 @@
     .info-modal .modal-body{content-visibility:auto;contain-intrinsic-size:480px}
     .instant-result{opacity:.78}
 
+
+    /* ===== v26: light-only UI, top back arrow, result labels ===== */
+    .modal-card{position:relative;padding-top:62px!important}
+    .modal-back-arrow{position:absolute;top:14px;inset-inline-start:14px;width:42px;height:42px;border-radius:12px;border:1px solid #cbd5e1;background:#f8fafc;color:#0f172a;font-size:25px;font-weight:1000;display:grid;place-items:center;line-height:1;box-shadow:0 6px 18px rgba(15,23,42,.12)}
+    .modal-back-arrow:hover{transform:translateX(-2px);background:#eef2f7}
+    .result-badge{display:inline-flex;align-items:center;justify-content:center;margin-top:7px;padding:5px 10px;border-radius:999px;font-size:11px;font-weight:1000;letter-spacing:1.1px}
+    .result-badge.winner{background:rgba(34,197,94,.16);border:1px solid rgba(34,197,94,.45);color:#15803d}
+    .result-badge.loser{background:rgba(239,68,68,.13);border:1px solid rgba(239,68,68,.38);color:#b91c1c}
+    .result-badge.draw{background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.42);color:#a16207}
+    .ai-level-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
+    .ai-level-button{min-height:82px;border:1px solid #cbd5e1;border-radius:15px;background:#f8fafc;color:#0f172a;padding:12px;font-weight:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px}
+    .ai-level-button:hover{border-color:#2563eb;background:#eff6ff;transform:translateY(-2px)}
+    .ai-level-button small{font-size:10px;color:#64748b;font-weight:700}
+    @media(max-width:520px){.ai-level-grid{grid-template-columns:1fr}.modal-card{padding-top:58px!important}.modal-back-arrow{top:10px;inset-inline-start:10px}}
+
   </style>
 </head>
 <body>
@@ -823,7 +838,7 @@
     <header>
       <p class="eyebrow">لعبة كيرم مستقرة — ملف واحد فقط</p>
       <h1>محمد عبدالله</h1>
-      <p>واجهة بيج فاخرة، ألواح بطولات كاملة، تفاعلات داخل الغرف ودعوات خاصة للأصدقاء.</p>
+      <p>واجهة فاتحة، ألواح بطولات كاملة، غرف أصدقاء ودعوات خاصة.</p>
     </header>
 
     <section id="menu" class="menu panel menu-dashboard">
@@ -849,7 +864,7 @@
       <div class="menu-heading-row"><div><h2>اختر أسلوب اللعب</h2><p>اللعب المحلي أو عبر الإنترنت من شاشة واحدة.</p></div></div>
 
       <div class="hidden-control-selects" aria-hidden="true">
-        <select id="difficulty"><option value="hard" selected>متقدم</option><option value="expert">محترف</option><option value="legendary">أسطوري</option></select>
+        <select id="difficulty"><option value="beginner">مبتدئ</option><option value="hard" selected>متقدم</option><option value="expert">محترف</option><option value="legendary">أسطوري</option></select>
         <select id="theme"><option value="arabic" selected>عربي</option><option value="indian">هندي</option><option value="royal">ملكي</option><option value="classic">كلاسيكي</option><option value="modern">عصري</option></select>
       </div>
 
@@ -920,9 +935,9 @@
 
     <div id="infoModal" class="modal hidden" role="dialog" aria-modal="true">
       <div class="modal-card">
+        <button id="closeModal" class="modal-back-arrow" type="button" aria-label="العودة" title="العودة">←</button>
         <h2 id="modalTitle">التصنيف والإنجازات</h2>
         <div id="modalBody"></div>
-        <button id="closeModal" class="btn primary">إغلاق</button>
       </div>
     </div>
 
@@ -947,7 +962,7 @@
   const WALL_MAX = BOARD_SIZE - 54;
   const BASELINE_NEAR = 145;
   const BASELINE_FAR = BOARD_SIZE - 145;
-  const SHOT_SECONDS = 7;
+  const SHOT_SECONDS = 5;
   const TURN_SECONDS = 10;
   const BASE_LEVEL_XP = 100;
   const NAME_CHANGE_COST = 100;
@@ -1015,8 +1030,8 @@
   let aimVisible = true;
   let soundEnabled = localStorage.getItem("carrom-sound-enabled") !== "false";
   let masterVolume = Math.max(0, Math.min(1, Number(localStorage.getItem("carrom-master-volume") ?? .8)));
-  let appearanceMode = localStorage.getItem("carrom-appearance") || "beige";
-  if (appearanceMode === "dark") appearanceMode = "beige";
+  let appearanceMode = "light";
+  localStorage.setItem("carrom-appearance", "light");
   let onlineVisibility = localStorage.getItem("carrom-online-visibility") !== "false";
   let shotScored = false;
   let strikerFoul = false;
@@ -1103,16 +1118,53 @@
   function addScore(index, points) {
     if (isTeamGame()) {
       const team = teamIndexForPlayer(index);
-      teamScores[team] = Math.max(0, (teamScores[team] || 0) + points);
+      teamScores[team] = (teamScores[team] || 0) + points;
       scores[index] = teamScores[team];
       scores[(index + 2) % 4] = teamScores[team];
-    } else scores[index] = Math.max(0, (scores[index] || 0) + points);
+    } else scores[index] = (scores[index] || 0) + points;
   }
   function deductScore(index, points) {
-    const available = playerScore(index);
-    const deduction = Math.min(points, available);
-    addScore(index, -deduction);
+    const deduction = Math.max(0, Number(points) || 0);
+    if (isTeamGame()) {
+      const team = teamIndexForPlayer(index);
+      teamScores[team] = (teamScores[team] || 0) - deduction;
+      scores[index] = teamScores[team];
+      scores[(index + 2) % 4] = teamScores[team];
+    } else scores[index] = (scores[index] || 0) - deduction;
     return deduction;
+  }
+
+  function safePenaltyReturnPosition(order = 0) {
+    const candidates = [
+      {x:450,y:450},{x:410,y:450},{x:490,y:450},{x:450,y:410},{x:450,y:490},
+      {x:390,y:390},{x:510,y:390},{x:390,y:510},{x:510,y:510},{x:450,y:350},{x:450,y:550}
+    ];
+    const ordered = candidates.slice(order).concat(candidates.slice(0,order));
+    return ordered.find(pos =>
+      pocketCenters.every(pocket => distance(pos,pocket) > 100) &&
+      discs.filter(d => d.active && d.kind !== "striker").every(d => Math.hypot(d.x-pos.x,d.y-pos.y) > d.r + PIECE_RADIUS + 8)
+    ) || {x:450 + order*42,y:450};
+  }
+
+  function reactivatePenaltyPiece(disc, order = 0) {
+    if (!disc) return false;
+    const position = safePenaltyReturnPosition(order);
+    disc.active = true;
+    disc.x = position.x; disc.y = position.y;
+    disc.vx = 0; disc.vy = 0; disc.omega = 0; disc.angle = 0;
+    return true;
+  }
+
+  function returnTenPenaltyPointsToBoard() {
+    const white = discs.find(d => !d.active && d.kind === "white");
+    if (white && reactivatePenaltyPiece(white,0)) return "وأُعيدت قطعة بيضاء واحدة إلى الميدان";
+    const blacks = discs.filter(d => !d.active && d.kind === "black").slice(0,2);
+    if (blacks.length === 2) {
+      reactivatePenaltyPiece(blacks[0],0);
+      reactivatePenaltyPiece(blacks[1],1);
+      return "وأُعيدت قطعتان سوداوان إلى الميدان";
+    }
+    return "ولم توجد قطع سابقة كافية لإعادتها إلى الميدان";
   }
   function playerName(index) {
     if (mode === "ai" && index === 1) return "الذكاء الاصطناعي";
@@ -1243,7 +1295,7 @@
 
   const ROOM_INVITE_PREFIX = "[[ROOM_INVITE]]";
   const ROOM_INVITE_RESPONSE_PREFIX = "[[ROOM_INVITE_RESPONSE]]";
-  const ROOM_REACTIONS = ["😭","😈","😊","😂","😢","😎"];
+  const ROOM_REACTIONS = [];
 
   function encodeSpecialMessage(prefix,payload){
     try{return prefix+JSON.stringify(payload||{});}catch(_){return prefix+"{}";}
@@ -1434,12 +1486,13 @@
   }
 
 
-  function applyAppearanceMode(mode = appearanceMode) {
-    appearanceMode = mode === "light" ? "light" : "beige";
-    document.body.classList.toggle("light-mode", appearanceMode === "light");
-    document.body.classList.toggle("beige-mode", appearanceMode === "beige");
+  function applyAppearanceMode() {
+    appearanceMode = "light";
+    document.body.classList.add("light-mode");
+    document.body.classList.remove("beige-mode");
+    localStorage.setItem("carrom-appearance", "light");
     const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute("content", appearanceMode === "light" ? "#f8fafc" : "#eadcc6");
+    if (meta) meta.setAttribute("content", "#f8fafc");
   }
   applyAppearanceMode();
 
@@ -1732,21 +1785,40 @@
     modalTitleEl.textContent = "الإعدادات";
     modalBodyEl.innerHTML = `<div class="settings-grid">
       ${message?`<div class="notice" style="grid-column:1/-1">${escapeHtml(message)}</div>`:""}
-      <section class="settings-card"><label for="settingsDifficulty">🧠 مستوى الذكاء الاصطناعي</label><select id="settingsDifficulty"><option value="hard" ${difficulty==="hard"?"selected":""}>متقدم</option><option value="expert" ${difficulty==="expert"?"selected":""}>محترف</option><option value="legendary" ${difficulty==="legendary"?"selected":""}>أسطوري</option></select></section>
+      <section class="settings-card"><label for="settingsDifficulty">🧠 مستوى الذكاء الاصطناعي</label><select id="settingsDifficulty"><option value="beginner" ${difficulty==="beginner"?"selected":""}>مبتدئ</option><option value="hard" ${difficulty==="hard"?"selected":""}>متقدم</option><option value="expert" ${difficulty==="expert"?"selected":""}>محترف</option><option value="legendary" ${difficulty==="legendary"?"selected":""}>أسطوري</option></select></section>
       <section class="settings-card" style="grid-column:1/-1"><label>🪵 اللوح الخشبي المجهز</label><div class="board-current-summary"><span>اللوح الحالي: <strong>${escapeHtml(boardById(currentTheme).name)}</strong></span><button class="btn" type="button" data-open-board-shop>فتح متجر الألواح</button></div><small>الألواح تغيّر هيكل اللوح وإطاره وزخارفه بالكامل، وليس اللون فقط.</small></section>
       <section class="settings-card"><label for="settingsVolume">🔊 مستوى الصوت: <span id="settingsVolumeValue" class="volume-value">${Math.round(masterVolume*100)}%</span></label><input id="settingsVolume" type="range" min="0" max="100" value="${Math.round(masterVolume*100)}"></section>
-      <section class="settings-card"><label>🎨 مظهر الصفحة</label><div class="appearance-options"><label class="appearance-option"><input type="radio" name="appearanceMode" value="beige" ${appearanceMode==="beige"?"checked":""}> بيج فاخر</label><label class="appearance-option"><input type="radio" name="appearanceMode" value="light" ${appearanceMode==="light"?"checked":""}> فاتح</label></div></section>
       <section class="settings-card" style="grid-column:1/-1"><label class="appearance-option" style="justify-content:flex-start"><input id="settingsOnlineVisibility" type="checkbox" ${onlineVisibility?"checked":""}> إظهار العلامة الخضراء للأصدقاء عند اتصالي</label></section>
       <section class="settings-card" style="grid-column:1/-1"><label>🔔 إشعارات الرسائل</label><button class="btn" type="button" data-enable-message-notifications>${("Notification" in window && Notification.permission==="granted")?"الإشعارات مفعّلة":"تفعيل إشعارات الجهاز"}</button><small>يبقى إشعار داخل اللعبة فعالًا دائمًا، ويختفي بعد ثانيتين.</small></section>
-    </div><div class="settings-actions"><button class="btn primary" data-save-settings>حفظ الإعدادات</button><button class="btn" data-close-settings>إلغاء</button></div>`;
+    </div><div class="settings-actions"><button class="btn primary" data-save-settings>حفظ الإعدادات</button></div>`;
     infoModalEl.classList.remove("hidden");
+  }
+
+  function showAIDifficultyModal() {
+    modalTitleEl.textContent = "اختر مستوى الذكاء الاصطناعي";
+    modalBodyEl.innerHTML = `<div class="notice">اختر المستوى، ثم تبدأ المباراة مباشرة.</div><div class="ai-level-grid">
+      <button class="ai-level-button" type="button" data-ai-difficulty="beginner"><strong>مبتدئ</strong><small>تصويب أبسط وأخطاء أكثر</small></button>
+      <button class="ai-level-button" type="button" data-ai-difficulty="hard"><strong>متقدم</strong><small>مستوى متوازن</small></button>
+      <button class="ai-level-button" type="button" data-ai-difficulty="expert"><strong>محترف</strong><small>دقة وتخطيط أعلى</small></button>
+      <button class="ai-level-button" type="button" data-ai-difficulty="legendary"><strong>أسطوري</strong><small>أعلى دقة وتحدٍ</small></button>
+    </div>`;
+    infoModalEl.classList.remove("hidden");
+  }
+
+  function startAIMatchWithDifficulty(level) {
+    const allowed = ["beginner","hard","expert","legendary"];
+    difficulty = allowed.includes(level) ? level : "hard";
+    localStorage.setItem("carrom-ai-difficulty", difficulty);
+    if (difficultyEl) difficultyEl.value = difficulty;
+    closeInfoModal();
+    startGame("ai", 2);
   }
 
   async function saveGameSettings() {
     difficulty = document.getElementById("settingsDifficulty")?.value || difficulty;
     masterVolume = Math.max(0,Math.min(1,Number(document.getElementById("settingsVolume")?.value || 0)/100));
     soundEnabled = masterVolume > 0;
-    appearanceMode = document.querySelector('input[name="appearanceMode"]:checked')?.value || appearanceMode;
+    appearanceMode = "light";
     onlineVisibility = Boolean(document.getElementById("settingsOnlineVisibility")?.checked);
     localStorage.setItem("carrom-ai-difficulty",difficulty);
     localStorage.setItem("carrom-board-theme",currentTheme);
@@ -2210,6 +2282,13 @@
 
   function startTurnTimer() {
     clearTurnTimer();
+    if (mode === "training") {
+      countdownEl.classList.add("hidden");
+      timerEl.textContent = "جاهز";
+      turnDeadline = 0;
+      updateTurnClock(0, 1, "تدريب");
+      return;
+    }
     if (mode === "online" && onlineSession.active && !onlineSession.isHost) return;
     if (phase !== "ready" || mode === "menu") return;
 
@@ -2327,7 +2406,7 @@
     updateRemaining();
     ensureAudio();
     refreshControlAvailability();
-    if (!(mode === "online" && onlineSession.active && !onlineSession.isHost)) startTurnTimer();
+    if (mode !== "training" && !(mode === "online" && onlineSession.active && !onlineSession.isHost)) startTurnTimer();
     if (mode === "ai" && currentPlayer === 1) scheduleAI();
     if (mode === "online" && onlineSession.isHost) startOnlineStateSync();
   }
@@ -2406,7 +2485,7 @@
     updateTurnClock(seconds,SHOT_SECONDS,"الضربة");
     countdownEl.classList.remove("hidden");
     timerEl.textContent = `${seconds} ث`;
-    setStatus("بدأت الضربة. عند انتهاء 7 ثوانٍ تتوقف القطع ويُحسم الدور.");
+    setStatus("بدأت الضربة. عند انتهاء 5 ثوانٍ تتوقف القطع ويُحسم الدور.");
     countdownTimer = setInterval(() => {
       seconds = Math.max(0, Math.ceil((shotDeadline - performance.now()) / 1000));
       countdownEl.textContent = `انتهاء الضربة خلال ${seconds} ثوانٍ`;
@@ -2469,14 +2548,14 @@
     else if (shotScored) setStatus(`ضربة ناجحة. يستمر دور ${playerName(currentPlayer)}.${queenMessage}`);
     else setStatus((playerCount === 1 ? "انتهت الضربة. يمكنك المحاولة مجددًا." : `لم تدخل قطعة. الدور الآن لـ${playerName(currentPlayer)}.`) + queenMessage);
 
-    if (!(mode === "online" && onlineSession.active && !onlineSession.isHost)) startTurnTimer();
+    if (mode !== "training" && !(mode === "online" && onlineSession.active && !onlineSession.isHost)) startTurnTimer();
     if (mode === "ai" && currentPlayer === 1) scheduleAI();
     if (mode === "online" && onlineSession.isHost) broadcastOnlineState(true);
   }
 
   function scheduleAI() {
     if (phase !== "ready") return;
-    const levelName = difficulty === "legendary" ? "الأسطوري" : difficulty === "expert" ? "المحترف" : "المتقدم";
+    const levelName = difficulty === "legendary" ? "الأسطوري" : difficulty === "expert" ? "المحترف" : difficulty === "beginner" ? "المبتدئ" : "المتقدم";
     setStatus(`الذكاء الاصطناعي ${levelName} يحلل أفضل ضربة...`);
 
     aiTimer = setTimeout(() => {
@@ -2493,6 +2572,7 @@
       if (!striker || !targets.length) return;
 
       const settings = {
+        beginner: { spread: .16, speed: 1120, planning: 1 },
         hard: { spread: .075, speed: 1320, planning: 1 },
         expert: { spread: .028, speed: 1500, planning: 2 },
         legendary: { spread: .008, speed: 1640, planning: 3 },
@@ -2573,10 +2653,9 @@
     if (disc.kind === "striker") {
       strikerFoul = true;
       const penalty = deductScore(currentPlayer, 10);
+      const returnedPieces = returnTenPenaltyPointsToBoard();
       sound("pocket", 1.15);
-      setStatus(penalty > 0
-        ? `مخالفة: سقط المضرب، وتم خصم ${penalty} نقاط من ${isTeamGame()?`الفريق ${teamIndexForPlayer(currentPlayer)+1}`:playerName(currentPlayer)}.`
-        : `مخالفة: سقط المضرب، ولا توجد نقاط متاحة للخصم.`);
+      setStatus(`مخالفة: سقط المضرب، وتم خصم ${penalty} نقاط من ${isTeamGame()?`الفريق ${teamIndexForPlayer(currentPlayer)+1}`:playerName(currentPlayer)}، ${returnedPieces}.`);
       renderHud();
       updateRemaining();
       return;
@@ -3663,13 +3742,18 @@
   }
 
   function closeInfoModal() {
+    if (phase === "finished" && !gameEl.classList.contains("hidden")) {
+      infoModalEl.classList.add("hidden");
+      backToMenu();
+      return;
+    }
     if (activeChatUserId) cleanupActiveChat();
     infoModalEl.classList.add("hidden");
     if (shopPreviewTimer) { clearInterval(shopPreviewTimer); shopPreviewTimer=null; }
     if (modalCardEl) modalCardEl.classList.remove("shop-modal-card");
     if (shopPausedTurn) {
       shopPausedTurn = false;
-      if (phase === "ready" && mode !== "menu") {
+      if (phase === "ready" && mode !== "menu" && mode !== "training") {
         startTurnTimer();
         if (mode === "ai" && currentPlayer === 1) scheduleAI();
       }
@@ -3692,13 +3776,13 @@
       const winningTeams = [0,1].filter(team => (teamScores[team] || 0) === maxScore);
       resultTitle = winningTeams.length > 1 ? "تعادل بين الفريقين" : "الفريق الفائز";
       winnerLabel = winningTeams.map(team => `الفريق ${team+1}`).join(" و ");
-      scoreRows = [0,1].map(team => `<div class="stat">الفريق ${team+1}<br><small>${playerName(team)} + ${playerName(team+2)}</small><br><strong>${teamScores[team] || 0} نقطة</strong></div>`).join("");
+      scoreRows = [0,1].map(team => { const label=winningTeams.length>1?"DRAW":winningTeams.includes(team)?"WINNER":"LOSER"; const labelClass=label==="WINNER"?"winner":label==="LOSER"?"loser":"draw"; return `<div class="stat">الفريق ${team+1}<br><small>${playerName(team)} + ${playerName(team+2)}</small><br><strong>${teamScores[team] || 0} نقطة</strong><br><b class="result-badge ${labelClass}">${label}</b></div>`; }).join("");
     } else {
       maxScore = Math.max(...scores);
       const winners = scores.map((score,index)=>score===maxScore?index:null).filter(index=>index!==null);
       resultTitle = winners.length > 1 ? "تعادل في صدارة النقاط" : "الفائز صاحب أعلى نقاط";
       winnerLabel = winners.map(i => playerName(i)).join(" و ");
-      scoreRows = scores.map((score,i)=>`<div class="stat">${playerName(i)}<br><strong>${score} نقطة</strong></div>`).join("");
+      scoreRows = scores.map((score,i)=>{ const label=winners.length>1?"DRAW":winners.includes(i)?"WINNER":"LOSER"; const labelClass=label==="WINNER"?"winner":label==="LOSER"?"loser":"draw"; return `<div class="stat">${playerName(i)}<br><strong>${score} نقطة</strong><br><b class="result-badge ${labelClass}">${label}</b></div>`; }).join("");
       if (mode === "ai" && winners.includes(0)) {
         reward = 20;
         profile.coins += reward;
@@ -3711,9 +3795,9 @@
       }
     }
 
-    let resultWord="تعادل",resultClass="draw";
-    if(mode==="ai"){const humanWon=scores[0]===maxScore && scores.filter(s=>s===maxScore).length===1;resultWord=humanWon?"Win":"Lose";resultClass=humanWon?"win":"lose";}
-    else if(mode==="online"){const localTeam=playerCount===4?(onlineSession.localSlot%2):onlineSession.localSlot;const winningIndex=playerCount===4?teamScores.indexOf(maxScore):scores.indexOf(maxScore);const unique=(playerCount===4?teamScores:scores).filter(s=>s===maxScore).length===1;if(unique){const won=localTeam===winningIndex;resultWord=won?"Win":"Lose";resultClass=won?"win":"lose";}}
+    let resultWord="RESULT",resultClass="draw";
+    if(mode==="ai"){const humanWon=scores[0]===maxScore && scores.filter(s=>s===maxScore).length===1;resultWord=humanWon?"WINNER":"LOSER";resultClass=humanWon?"win":"lose";}
+    else if(mode==="online"){resultWord="RESULT";resultClass="draw";}
     const html = `<div class="result-word ${resultClass}">${resultWord}</div><p class="notice">${resultTitle}: <strong>${winnerLabel}</strong> بنتيجة ${maxScore} نقطة.${reward?` حصلت على ${reward} عملة.`:""}</p><div class="stats">${scoreRows}</div><button class="btn primary" data-result-back>العودة للبداية</button>`;
     showModal("انتهت المباراة", html);
     if (mode === "online" && onlineSession.isHost) broadcastOnlineMessage({type:"result", title:"انتهت المباراة", html});
@@ -4131,6 +4215,7 @@ function hudAvatarMarkup(index) {
     hudEl.innerHTML=`<div class="match-hud-v21"><div class="hud-players-v21">${players.join("")}</div><div class="hud-score-v21"><small>النتيجة</small><strong>${scoreText}</strong><span>${escapeHtml(playerName(currentPlayer))} عليه الدور</span></div><div class="turn-ring-v21" id="turnRingV21" style="--turn-deg:360deg"><div><strong id="turnRingValueV21">${TURN_SECONDS}</strong><small id="turnRingCaptionV21">الدور</small></div></div></div>`;
     const now=performance.now();
     if(phase==="moving"&&shotDeadline>now) updateTurnClock((shotDeadline-now)/1000,SHOT_SECONDS,"الضربة");
+    else if(mode==="training"&&phase==="ready") { const value=document.getElementById("turnRingValueV21"),caption=document.getElementById("turnRingCaptionV21"); if(value)value.textContent="∞"; if(caption)caption.textContent="تدريب"; }
     else if(phase==="ready"&&turnDeadline>now) updateTurnClock((turnDeadline-now)/1000,TURN_SECONDS,"الدور");
     else updateTurnClock(TURN_SECONDS,TURN_SECONDS,"الدور");
   }
@@ -4166,7 +4251,7 @@ function hudAvatarMarkup(index) {
     updateTurnClock(seconds,SHOT_SECONDS,"الضربة");
     countdownEl.classList.remove("hidden");
     timerEl.textContent = `${seconds} ث`;
-    setStatus("بدأت الضربة. عند انتهاء 7 ثوانٍ تتوقف القطع ويُحسم الدور.");
+    setStatus("بدأت الضربة. عند انتهاء 5 ثوانٍ تتوقف القطع ويُحسم الدور.");
     countdownTimer = setInterval(() => {
       seconds = Math.max(0, Math.ceil((shotDeadline - performance.now()) / 1000));
       countdownEl.textContent = `انتهاء الضربة خلال ${seconds} ثوانٍ`;
@@ -4229,14 +4314,14 @@ function hudAvatarMarkup(index) {
     else if (shotScored) setStatus(`ضربة ناجحة. يستمر دور ${playerName(currentPlayer)}.${queenMessage}`);
     else setStatus((playerCount === 1 ? "انتهت الضربة. يمكنك المحاولة مجددًا." : `لم تدخل قطعة. الدور الآن لـ${playerName(currentPlayer)}.`) + queenMessage);
 
-    if (!(mode === "online" && onlineSession.active && !onlineSession.isHost)) startTurnTimer();
+    if (mode !== "training" && !(mode === "online" && onlineSession.active && !onlineSession.isHost)) startTurnTimer();
     if (mode === "ai" && currentPlayer === 1) scheduleAI();
     if (mode === "online" && onlineSession.isHost) broadcastOnlineState(true);
   }
 
   function scheduleAI() {
     if (phase !== "ready") return;
-    const levelName = difficulty === "legendary" ? "الأسطوري" : difficulty === "expert" ? "المحترف" : "المتقدم";
+    const levelName = difficulty === "legendary" ? "الأسطوري" : difficulty === "expert" ? "المحترف" : difficulty === "beginner" ? "المبتدئ" : "المتقدم";
     setStatus(`الذكاء الاصطناعي ${levelName} يحلل أفضل ضربة...`);
 
     aiTimer = setTimeout(() => {
@@ -4246,6 +4331,7 @@ function hudAvatarMarkup(index) {
       if (!striker || !targets.length) return;
 
       const settings = {
+        beginner: { spread: .16, speed: 1120, planning: 1 },
         hard: { spread: .075, speed: 1320, planning: 1 },
         expert: { spread: .028, speed: 1500, planning: 2 },
         legendary: { spread: .008, speed: 1640, planning: 3 },
@@ -4326,10 +4412,9 @@ function hudAvatarMarkup(index) {
     if (disc.kind === "striker") {
       strikerFoul = true;
       const penalty = deductScore(currentPlayer, 10);
+      const returnedPieces = returnTenPenaltyPointsToBoard();
       sound("pocket", 1.15);
-      setStatus(penalty > 0
-        ? `مخالفة: سقط المضرب، وتم خصم ${penalty} نقاط من ${isTeamGame()?`الفريق ${teamIndexForPlayer(currentPlayer)+1}`:playerName(currentPlayer)}.`
-        : `مخالفة: سقط المضرب، ولا توجد نقاط متاحة للخصم.`);
+      setStatus(`مخالفة: سقط المضرب، وتم خصم ${penalty} نقاط من ${isTeamGame()?`الفريق ${teamIndexForPlayer(currentPlayer)+1}`:playerName(currentPlayer)}، ${returnedPieces}.`);
       renderHud();
       updateRemaining();
       return;
@@ -4950,9 +5035,7 @@ function hudAvatarMarkup(index) {
       if (!player) return `<div class="room-player"><div class="room-player-main"><span class="room-avatar">${slot+1}</span><div class="room-player-copy"><strong>المقعد ${slot+1}</strong><small>بانتظار لاعب</small></div></div><span>فارغ</span></div>`;
       const status = slot === onlineSession.localSlot ? "أنت" : slot === 0 ? "المضيف" : "متصل";
       const kick = onlineSession.isHost && slot !== 0 && !onlineSession.started ? `<button class="kick-player" data-kick-slot="${slot}">طرد</button>` : "";
-      const reaction=onlineSession.reactions.get(slot);
-      const reactionHtml=reaction&&reaction.expiresAt>Date.now()?`<span class="room-player-reaction" aria-label="تفاعل ${escapeHtml(reaction.emoji)}">${escapeHtml(reaction.emoji)}</span>`:"";
-      return `<div class="room-player connected"><div class="room-player-main">${avatarMarkup(player)}<div class="room-player-copy"><strong>${escapeHtml(player.name)}${reactionHtml}</strong><small>${escapeHtml(player.playerId || "بدون يوزر")} · مستوى ${Number.isFinite(Number(player.level)) ? Number(player.level) : 0}</small><small>${required===4?onlinePlayerTeam(slot):slot===0?"المضيف":"المنافس"} — ${["أسفل","يمين","أعلى","يسار"][slot] || "أعلى"}</small></div></div><div class="room-player-actions"><span>${status}</span>${kick}</div></div>`;
+      return `<div class="room-player connected"><div class="room-player-main">${avatarMarkup(player)}<div class="room-player-copy"><strong>${escapeHtml(player.name)}</strong><small>${escapeHtml(player.playerId || "بدون يوزر")} · مستوى ${Number.isFinite(Number(player.level)) ? Number(player.level) : 0}</small><small>${required===4?onlinePlayerTeam(slot):slot===0?"المضيف":"المنافس"} — ${["أسفل","يمين","أعلى","يسار"][slot] || "أعلى"}</small></div></div><div class="room-player-actions"><span>${status}</span>${kick}</div></div>`;
     }).join("");
     const canStart = onlineSession.isHost && connectedCount === required && !onlineSession.started;
     modalBodyEl.innerHTML = `<div class="tournament-hub">
@@ -4963,7 +5046,6 @@ function hudAvatarMarkup(index) {
         ${onlineSession.isHost ? `<button class="btn primary" data-start-online ${canStart?"":"disabled"}>${connectedCount===required?(onlineSession.roomType==="tournament"?"بدء البطولة":"بدء المباراة"):"انتظار اكتمال اللاعبين"}</button><button class="btn" data-open-room-invites>دعوة صديق</button>` : `<button class="btn" disabled>بانتظار منشئ الغرفة</button>`}
         <button class="btn" data-leave-room>مغادرة الغرفة</button>
       </div>
-      <div class="room-reaction-bar"><strong>تفاعلات الغرفة</strong><button class="reaction-btn" data-room-reaction="😭" type="button">😭</button><button class="reaction-btn" data-room-reaction="😈" type="button">😈</button><button class="reaction-btn" data-room-reaction="😊" type="button">😊</button><button class="reaction-btn" data-room-reaction="😂" type="button">😂</button><button class="reaction-btn" data-room-reaction="😢" type="button">😢</button><button class="reaction-btn" data-room-reaction="😎" type="button">😎</button></div>
     </div>`;
   }
   function renderTournamentLobby() { renderOnlineLobby(); }
@@ -5022,8 +5104,7 @@ function hudAvatarMarkup(index) {
         updateOnlineRoomRegistry("lobby");
         onlineSession.lobbyMessage=`انضم ${onlineSession.players[freeSlot].name}.`;
         renderOnlineLobby();
-      } else if (message.type === "reaction") handleHostRoomReaction(connection.__slot,message);
-      else if (message.type === "command") handleOnlineCommand(connection.__slot, message);
+      } else if (message.type === "command") handleOnlineCommand(connection.__slot, message);
       else if (message.type === "leave") removeOnlinePlayer(connection.__slot);
     });
     connection.on("close", () => removeOnlinePlayer(connection.__slot));
@@ -5035,7 +5116,7 @@ function hudAvatarMarkup(index) {
     if (onlineSession.started && phase !== "finished") {
       clearTimers(); phase="finished";
       const departed=onlineSession.players[slot]?.name||"اللاعب المنسحب";
-      const html=`<div class="result-word win">Win</div><p class="notice">انسحب ${escapeHtml(departed)} أثناء المباراة، لذلك انتهت المباراة مباشرة لصالح الطرف الآخر.</p><button class="btn primary" data-result-back>العودة للبداية</button>`;
+      const html=`<div class="result-word win">WINNER</div><p class="notice">انسحب ${escapeHtml(departed)} أثناء المباراة، لذلك انتهت المباراة مباشرة لصالح الطرف الآخر.</p><button class="btn primary" data-result-back>العودة للبداية</button>`;
       broadcastOnlineMessage({type:"result",title:"انتهت المباراة بالانسحاب",html});
       showModal("انتهت المباراة بالانسحاب",html);
     }
@@ -5110,18 +5191,33 @@ function hudAvatarMarkup(index) {
       const reason = message.reason || "تم إخراجك من الغرفة.";
       destroyOnlinePeer(); onlineSession.active=false; onlineSession.started=false;
       showModal("تم إخراجك من الغرفة", `<p class="notice">${escapeHtml(reason)}</p>`);
-    } else if (message.type === "reaction") showRoomReaction(message.emoji,message.senderName||"لاعب",message.senderSlot);
-    else if (message.type === "start") startOnlineClientMatch(message);
+    } else if (message.type === "start") startOnlineClientMatch(message);
     else if (message.type === "state") applyOnlineState(message);
     else if (message.type === "result") showModal(message.title||"انتهت المباراة", message.html||"");
-    else if (message.type === "room-closed") { showModal("أُغلقت الغرفة", '<p class="notice">غادر منشئ الغرفة أو أغلق الصفحة.</p>'); leaveOnlineRoom(false); }
+    else if (message.type === "room-closed") endMatchBecauseRoomOwnerLeft();
+  }
+
+  function endMatchBecauseRoomOwnerLeft() {
+    if (!onlineSession.active && mode !== "online") return;
+    const matchWasRunning = onlineSession.started || (mode === "online" && !gameEl.classList.contains("hidden") && phase !== "menu");
+    onlineSession.active = false;
+    onlineSession.started = false;
+    clearTimers();
+    if (matchWasRunning) phase = "finished";
+    destroyOnlinePeer();
+    if (matchWasRunning) {
+      showModal("انتهت المباراة", '<div class="result-word lose">MATCH ENDED</div><p class="notice">غادر منشئ الغرفة، لذلك انتهت المباراة مباشرة.</p><button class="btn primary" data-result-back>العودة للبداية</button>');
+    } else {
+      showModal("أُغلقت الغرفة", '<p class="notice">غادر منشئ الغرفة أو أغلق الصفحة.</p>');
+    }
   }
 
   function onlineConnectionLost() {
     if (!onlineSession.active) return;
+    if (onlineSession.started || (mode === "online" && !gameEl.classList.contains("hidden"))) return endMatchBecauseRoomOwnerLeft();
     showModal("انقطع الاتصال", '<p class="notice">فُقد الاتصال بمنشئ الغرفة. تأكد من الإنترنت أو اطلب منه إنشاء غرفة جديدة.</p>');
-    destroyOnlinePeer();
     onlineSession.active=false; onlineSession.started=false;
+    destroyOnlinePeer();
   }
 
   function broadcastOnlineMessage(message) {
@@ -5231,7 +5327,7 @@ function hudAvatarMarkup(index) {
     if(mode==="online") sendOnlineCommand("position",{value});
     else {strikerOffset=value;placeStriker(currentPlayer,strikerOffset);}
   });
-  document.querySelectorAll("[data-mode]").forEach(button=>button.addEventListener("click",()=>startGame(button.dataset.mode,Number(button.dataset.count))));
+  document.querySelectorAll("[data-mode]").forEach(button=>button.addEventListener("click",()=>button.dataset.mode==="ai"?showAIDifficultyModal():startGame(button.dataset.mode,Number(button.dataset.count))));
   document.getElementById("restart").addEventListener("click",restart);
   document.getElementById("back").addEventListener("click",backToMenu);
   toggleAimEl.addEventListener("click",()=>{
@@ -5260,6 +5356,7 @@ function hudAvatarMarkup(index) {
   document.getElementById("tournamentMode").addEventListener("click", showTournamentHub);
   document.getElementById("closeModal").addEventListener("click", closeInfoModal);
   modalBodyEl.addEventListener("click", event => {
+    const aiDifficulty = event.target.closest("[data-ai-difficulty]");
     const shopSection = event.target.closest("[data-shop-section]");
     const category = event.target.closest("[data-shop-category]");
     const boardCategory = event.target.closest("[data-board-category]");
@@ -5294,13 +5391,13 @@ function hudAvatarMarkup(index) {
     const joinFoundRoom = event.target.closest("[data-join-found-room]");
     const resultBack = event.target.closest("[data-result-back]");
     const enableMessageNotifications = event.target.closest("[data-enable-message-notifications]");
-    const roomReaction = event.target.closest("[data-room-reaction]");
     const openRoomInvites = event.target.closest("[data-open-room-invites]");
     const inviteFriendRoom = event.target.closest("[data-invite-friend-room]");
     const acceptRoomInvite = event.target.closest("[data-accept-room-invite]");
     const rejectRoomInvite = event.target.closest("[data-reject-room-invite]");
     const returnRoomLobby = event.target.closest("[data-return-room-lobby]");
-    if (shopSection) { activeShopSection=shopSection.dataset.shopSection; renderShopContent(); startShopPreviewAnimation(); }
+    if (aiDifficulty) startAIMatchWithDifficulty(aiDifficulty.dataset.aiDifficulty);
+    else if (shopSection) { activeShopSection=shopSection.dataset.shopSection; renderShopContent(); startShopPreviewAnimation(); }
     else if (category) { activeShopCategory = category.dataset.shopCategory; renderShopContent(); startShopPreviewAnimation(); }
     else if (boardCategory) { activeBoardCategory=boardCategory.dataset.boardCategory; renderShopContent(); startShopPreviewAnimation(); }
     else if (buy) buySkin(buy.dataset.buySkin);
@@ -5333,7 +5430,6 @@ function hudAvatarMarkup(index) {
     else if (closeSettings) closeInfoModal();
     else if (searchRooms) searchOnlineRooms();
     else if (joinFoundRoom) joinOnlineRoom(joinFoundRoom.dataset.roomType || onlineSession.roomType, joinFoundRoom.dataset.joinFoundRoom, joinFoundRoom.dataset.roomCapacity);
-    else if (roomReaction) sendRoomReaction(roomReaction.dataset.roomReaction);
     else if (openRoomInvites) showRoomInvitePicker();
     else if (inviteFriendRoom) sendRoomInvitation(inviteFriendRoom.dataset.inviteFriendRoom);
     else if (acceptRoomInvite) respondRoomInvitation(Number(acceptRoomInvite.dataset.acceptRoomInvite),true);
