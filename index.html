@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#0f172a" />
-  <title>محمد عبدالله — v26</title>
+  <title>محمد عبدالله — v27</title>
   <meta name="description" content="لعبة كيرم عربية سريعة مع غرف صحيحة للاعبين أو أربعة، مؤقتات محسنة وواجهة فاتحة." />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -831,6 +831,136 @@
     .ai-level-button small{font-size:10px;color:#64748b;font-weight:700}
     @media(max-width:520px){.ai-level-grid{grid-template-columns:1fr}.modal-card{padding-top:58px!important}.modal-back-arrow{top:10px;inset-inline-start:10px}}
 
+
+    /* ===== v27: luxury black-and-gold main dashboard ===== */
+    body:not(.game-active){
+      background:#050403!important;
+      color:#f6e6c0;
+      overflow:hidden!important;
+    }
+    body:not(.game-active) .app{
+      width:100%!important;
+      height:100dvh!important;
+      min-height:100dvh!important;
+      padding:0!important;
+      display:grid!important;
+      place-items:center!important;
+      overflow:hidden!important;
+      background:
+        radial-gradient(circle at 50% 12%,rgba(213,156,57,.16),transparent 24%),
+        radial-gradient(circle at 2% 55%,rgba(181,116,32,.13),transparent 20%),
+        radial-gradient(circle at 98% 55%,rgba(181,116,32,.13),transparent 20%),
+        repeating-linear-gradient(112deg,rgba(255,255,255,.018) 0 1px,transparent 1px 18px),
+        linear-gradient(135deg,#030303 0%,#0b0804 48%,#050403 100%);
+    }
+    body:not(.game-active) header,
+    body:not(.game-active) footer{display:none!important}
+    body:not(.game-active) .gold-dashboard{
+      --gold:#d9a441;
+      --gold-bright:#ffd77d;
+      --gold-soft:#b77a25;
+      --ink:#080706;
+      --card:#15110c;
+      width:min(980px,calc(100vw - 28px))!important;
+      height:min(720px,calc(100dvh - 18px))!important;
+      max-width:none!important;
+      max-height:none!important;
+      margin:0!important;
+      padding:13px 16px 10px!important;
+      border-radius:2px!important;
+      overflow:hidden!important;
+      color:#f7e6bd!important;
+      border:1px solid rgba(218,164,65,.43)!important;
+      background:
+        linear-gradient(90deg,transparent,rgba(255,208,109,.08),transparent) top/100% 1px no-repeat,
+        radial-gradient(circle at 50% -8%,rgba(246,186,74,.17),transparent 34%),
+        repeating-linear-gradient(105deg,rgba(255,255,255,.018) 0 1px,transparent 1px 15px),
+        linear-gradient(145deg,#100d09,#050403 62%,#0b0805)!important;
+      box-shadow:0 32px 90px rgba(0,0,0,.76),inset 0 0 0 1px rgba(255,224,159,.04)!important;
+      display:grid!important;
+      grid-template-rows:auto auto auto auto auto auto minmax(0,1fr) auto!important;
+      gap:7px!important;
+      position:relative!important;
+      isolation:isolate;
+    }
+    body:not(.game-active) .gold-dashboard:before,
+    body:not(.game-active) .gold-dashboard:after{
+      content:"";position:absolute;pointer-events:none;z-index:-1;
+    }
+    body:not(.game-active) .gold-dashboard:before{
+      inset:0;
+      background:
+        linear-gradient(135deg,transparent 0 46%,rgba(218,164,65,.025) 46% 48%,transparent 48%),
+        linear-gradient(45deg,transparent 0 47%,rgba(218,164,65,.022) 47% 49%,transparent 49%);
+      background-size:72px 72px;
+      animation:none!important;
+    }
+    body:not(.game-active) .gold-dashboard:after{
+      inset:8px;border:1px solid rgba(218,164,65,.12);box-shadow:inset 0 0 55px rgba(0,0,0,.68)
+    }
+    .gold-topbar{display:grid;grid-template-columns:210px minmax(260px,1fr) 250px;align-items:center;gap:12px;min-height:78px;direction:ltr}
+    .gold-top-actions{display:flex;align-items:center;justify-content:flex-start;gap:11px;direction:rtl}
+    .gold-round-action{position:relative;width:56px;height:60px;border:0;background:transparent;color:#d8a441;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+    .gold-round-action:before{content:"";position:absolute;top:0;width:36px;height:36px;border-radius:50%;border:1px solid rgba(221,169,72,.52);background:radial-gradient(circle at 35% 30%,rgba(255,215,125,.16),rgba(31,22,12,.85));box-shadow:0 0 17px rgba(209,143,36,.12),inset 0 0 10px rgba(255,214,124,.05)}
+    .gold-round-action:hover:before{border-color:#f4c86d;box-shadow:0 0 20px rgba(230,171,57,.28)}
+    .gold-action-icon{position:relative;z-index:1;font-size:20px;line-height:1;color:#e1ae4a;font-family:Arial,sans-serif}
+    .gold-round-action small{margin-top:31px;position:absolute;font-size:8px;color:#d1a961;white-space:nowrap}
+    .gold-round-action .request-badge{top:-3px;left:2px;border-color:#100d09;background:#9f2b1d;color:#fff1d5}
+    .gold-brand{display:flex;align-items:center;justify-content:center;gap:10px;direction:ltr;text-align:center;min-width:0}
+    .gold-brand h2{margin:0;font-size:38px;line-height:1;background:linear-gradient(180deg,#fff0b5 0%,#e9b652 48%,#9d6519 100%);-webkit-background-clip:text;background-clip:text;color:transparent;font-family:Georgia,"Times New Roman",serif;text-shadow:0 5px 24px rgba(213,154,42,.19);white-space:nowrap}
+    .gold-brand p{position:absolute;margin-top:52px;font-size:8px;color:#b9924e;letter-spacing:.8px}
+    .gold-logo-crown{font-size:15px;color:#f2c45f;filter:drop-shadow(0 0 8px rgba(242,196,95,.35))}
+    .gold-brand-line{height:1px;flex:1;max-width:84px;background:linear-gradient(90deg,transparent,#9f6b20,transparent);position:relative}
+    .gold-brand-line:after{content:"✦";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:7px;color:#dca63e;background:#0c0906;padding:0 5px}
+    .gold-profile-card{direction:rtl;display:grid;grid-template-columns:1fr 50px 54px;align-items:center;gap:8px;border:0;background:transparent;color:#f7e6bd;text-align:right;padding:3px 0}
+    .gold-profile-copy{min-width:0}.gold-profile-copy strong{display:block;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.gold-profile-copy small{display:block;color:#a8864c;font-size:8px;direction:ltr;margin-top:3px}
+    .gold-profile-avatar-wrap{position:relative;width:45px;height:45px}.gold-profile-avatar{width:45px;height:45px;border-radius:9px;overflow:hidden;display:grid;place-items:center;background:linear-gradient(145deg,#241a0d,#070604);border:1px solid #a67125;color:#f2c45f;font-weight:1000;box-shadow:inset 0 0 14px rgba(255,209,108,.08)}
+    .gold-profile-avatar img{border-radius:9px!important}.gold-profile-avatar-wrap .presence-dot{position:absolute;bottom:-2px;left:-2px;border-color:#0b0805}
+    .gold-level-ring{width:49px;height:49px;border-radius:50%;display:grid;place-content:center;text-align:center;border:2px solid #b8862d;box-shadow:inset 0 0 0 4px #151008,0 0 16px rgba(210,151,42,.16);background:#080705}.gold-level-ring b{font-size:18px;color:#f0c565;line-height:1}.gold-level-ring small{font-size:6px;color:#9c7b43;margin-top:2px}
+    .gold-install-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;direction:ltr}
+    .gold-install-card{position:relative;min-height:50px;border-radius:8px;padding:7px 15px;display:flex;align-items:center;justify-content:center;gap:12px;color:#f6e5bb;border:1px solid rgba(211,157,60,.55);background:linear-gradient(180deg,#17130e,#090806);box-shadow:inset 0 0 20px rgba(255,205,104,.025);direction:rtl}
+    .gold-install-card.android{border-color:rgba(56,157,73,.68);background:linear-gradient(180deg,#17351b,#0d2011)}
+    .gold-install-card:hover{transform:translateY(-1px);filter:brightness(1.08)}
+    .gold-install-card .gold-install-icon{font-size:22px;color:#dca749}.gold-install-card.android .gold-install-icon{color:#7bd77e}
+    .gold-install-card strong{display:block;font-size:11px}.gold-install-card small{display:block;font-size:7px;color:#a98a53;margin-top:2px}.gold-install-card.android small{color:#8bbd8d}
+    .gold-install-card em{position:absolute;top:-7px;right:12px;font-style:normal;font-size:6px;padding:3px 8px;border-radius:999px;background:#325b35;color:#bff1c1;border:1px solid rgba(127,213,132,.3)}
+    .gold-feature-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .gold-feature-card{min-height:92px;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 20px;border-radius:8px;border:1px solid rgba(205,151,55,.38);background:radial-gradient(circle at 72% 36%,rgba(219,161,60,.12),transparent 34%),linear-gradient(145deg,#1a140d,#0c0906);color:#f6e3b4;text-align:right;box-shadow:inset 0 0 30px rgba(255,210,117,.025)}
+    .gold-feature-card:hover{border-color:#d7a13c;transform:translateY(-2px)}
+    .gold-feature-copy strong{display:block;font-size:13px}.gold-feature-copy small{display:block;color:#ad8a4c;font-size:8px;margin-top:5px}.gold-feature-art{font-size:48px;filter:sepia(.65) saturate(1.45) drop-shadow(0 0 14px rgba(214,151,45,.28))}
+    .gold-section-title{height:16px;display:flex;align-items:center;justify-content:center;gap:9px;color:#d1a04b;font-size:8px}.gold-section-title span{height:1px;flex:1;background:linear-gradient(90deg,transparent,rgba(201,145,45,.62),transparent)}.gold-section-title b{font-weight:800;white-space:nowrap}
+    .gold-mode-grid{display:grid!important;grid-template-columns:repeat(4,1fr)!important;gap:10px!important}
+    .gold-mode-card{position:relative;min-height:74px!important;border-radius:8px!important;padding:7px 5px!important;background:linear-gradient(180deg,#1a1510,#0c0907)!important;border:1px solid rgba(202,148,51,.36)!important;color:#f3dfae!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:3px!important}
+    .gold-mode-card.featured{background:linear-gradient(150deg,#f3c663,#a96b17)!important;color:#171006!important;border-color:#f5d487!important;box-shadow:0 5px 20px rgba(215,151,43,.22),inset 0 0 0 1px rgba(255,245,204,.22)!important}
+    .gold-mode-card .mode-icon{font-size:23px!important;filter:drop-shadow(0 2px 8px rgba(0,0,0,.4))}.gold-mode-card .mode-label{font-size:10px!important;font-weight:1000}.gold-mode-card small{font-size:6px;color:#9e804c}.gold-mode-card.featured small{color:#56370e}.gold-mode-card em{position:absolute;top:-6px;right:8px;font-size:6px;font-style:normal;padding:2px 7px;border-radius:999px;background:#a52d1f;color:#ffe7c3}
+    .gold-room-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .gold-room-card{min-height:70px;border-radius:8px;border:1px solid rgba(203,149,52,.34);background:linear-gradient(145deg,#1a1510,#0b0906);color:#f4dfae;display:flex;align-items:center;justify-content:center;gap:16px;padding:10px 18px;text-align:right}
+    .gold-room-card:hover{border-color:#d6a13e;transform:translateY(-1px)}.gold-room-card.tournament-room{background:linear-gradient(145deg,#27193f,#110b1e);border-color:rgba(155,103,215,.46)}.gold-room-card .room-art{font-size:30px}.gold-room-card strong{display:block;font-size:11px}.gold-room-card small{display:block;font-size:7px;color:#aa884d;margin-top:4px}.gold-room-card.tournament-room small{color:#a991c4}
+    .daily-title{margin-top:-1px}
+    .gold-daily-card{min-height:72px;display:grid;grid-template-columns:74px minmax(0,1.25fr) minmax(250px,.85fr);align-items:center;gap:13px;border-radius:8px;border:1px solid rgba(202,148,52,.32);background:linear-gradient(145deg,#18120d,#0a0806);padding:8px 12px;overflow:hidden}
+    .gold-chest{font-size:47px;text-align:center;filter:sepia(.45) saturate(1.5) drop-shadow(0 5px 12px rgba(217,151,39,.18))}
+    .gold-daily-content{margin:0!important;padding:0!important;border:0!important;background:transparent!important;color:#f2dfb2!important;min-height:0!important}.gold-daily-content>div:first-child{font-size:8px}.gold-daily-content>div:first-child small{color:#b79558}.gold-daily-content .daily-task-row{padding:4px 0!important;font-size:7px!important;border-color:rgba(205,152,57,.16)!important}.gold-daily-content .daily-task-row span{color:#c69b51}.gold-daily-content .daily-task-row.done strong{color:#e8bc60}
+    .gold-profile-stats{display:grid;grid-template-columns:1fr 1fr;gap:5px}.gold-profile-stats span{min-height:25px;padding:4px 7px;border-radius:6px;border:1px solid rgba(206,152,56,.23);background:#100c08;display:flex;align-items:center;justify-content:space-between;gap:6px}.gold-profile-stats small{font-size:6px;color:#9e7e47}.gold-profile-stats strong{font-size:8px;color:#e8b956}
+    .gold-bottom-nav{height:56px;margin:0 -16px -10px;padding:4px 20px 5px;display:grid;grid-template-columns:1fr 1fr minmax(150px,1.25fr) 1fr 1fr;align-items:end;gap:5px;border-top:1px solid rgba(210,156,55,.34);background:linear-gradient(180deg,rgba(18,13,8,.88),#070504)}
+    .gold-bottom-nav>button{height:44px;border:0;background:transparent;color:#b9914b;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px}.gold-bottom-nav>button span{font-size:16px}.gold-bottom-nav>button small{font-size:7px}.gold-bottom-nav>button:hover{color:#f1c76b}
+    .gold-bottom-nav .gold-play-now{height:58px;margin-bottom:0;border-radius:22px 22px 6px 6px;background:linear-gradient(180deg,#f4cf7a,#b9781c 63%,#7d4b0d);color:#241605;border:1px solid #f6df9f;box-shadow:0 -7px 23px rgba(215,153,45,.22),inset 0 1px 0 rgba(255,255,255,.38)}.gold-play-now strong{font-size:15px}.gold-play-now small{font-size:7px;color:#5b360c}
+    body:not(.game-active) .modal{background:rgba(0,0,0,.72)!important}
+    body:not(.game-active) .modal-card{background:linear-gradient(145deg,#17120c,#080604)!important;color:#f4dfae!important;border:1px solid rgba(214,159,59,.42)!important;box-shadow:0 30px 90px rgba(0,0,0,.8)!important}
+    body:not(.game-active) .modal-back-arrow{background:#17120c!important;color:#e0ab46!important;border-color:#8e631e!important}
+
+    @media(max-width:760px){
+      body:not(.game-active){overflow:auto!important}
+      body:not(.game-active) .app{min-height:100dvh!important;height:auto!important;padding:5px!important;align-items:start!important}
+      body:not(.game-active) .gold-dashboard{width:100%!important;height:auto!important;min-height:calc(100dvh - 10px)!important;padding:8px!important;overflow:visible!important;gap:5px!important}
+      .gold-topbar{grid-template-columns:105px minmax(120px,1fr) 132px;gap:4px;min-height:57px}.gold-top-actions{gap:1px}.gold-round-action{width:34px;height:50px}.gold-round-action:before{width:28px;height:28px}.gold-action-icon{font-size:15px}.gold-round-action small{margin-top:26px;font-size:5px}.gold-brand h2{font-size:25px}.gold-brand p{margin-top:36px;font-size:5px}.gold-brand-line{display:none}.gold-logo-crown{font-size:10px}.gold-profile-card{grid-template-columns:1fr 36px 36px;gap:4px}.gold-profile-copy strong{font-size:8px}.gold-profile-copy small{font-size:5px}.gold-profile-avatar-wrap,.gold-profile-avatar{width:34px;height:34px}.gold-level-ring{width:34px;height:34px}.gold-level-ring b{font-size:12px}.gold-level-ring small{font-size:4px}
+      .gold-install-row,.gold-feature-grid,.gold-room-grid{gap:6px}.gold-install-card{min-height:41px;padding:5px 7px;gap:6px}.gold-install-card strong{font-size:8px}.gold-install-card small{font-size:5px}.gold-install-card .gold-install-icon{font-size:16px}.gold-feature-card{min-height:72px;padding:8px 10px;gap:7px}.gold-feature-copy strong{font-size:9px}.gold-feature-copy small{font-size:5px}.gold-feature-art{font-size:34px}
+      .gold-mode-grid{gap:5px!important}.gold-mode-card{min-height:61px!important}.gold-mode-card .mode-icon{font-size:18px!important}.gold-mode-card .mode-label{font-size:7px!important}.gold-mode-card small{font-size:4px}.gold-room-card{min-height:56px;padding:7px;gap:7px}.gold-room-card .room-art{font-size:23px}.gold-room-card strong{font-size:8px}.gold-room-card small{font-size:5px}
+      .gold-daily-card{grid-template-columns:48px 1fr;min-height:63px;padding:6px;gap:6px}.gold-chest{font-size:34px}.gold-profile-stats{display:none}.gold-bottom-nav{margin:0 -8px -8px;height:50px;padding:3px 5px;grid-template-columns:1fr 1fr 1.3fr 1fr 1fr}.gold-bottom-nav>button{height:39px}.gold-bottom-nav>button span{font-size:13px}.gold-bottom-nav>button small{font-size:5px}.gold-bottom-nav .gold-play-now{height:50px}.gold-play-now strong{font-size:11px}.gold-play-now small{font-size:5px}
+    }
+    @media(max-width:480px){
+      .gold-feature-grid,.gold-room-grid{grid-template-columns:1fr 1fr}.gold-mode-grid{grid-template-columns:repeat(2,1fr)!important}.gold-mode-card{min-height:54px!important}.gold-daily-card{grid-template-columns:40px 1fr}.gold-chest{font-size:29px}
+    }
+
   </style>
 </head>
 <body>
@@ -838,59 +968,111 @@
     <header>
       <p class="eyebrow">لعبة كيرم مستقرة — ملف واحد فقط</p>
       <h1>محمد عبدالله</h1>
-      <p>واجهة فاتحة، ألواح بطولات كاملة، غرف أصدقاء ودعوات خاصة.</p>
+      <p>واجهة سوداء وذهبية فاخرة، ألواح بطولات كاملة، غرف أصدقاء ودعوات خاصة.</p>
     </header>
 
-    <section id="menu" class="menu panel menu-dashboard">
-      <div class="social-header">
-        <div class="social-left-stack">
-          <button id="openSettingsMenu" class="header-action" type="button"><span class="head-icon">⚙️</span><span class="head-label">الإعدادات</span></button>
-          <button id="openFriendRequestsMenu" class="header-action" type="button"><span class="head-icon">🔔</span><span class="head-label">الطلبات</span><b id="friendRequestBadge" class="request-badge" data-count="0">0</b></button>
-          <button id="openFriendsListMenu" class="header-action" type="button"><span class="head-icon">👥</span><span class="head-label">الأصدقاء</span><b id="messageUnreadBadge" class="request-badge" data-count="0">0</b></button>
+    <section id="menu" class="menu panel menu-dashboard gold-dashboard" aria-label="القائمة الرئيسية للعبة الكيرم">
+      <div class="gold-topbar">
+        <div class="gold-top-actions" aria-label="اختصارات الحساب">
+          <button id="openSettingsMenu" class="gold-round-action" type="button" title="الإعدادات"><span class="gold-action-icon">⚙︎</span><small>الإعدادات</small></button>
+          <button id="openFriendsListMenu" class="gold-round-action" type="button" title="الرسائل والأصدقاء"><span class="gold-action-icon">✉︎</span><small>الرسائل</small><b id="messageUnreadBadge" class="request-badge" data-count="0">0</b></button>
+          <button id="openFriendRequestsMenu" class="gold-round-action" type="button" title="الطلبات"><span class="gold-action-icon">♟</span><small>الطلبات</small><b id="friendRequestBadge" class="request-badge" data-count="0">0</b></button>
         </div>
-        <button id="openProfileMenu" class="profile-head-card" type="button" aria-label="فتح الملف الشخصي">
-          <span class="profile-head-avatar-wrap">
-            <span id="menuProfileAvatar" class="mini-avatar" aria-hidden="true">م</span>
+
+        <div class="gold-brand" aria-label="الكيرم">
+          <span class="gold-brand-line"></span>
+          <div class="gold-logo-crown">♛</div>
+          <h2>الكيرم</h2>
+          <p>لعبة الطاولة الكلاسيكية</p>
+          <span class="gold-brand-line"></span>
+        </div>
+
+        <button id="openProfileMenu" class="gold-profile-card" type="button" aria-label="فتح الملف الشخصي">
+          <span class="gold-profile-copy">
+            <strong id="menuProfileName">محمد عبدالله</strong>
+            <small id="menuPlayerId">-------------</small>
+          </span>
+          <span class="gold-profile-avatar-wrap">
+            <span id="menuProfileAvatar" class="gold-profile-avatar">م</span>
             <span id="menuOnlineDot" class="presence-dot" aria-label="حالة الاتصال"></span>
           </span>
-          <span class="profile-head-copy"><strong id="menuProfileName">ملفي الشخصي</strong><small id="menuPlayerId">-------------</small></span>
+          <span class="gold-level-ring"><b id="menuLevel">1</b><small>المستوى</small></span>
         </button>
       </div>
-      <div class="install-platform-grid" aria-label="تثبيت اللعبة على الجوال">
-        <button id="installAndroidMenu" class="platform-install android" type="button"><span class="platform-icon" aria-hidden="true">🤖</span><span class="platform-copy"><strong class="install-label">تثبيت على أندرويد</strong><small>Chrome أو متصفح يدعم التثبيت</small></span></button>
-        <button id="installIosMenu" class="platform-install ios" type="button"><span class="platform-icon" aria-hidden="true"></span><span class="platform-copy"><strong>تثبيت على آيفون</strong><small>من Safari إلى الشاشة الرئيسية</small></span></button>
-      </div>
 
-      <div class="menu-heading-row"><div><h2>اختر أسلوب اللعب</h2><p>اللعب المحلي أو عبر الإنترنت من شاشة واحدة.</p></div></div>
+      <div class="gold-install-row" aria-label="تثبيت اللعبة على الجوال">
+        <button id="installIosMenu" class="gold-install-card apple" type="button">
+          <span class="gold-install-icon"></span>
+          <span><strong>تثبيت اللعبة على Apple</strong><small>من Safari إلى الشاشة الرئيسية</small></span>
+        </button>
+        <button id="installAndroidMenu" class="gold-install-card android" type="button">
+          <span class="gold-install-icon">◆</span>
+          <span><strong class="install-label">تثبيت اللعبة على Android</strong><small>Chrome أو متصفح يدعم التثبيت</small></span>
+          <em>الأكثر استخدامًا</em>
+        </button>
+      </div>
 
       <div class="hidden-control-selects" aria-hidden="true">
         <select id="difficulty"><option value="beginner">مبتدئ</option><option value="hard" selected>متقدم</option><option value="expert">محترف</option><option value="legendary">أسطوري</option></select>
         <select id="theme"><option value="arabic" selected>عربي</option><option value="indian">هندي</option><option value="royal">ملكي</option><option value="classic">كلاسيكي</option><option value="modern">عصري</option></select>
       </div>
 
-      <div class="menu-tools-grid">
-        <button id="openShopMenu" class="quick-tile" type="button"><span class="tile-icon" aria-hidden="true">🛍️</span><span class="tile-copy">متجر المضارب والألواح<small>شراء وتجهيز المضرب واللوح الكامل</small></span></button>
-        <button id="showAchievementsMenu" class="quick-tile" type="button"><span class="tile-icon" aria-hidden="true">🏆</span><span class="tile-copy">التصنيف والإنجازات<small>الرتبة والمكافآت</small></span></button>
+      <div class="gold-feature-grid">
+        <button id="openShopMenu" class="gold-feature-card shop-feature" type="button">
+          <span class="gold-feature-copy"><strong>متجر المميزات والألواح</strong><small>خصص تجربتك بأفخم المقتنيات</small></span>
+          <span class="gold-feature-art" aria-hidden="true">🛍️</span>
+        </button>
+        <button id="showAchievementsMenu" class="gold-feature-card trophy-feature" type="button">
+          <span class="gold-feature-copy"><strong>التصنيف والإنجازات</strong><small>تنافس وتصدر قائمة المتصدرين</small></span>
+          <span class="gold-feature-art" aria-hidden="true">🏆</span>
+        </button>
       </div>
 
-      <div class="mode-section-title">اللعب المحلي</div>
-      <div class="mode-grid" aria-label="طرق اللعب المحلية">
-        <button class="mode-card primary" data-mode="ai" data-count="2"><span class="mode-icon" aria-hidden="true">🤖</span><span class="mode-label">ضد الذكاء الاصطناعي</span></button>
-        <button class="mode-card" data-mode="local2" data-count="2"><span class="mode-icon" aria-hidden="true">👥</span><span class="mode-label">لاعبان محليًا</span></button>
-        <button class="mode-card" data-mode="local4" data-count="4"><span class="mode-icon" aria-hidden="true">👨‍👩‍👧‍👦</span><span class="mode-label">أربعة لاعبين</span></button>
-        <button class="mode-card" data-mode="training" data-count="1"><span class="mode-icon" aria-hidden="true">🎯</span><span class="mode-label">وضع التدريب</span></button>
+      <div class="gold-section-title"><span></span><b>أوضاع اللعب</b><span></span></div>
+      <div class="gold-mode-grid" aria-label="أوضاع اللعب المحلية">
+        <button class="mode-card gold-mode-card featured" data-mode="ai" data-count="2">
+          <span class="mode-icon">🤖</span><span class="mode-label">ضد الذكاء الاصطناعي</span><small>اختر مستوى التحدي</small>
+        </button>
+        <button class="mode-card gold-mode-card" data-mode="local2" data-count="2">
+          <span class="mode-icon">👥</span><span class="mode-label">لاعبان محليًا</span><small>على نفس الجهاز</small>
+        </button>
+        <button class="mode-card gold-mode-card" data-mode="local4" data-count="4">
+          <span class="mode-icon">👨‍👩‍👧‍👦</span><span class="mode-label">أربعة لاعبين</span><small>فرق وتحدٍ جماعي</small>
+        </button>
+        <button class="mode-card gold-mode-card" data-mode="training" data-count="1">
+          <span class="mode-icon">🎯</span><span class="mode-label">وضع التدريب</span><small>تدرب دون مؤقت للدور</small><em>جديد</em>
+        </button>
       </div>
 
-      <div class="mode-section-title">اللعب أون لاين</div>
-      <div class="online-mode-grid">
-        <button id="friendsRoomMode" class="mode-card" type="button"><span class="mode-icon" aria-hidden="true">🔗</span><span class="mode-label">غرفة الأصدقاء</span></button>
-        <button id="tournamentMode" class="mode-card tournament-card" type="button"><span class="mode-icon" aria-hidden="true">🏆</span><span class="mode-label">غرفة البطولات</span></button>
+      <div class="gold-section-title"><span></span><b>الغرف</b><span></span></div>
+      <div class="gold-room-grid">
+        <button id="friendsRoomMode" class="gold-room-card friends-room" type="button">
+          <span class="room-art">👥</span><span><strong>غرفة الأصدقاء</strong><small>العب مع أصدقائك عبر رمز الغرفة</small></span>
+        </button>
+        <button id="tournamentMode" class="gold-room-card tournament-room" type="button">
+          <span class="room-art">🏆</span><span><strong>غرفة البطولات</strong><small>نافس في البطولات واربح الجوائز</small></span>
+        </button>
       </div>
 
-      <div id="dailyTasksMenu" class="daily-tasks-card"></div>
-      <div class="menu-bottom-row menu-note-only">
-        <div class="notice compact-note">بيانات الرتبة وXP والكؤوس والعملات والمستوى موجودة داخل الملف الشخصي.</div>
+      <div class="gold-section-title daily-title"><span></span><b>المهام اليومية</b><span></span></div>
+      <div class="gold-daily-card">
+        <span class="gold-chest" aria-hidden="true">🧰</span>
+        <div id="dailyTasksMenu" class="daily-tasks-card gold-daily-content"></div>
+        <div class="gold-profile-stats" aria-label="رصيد اللاعب">
+          <span><small>الرتبة</small><strong id="menuRank">برونزي</strong></span>
+          <span><small>XP</small><strong id="menuXp">0</strong></span>
+          <span><small>الكؤوس</small><strong id="menuTrophies">0</strong></span>
+          <span><small>العملات</small><strong id="menuCoins">0</strong></span>
+        </div>
       </div>
+
+      <nav class="gold-bottom-nav" aria-label="التنقل السريع">
+        <button id="bottomProfileMenu" type="button"><span>♙</span><small>الملف الشخصي</small></button>
+        <button id="bottomAchievementsMenu" type="button"><span>♛</span><small>المتصدرون</small></button>
+        <button id="bottomPlayMenu" class="gold-play-now" type="button" data-mode="ai" data-count="2"><strong>العب الآن</strong><small>ابدأ المباراة</small></button>
+        <button id="bottomRewardsMenu" type="button"><span>🎁</span><small>الجوائز</small></button>
+        <button id="bottomShopMenu" type="button"><span>🛒</span><small>المتجر</small></button>
+      </nav>
     </section>
 
     <section id="game" class="hidden">
@@ -5354,6 +5536,10 @@ function hudAvatarMarkup(index) {
   document.getElementById("openSettingsGame")?.addEventListener("click",()=>showSettingsModal());
   document.getElementById("friendsRoomMode").addEventListener("click", showFriendsRoomHub);
   document.getElementById("tournamentMode").addEventListener("click", showTournamentHub);
+  document.getElementById("bottomProfileMenu")?.addEventListener("click", showPlayerProfile);
+  document.getElementById("bottomAchievementsMenu")?.addEventListener("click", showAchievementsModal);
+  document.getElementById("bottomRewardsMenu")?.addEventListener("click", showAchievementsModal);
+  document.getElementById("bottomShopMenu")?.addEventListener("click", showShop);
   document.getElementById("closeModal").addEventListener("click", closeInfoModal);
   modalBodyEl.addEventListener("click", event => {
     const aiDifficulty = event.target.closest("[data-ai-difficulty]");
